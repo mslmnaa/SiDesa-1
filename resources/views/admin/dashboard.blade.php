@@ -66,6 +66,87 @@
     </div>
 </div>
 
+<!-- Infaq Statistics Section -->
+<div class="bg-white rounded-lg shadow p-6 mb-8">
+    <div class="flex items-center justify-between mb-6">
+        <h3 class="text-lg font-semibold text-gray-900">Statistik Infaq</h3>
+        <a href="{{ route('admin.infaq.index') }}" class="text-green-600 hover:text-green-800 font-medium">
+            Kelola Infaq →
+        </a>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+        <!-- Pending Infaq -->
+        <div class="text-center p-4 bg-yellow-50 rounded-lg">
+            <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <p class="text-2xl font-bold text-yellow-600">{{ $infaqStats['total_pending'] }}</p>
+            <p class="text-sm text-yellow-800">Menunggu Verifikasi</p>
+        </div>
+        
+        <!-- Verified Infaq -->
+        <div class="text-center p-4 bg-blue-50 rounded-lg">
+            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <p class="text-2xl font-bold text-blue-600">{{ $infaqStats['total_verified'] }}</p>
+            <p class="text-sm text-blue-800">Terverifikasi</p>
+        </div>
+        
+        <!-- Completed Infaq -->
+        <div class="text-center p-4 bg-green-50 rounded-lg">
+            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            <p class="text-2xl font-bold text-green-600">{{ $infaqStats['total_completed'] }}</p>
+            <p class="text-sm text-green-800">Selesai Disalurkan</p>
+        </div>
+        
+        <!-- Total Donors -->
+        <div class="text-center p-4 bg-purple-50 rounded-lg">
+            <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+            </div>
+            <p class="text-2xl font-bold text-purple-600">{{ $infaqStats['total_donors'] }}</p>
+            <p class="text-sm text-purple-800">Total Donatur</p>
+        </div>
+        
+        <!-- Total Amount -->
+        <div class="text-center p-4 bg-emerald-50 rounded-lg">
+            <div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                </svg>
+            </div>
+            <p class="text-lg font-bold text-emerald-600">Rp {{ number_format($infaqStats['total_amount_collected'], 0, ',', '.') }}</p>
+            <p class="text-sm text-emerald-800">Dana Terkumpul</p>
+        </div>
+    </div>
+    
+    @if($infaqStats['total_pending'] > 0)
+        <div class="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <div class="flex items-center">
+                <svg class="w-5 h-5 text-yellow-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                </svg>
+                <p class="text-yellow-800">
+                    <strong>{{ $infaqStats['total_pending'] }} donasi</strong> menunggu verifikasi Anda.
+                    <a href="{{ route('admin.infaq.index', ['status' => 'pending']) }}" class="font-medium underline hover:no-underline">Verifikasi sekarang</a>
+                </p>
+            </div>
+        </div>
+    @endif
+</div>
+
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
     <!-- Recent Orders -->
     <div class="bg-white rounded-lg shadow">

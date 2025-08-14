@@ -15,6 +15,24 @@
                     daftar akun baru
                 </a>
             </p>
+            
+            @if(session('intended') || request()->get('redirect') === 'cart' || str_contains(url()->previous(), 'cart'))
+                <div class="mt-4 bg-blue-50 border border-blue-200 rounded-md p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M17 13l-1.5 6M9 19.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM20.5 19.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-blue-700">
+                                <strong>Akses Keranjang Belanja:</strong><br>
+                                Silakan masuk terlebih dahulu untuk melihat dan mengelola keranjang belanja Anda.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
 
         <form class="mt-8 space-y-6" action="{{ route('login') }}" method="POST">

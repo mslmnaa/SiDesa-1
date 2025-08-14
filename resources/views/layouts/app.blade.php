@@ -25,24 +25,50 @@
                     <a href="{{ route('home') }}" class="text-gray-700 hover:text-green-600 transition-colors">
                         Beranda
                     </a>
-                    <a href="{{ route('products.index') }}" class="text-gray-700 hover:text-green-600 transition-colors">
-                        Produk
+                    
+                    <!-- Products Dropdown -->
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="flex items-center text-gray-700 hover:text-green-600 transition-colors">
+                            <span>Produk</span>
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+
+                        <div x-show="open" @click.away="open = false" x-transition class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                            <a href="{{ route('products.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                Semua Produk
+                            </a>
+                            <a href="{{ route('products.type', 'barang') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                Produk Barang
+                            </a>
+                            <a href="{{ route('products.type', 'jasa') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                Produk Jasa
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <a href="{{ route('infaq') }}" class="text-gray-700 hover:text-green-600 transition-colors">
+                        Infaq Online
+                    </a>
+                    <a href="{{ route('contact') }}" class="text-gray-700 hover:text-green-600 transition-colors">
+                        Kontak
                     </a>
                 </div>
 
                 <!-- Right Side -->
                 <div class="flex items-center space-x-4">
-                    @auth
-                        <!-- Cart -->
-                        <a href="{{ route('cart.index') }}" class="relative text-gray-700 hover:text-green-600 transition-colors">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M17 13l-1.5 6M9 19.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM20.5 19.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path>
-                            </svg>
-                            <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" id="cart-count">
-                                {{ auth()->user()->carts->sum('quantity') ?? 0 }}
-                            </span>
-                        </a>
+                    <!-- Cart - Always visible -->
+                    <a href="{{ route('user.cart.index') }}" class="relative text-gray-700 hover:text-green-600 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M17 13l-1.5 6M9 19.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM20.5 19.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path>
+                        </svg>
+                        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" id="cart-count">
+                            {{ auth()->check() ? auth()->user()->carts->sum('quantity') : 0 }}
+                        </span>
+                    </a>
 
+                    @auth
                         <!-- User Dropdown -->
                         <div class="relative" x-data="{ open: false }">
                             <button @click="open = !open" class="flex items-center text-gray-700 hover:text-green-600 transition-colors">
@@ -61,7 +87,7 @@
                                 <a href="{{ route('profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                     Profile
                                 </a>
-                                <a href="{{ route('orders.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <a href="{{ route('user.orders.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                     Riwayat Pesanan
                                 </a>
                                 <form method="POST" action="{{ route('logout') }}" class="block">
