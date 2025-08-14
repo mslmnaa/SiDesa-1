@@ -30,7 +30,7 @@ class AuthController extends Controller
                 return redirect()->route('admin.dashboard');
             }
             
-            return redirect()->intended(route('user.home'));
+            return redirect()->intended(route('home'));
         }
 
         return back()->withErrors([
@@ -64,7 +64,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('user.home')->with('success', 'Registrasi berhasil!');
+        return redirect()->route('home')->with('success', 'Registrasi berhasil!');
     }
 
     public function logout(Request $request)
