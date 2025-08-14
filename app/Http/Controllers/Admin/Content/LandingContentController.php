@@ -16,23 +16,23 @@ class LandingContentController extends Controller
         // Search functionality
         if ($request->filled('search')) {
             $query->where('title', 'like', '%' . $request->search . '%')
-                  ->orWhere('section', 'like', '%' . $request->search . '%');
+                  ->orWhere('key', 'like', '%' . $request->search . '%');
         }
         
-        // Section filter
+        // Key filter
         if ($request->filled('section')) {
-            $query->where('section', $request->section);
+            $query->where('key', $request->section);
         }
         
         // Status filter
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            $query->where('is_active', $request->status === 'active');
         }
         
-        $contents = $query->orderBy('section')->orderBy('order')->paginate(10);
+        $contents = $query->orderBy('key')->orderBy('id')->paginate(10);
         
-        // Get available sections
-        $sections = LandingContent::distinct()->pluck('section')->sort();
+        // Get available keys (instead of sections)
+        $sections = LandingContent::distinct()->pluck('key')->sort();
         
         return view('admin.content.index', compact('contents', 'sections'));
     }
@@ -45,7 +45,7 @@ class LandingContentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'section' => 'required|string|max:50',
+            'key' => 'required|string|max:50',
             'title' => 'required|string|max:255',
             'subtitle' => 'nullable|string|max:255',
             'content' => 'nullable|string',
@@ -63,16 +63,12 @@ class LandingContentController extends Controller
         }
         
         LandingContent::create([
-            'section' => $request->section,
+            'key' => $request->key,
             'title' => $request->title,
-            'subtitle' => $request->subtitle,
             'content' => $request->content,
-            'button_text' => $request->button_text,
-            'button_link' => $request->button_link,
             'image' => $image,
             'data' => $request->data,
-            'order' => $request->order ?? 0,
-            'status' => $request->status
+            'is_active' => $request->boolean('is_active', true)
         ]);
         
         return redirect()->route('admin.content.index')
@@ -92,16 +88,12 @@ class LandingContentController extends Controller
     public function update(Request $request, LandingContent $landingContent)
     {
         $request->validate([
-            'section' => 'required|string|max:50',
+            'key' => 'required|string|max:50|unique:landing_contents,key,' . $landingContent->id,
             'title' => 'required|string|max:255',
-            'subtitle' => 'nullable|string|max:255',
             'content' => 'nullable|string',
-            'button_text' => 'nullable|string|max:50',
-            'button_link' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'data' => 'nullable|array',
-            'order' => 'nullable|integer|min:0',
-            'status' => 'required|in:active,inactive'
+            'is_active' => 'boolean'
         ]);
         
         $image = $landingContent->image;
@@ -122,16 +114,12 @@ class LandingContentController extends Controller
         }
         
         $landingContent->update([
-            'section' => $request->section,
+            'key' => $request->key,
             'title' => $request->title,
-            'subtitle' => $request->subtitle,
             'content' => $request->content,
-            'button_text' => $request->button_text,
-            'button_link' => $request->button_link,
             'image' => $image,
             'data' => $request->data,
-            'order' => $request->order ?? 0,
-            'status' => $request->status
+            'is_active' => $request->boolean('is_active', true)
         ]);
         
         return redirect()->route('admin.content.index')
@@ -154,15 +142,15 @@ class LandingContentController extends Controller
     public function toggleStatus(Request $request, LandingContent $landingContent)
     {
         $request->validate([
-            'status' => 'required|in:active,inactive'
+            'is_active' => 'required|boolean'
         ]);
         
-        $landingContent->update(['status' => $request->status]);
+        $landingContent->update(['is_active' => $request->boolean('is_active')]);
         
         return response()->json([
             'success' => true,
             'message' => 'Status konten berhasil diperbarui.',
-            'status' => $landingContent->status
+            'is_active' => $landingContent->is_active
         ]);
     }
 }
