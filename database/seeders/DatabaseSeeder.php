@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name' => 'Super Admin',
             'email' => 'superadmin@bumdes.com',
-            'password' => Hash::make('password123'),
+            'password' => Hash::make('123'),
             'role' => 'superadmin',
             'phone' => '081234567890',
             'address' => 'Jl. Admin No. 1, Desa Maju'
@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name' => 'Admin BUMDes',
             'email' => 'admin@bumdes.com', 
-            'password' => Hash::make('password123'),
+            'password' => Hash::make('123'),
             'role' => 'admin',
             'phone' => '081234567891',
             'address' => 'Jl. BUMDes No. 2, Desa Sejahtera'
@@ -39,7 +39,7 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name' => 'Budi Santoso',
             'email' => 'budi@example.com',
-            'password' => Hash::make('password123'),
+            'password' => Hash::make('123'),
             'role' => 'user',
             'phone' => '081234567892',
             'address' => 'Jl. Mawar No. 3, Desa Indah'
