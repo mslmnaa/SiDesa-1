@@ -73,7 +73,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('user.home');
+        return redirect()->route('home');
     }
 
     public function profile()
