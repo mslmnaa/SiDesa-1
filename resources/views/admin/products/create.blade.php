@@ -117,16 +117,39 @@
                 <h2 class="text-xl font-semibold text-gray-900 mb-4">Kategori & Status</h2>
                 
                 <div class="space-y-4">
+                    <!-- Type -->
+                    <div>
+                        <label for="type" class="block text-sm font-medium text-gray-700 mb-2">
+                            Jenis Produk *
+                        </label>
+                        <select id="type" name="type" required onchange="filterCategories()"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('type') border-red-500 @enderror">
+                            <option value="">Pilih Jenis Produk</option>
+                            <option value="barang" {{ old('type') == 'barang' ? 'selected' : '' }}>
+                                Produk Barang
+                            </option>
+                            <option value="jasa" {{ old('type') == 'jasa' ? 'selected' : '' }}>
+                                Produk Jasa
+                            </option>
+                        </select>
+                        @error('type')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                        <p class="mt-1 text-xs text-gray-500">
+                            Pilih "Barang" untuk produk fisik atau "Jasa" untuk layanan
+                        </p>
+                    </div>
+
                     <!-- Category -->
                     <div>
                         <label for="category_id" class="block text-sm font-medium text-gray-700 mb-2">
                             Kategori *
                         </label>
-                        <select id="category_id" name="category_id" required
+                        <select id="category_id" name="category_id" required disabled
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('category_id') border-red-500 @enderror">
-                            <option value="">Pilih Kategori</option>
+                            <option value="">Pilih jenis produk terlebih dahulu</option>
                             @foreach($categories as $category)
-                                <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                <option value="{{ $category->id }}" data-type="{{ $category->type }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
                                     {{ $category->name }}
                                 </option>
                             @endforeach
@@ -183,4 +206,47 @@
         </div>
     </div>
 </form>
+
+<script>
+// Store original category options globally
+let originalCategoryOptions = [];
+
+function filterCategories() {
+    const typeSelect = document.getElementById('type');
+    const categorySelect = document.getElementById('category_id');
+    const selectedType = typeSelect.value;
+    
+    // Store original options on first run
+    if (originalCategoryOptions.length === 0) {
+        originalCategoryOptions = Array.from(categorySelect.querySelectorAll('option[data-type]'));
+    }
+    
+    // Reset and disable category select if no type selected
+    if (!selectedType) {
+        categorySelect.innerHTML = '<option value="">Pilih jenis produk terlebih dahulu</option>';
+        categorySelect.disabled = true;
+        return;
+    }
+    
+    // Enable category select and reset options
+    categorySelect.disabled = false;
+    categorySelect.innerHTML = '<option value="">Pilih Kategori</option>';
+    
+    // Add options that match selected type
+    originalCategoryOptions.forEach(option => {
+        if (option.dataset.type === selectedType) {
+            categorySelect.appendChild(option.cloneNode(true));
+        }
+    });
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Store original options before any filtering
+    const categorySelect = document.getElementById('category_id');
+    originalCategoryOptions = Array.from(categorySelect.querySelectorAll('option[data-type]'));
+    
+    filterCategories();
+});
+</script>
 @endsection

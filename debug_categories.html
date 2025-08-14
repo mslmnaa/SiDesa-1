@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Categories</title>
+</head>
+<body>
+    <h1>Debug Category Filtering</h1>
+    
+    <div>
+        <label>Jenis Produk:</label>
+        <select id="type" onchange="filterCategories()">
+            <option value="">Pilih Jenis Produk</option>
+            <option value="barang">Produk Barang</option>
+            <option value="jasa">Produk Jasa</option>
+        </select>
+    </div>
+    
+    <div>
+        <label>Kategori:</label>
+        <select id="category_id" disabled>
+            <option value="">Pilih jenis produk terlebih dahulu</option>
+            <option value="1" data-type="barang">Makanan & Minuman</option>
+            <option value="2" data-type="barang">Kerajinan Tangan</option>
+            <option value="3" data-type="barang">Pertanian</option>
+            <option value="4" data-type="barang">Peternakan</option>
+            <option value="5" data-type="barang">Fashion</option>
+            <option value="6" data-type="barang">Oleh-oleh</option>
+            <option value="7" data-type="barang">Pakaian & Aksesoris</option>
+            <option value="8" data-type="barang">Perikanan</option>
+            <option value="9" data-type="jasa">Jasa Pertanian</option>
+            <option value="10" data-type="jasa">Jasa Konstruksi</option>
+            <option value="11" data-type="jasa">Jasa Transportasi</option>
+            <option value="12" data-type="jasa">Jasa Pendidikan</option>
+            <option value="13" data-type="jasa">Jasa Kesehatan</option>
+            <option value="14" data-type="jasa">Jasa Digital</option>
+        </select>
+    </div>
+
+    <div id="debug-info">
+        <h3>Debug Information:</h3>
+        <div id="debug-output"></div>
+    </div>
+
+    <script>
+    // Store original category options globally
+    let originalCategoryOptions = [];
+
+    function filterCategories() {
+        const typeSelect = document.getElementById('type');
+        const categorySelect = document.getElementById('category_id');
+        const selectedType = typeSelect.value;
+        const debugOutput = document.getElementById('debug-output');
+        
+        // Store original options on first run
+        if (originalCategoryOptions.length === 0) {
+            originalCategoryOptions = Array.from(categorySelect.querySelectorAll('option[data-type]'));
+            debugOutput.innerHTML += '<p>Original options stored: ' + originalCategoryOptions.length + '</p>';
+        }
+        
+        debugOutput.innerHTML += '<p>Selected type: ' + selectedType + '</p>';
+        
+        // Reset and disable category select if no type selected
+        if (!selectedType) {
+            categorySelect.innerHTML = '<option value="">Pilih jenis produk terlebih dahulu</option>';
+            categorySelect.disabled = true;
+            debugOutput.innerHTML += '<p>Category select disabled</p>';
+            return;
+        }
+        
+        // Enable category select and reset options
+        categorySelect.disabled = false;
+        categorySelect.innerHTML = '<option value="">Pilih Kategori</option>';
+        
+        let matchingOptions = 0;
+        // Add options that match selected type
+        originalCategoryOptions.forEach(option => {
+            if (option.dataset.type === selectedType) {
+                categorySelect.appendChild(option.cloneNode(true));
+                matchingOptions++;
+            }
+        });
+        
+        debugOutput.innerHTML += '<p>Matching options for ' + selectedType + ': ' + matchingOptions + '</p>';
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Store original options before any filtering
+        const categorySelect = document.getElementById('category_id');
+        originalCategoryOptions = Array.from(categorySelect.querySelectorAll('option[data-type]'));
+        
+        filterCategories();
+    });
+    </script>
+</body>
+</html>
