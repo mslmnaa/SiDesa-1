@@ -5,15 +5,15 @@
 @section('content')
 <!-- Hero Section -->
 <section class="relative bg-gradient-to-r from-green-600 to-green-800 text-white">
-    <div class="max-w-7xl mx-auto px-4 py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 md:py-20">
         <div class="text-center">
-            <h1 class="text-4xl md:text-6xl font-bold mb-6">Infaq Online</h1>
-            <p class="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+            <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight">Infaq Online</h1>
+            <p class="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8 max-w-3xl mx-auto leading-relaxed px-2">
                 Berbagi kebaikan untuk warga desa yang membutuhkan. Mari bersama membantu sesama.
             </p>
             <a href="{{ route('infaq.create') }}" 
-               class="bg-white text-green-600 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors inline-flex items-center">
-                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+               class="bg-white text-green-600 px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-base sm:text-lg hover:bg-gray-100 transition-colors inline-flex items-center">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                 </svg>
                 Mulai Berinfaq
@@ -23,29 +23,29 @@
 </section>
 
 <!-- Statistics Section -->
-<section class="py-16 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-4">
-        <div class="grid md:grid-cols-3 gap-8">
-            <div class="bg-white rounded-lg shadow-lg p-8 text-center">
-                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<section class="py-12 sm:py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
+            <div class="bg-white rounded-lg shadow-lg p-6 sm:p-8 text-center">
+                <div class="w-12 h-12 sm:w-16 sm:h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
                     </svg>
                 </div>
-                <h3 class="text-3xl font-bold text-green-600 mb-2">
+                <h3 class="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600 mb-2">
                     Rp {{ number_format($totalCollected, 0, ',', '.') }}
                 </h3>
-                <p class="text-gray-600">Total Dana Terkumpul</p>
+                <p class="text-gray-600 text-sm sm:text-base">Total Dana Terkumpul</p>
             </div>
 
-            <div class="bg-white rounded-lg shadow-lg p-8 text-center">
-                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="bg-white rounded-lg shadow-lg p-6 sm:p-8 text-center">
+                <div class="w-12 h-12 sm:w-16 sm:h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                     </svg>
                 </div>
-                <h3 class="text-3xl font-bold text-blue-600 mb-2">{{ $totalDonors }}</h3>
-                <p class="text-gray-600">Donatur</p>
+                <h3 class="text-xl sm:text-2xl lg:text-3xl font-bold text-blue-600 mb-2">{{ $totalDonors }}</h3>
+                <p class="text-gray-600 text-sm sm:text-base">Donatur</p>
             </div>
 
             <div class="bg-white rounded-lg shadow-lg p-8 text-center">

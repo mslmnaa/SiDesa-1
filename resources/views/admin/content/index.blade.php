@@ -4,26 +4,26 @@
 
 @section('content')
 <!-- Header -->
-<div class="flex items-center justify-between mb-8">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-4">
     <div>
-        <h1 class="text-3xl font-bold text-gray-900">Kelola Konten Landing Page</h1>
-        <p class="text-gray-600 mt-2">Kelola semua konten yang tampil di halaman utama website</p>
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Kelola Konten Landing Page</h1>
+        <p class="text-gray-600 mt-2 text-sm sm:text-base">Kelola semua konten yang tampil di halaman utama website</p>
     </div>
-    <div class="space-x-3">
+    <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
         <a href="{{ route('home') }}" target="_blank"
-           class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+           class="bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center text-sm sm:text-base">
             Preview Website
         </a>
         <a href="{{ route('admin.landing-contents.create') }}" 
-           class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+           class="bg-green-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors text-center text-sm sm:text-base">
             Tambah Konten
         </a>
     </div>
 </div>
 
 <!-- Search and Filters -->
-<div class="bg-white rounded-lg shadow p-6 mb-6">
-    <form method="GET" action="{{ route('admin.landing-contents.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+<div class="bg-white rounded-lg shadow p-4 sm:p-6 mb-6">
+    <form method="GET" action="{{ route('admin.landing-contents.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- Search -->
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Cari Konten</label>
@@ -56,11 +56,11 @@
         </div>
         
         <!-- Actions -->
-        <div class="flex items-end space-x-2">
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+        <div class="sm:col-span-2 lg:col-span-1 flex flex-col sm:flex-row items-stretch sm:items-end gap-2">
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors text-sm font-medium">
                 Filter
             </button>
-            <a href="{{ route('admin.landing-contents.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors">
+            <a href="{{ route('admin.landing-contents.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors text-center text-sm font-medium">
                 Reset
             </a>
         </div>
@@ -69,18 +69,18 @@
 
 @if($contents->count() > 0)
     <!-- Contents Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
         @foreach($contents as $content)
             <div class="bg-white rounded-lg shadow overflow-hidden hover:shadow-lg transition-shadow">
                 <!-- Content Image -->
-                <div class="h-48 bg-gray-200">
+                <div class="h-32 sm:h-48 bg-gray-200">
                     @if($content->image)
                         <img src="{{ Storage::url($content->image) }}" 
                              alt="{{ $content->title }}" 
                              class="w-full h-full object-cover">
                     @else
                         <div class="h-full flex items-center justify-center">
-                            <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-12 h-12 sm:w-16 sm:h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                             </svg>
                         </div>
@@ -88,7 +88,7 @@
                 </div>
                 
                 <!-- Content Info -->
-                <div class="p-6">
+                <div class="p-4 sm:p-6">
                     <!-- Section & Status -->
                     <div class="flex items-center justify-between mb-3">
                         <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
@@ -106,47 +106,47 @@
                     </div>
                     
                     <!-- Title & Subtitle -->
-                    <div class="mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ $content->title }}</h3>
+                    <div class="mb-3 sm:mb-4">
+                        <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-1 line-clamp-2">{{ $content->title }}</h3>
                         @if($content->subtitle)
-                            <p class="text-sm text-gray-600">{{ Str::limit($content->subtitle, 80) }}</p>
+                            <p class="text-xs sm:text-sm text-gray-600 line-clamp-2">{{ Str::limit($content->subtitle, 60) }}</p>
                         @endif
                     </div>
                     
                     <!-- Content Preview -->
                     @if($content->content)
-                        <div class="mb-4">
-                            <p class="text-sm text-gray-700">{{ Str::limit(strip_tags($content->content), 100) }}</p>
+                        <div class="mb-3 sm:mb-4">
+                            <p class="text-xs sm:text-sm text-gray-700 line-clamp-2">{{ Str::limit(strip_tags($content->content), 80) }}</p>
                         </div>
                     @endif
                     
                     <!-- Button Info -->
                     @if($content->button_text)
-                        <div class="mb-4 p-3 bg-gray-50 rounded-lg">
+                        <div class="mb-3 sm:mb-4 p-2 sm:p-3 bg-gray-50 rounded-lg">
                             <p class="text-xs text-gray-600 mb-1">Button:</p>
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm font-medium text-blue-600">{{ $content->button_text }}</span>
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+                                <span class="text-xs sm:text-sm font-medium text-blue-600 truncate">{{ $content->button_text }}</span>
                                 @if($content->button_link)
-                                    <span class="text-xs text-gray-500">→ {{ Str::limit($content->button_link, 20) }}</span>
+                                    <span class="text-xs text-gray-500">→ {{ Str::limit($content->button_link, 15) }}</span>
                                 @endif
                             </div>
                         </div>
                     @endif
                     
                     <!-- Meta Info -->
-                    <div class="flex items-center justify-between text-xs text-gray-500 mb-4">
+                    <div class="flex items-center justify-between text-xs text-gray-500 mb-3 sm:mb-4">
                         <span>Order: {{ $content->order }}</span>
                         <span>{{ $content->updated_at->format('d M Y') }}</span>
                     </div>
                     
                     <!-- Actions -->
-                    <div class="flex space-x-2">
+                    <div class="flex flex-col sm:flex-row gap-1 sm:gap-2">
                         <a href="{{ route('admin.landing-contents.show', $content) }}" 
-                           class="flex-1 bg-blue-600 text-white py-2 px-3 rounded text-center text-sm font-medium hover:bg-blue-700 transition-colors">
+                           class="flex-1 bg-blue-600 text-white py-1.5 sm:py-2 px-2 sm:px-3 rounded text-center text-xs sm:text-sm font-medium hover:bg-blue-700 transition-colors">
                             Lihat
                         </a>
                         <a href="{{ route('admin.landing-contents.edit', $content) }}" 
-                           class="flex-1 bg-green-600 text-white py-2 px-3 rounded text-center text-sm font-medium hover:bg-green-700 transition-colors">
+                           class="flex-1 bg-green-600 text-white py-1.5 sm:py-2 px-2 sm:px-3 rounded text-center text-xs sm:text-sm font-medium hover:bg-green-700 transition-colors">
                             Edit
                         </a>
                         <form method="POST" action="{{ route('admin.landing-contents.destroy', $content) }}" 
@@ -155,7 +155,7 @@
                             @csrf
                             @method('DELETE')
                             <button type="submit" 
-                                    class="w-full bg-red-600 text-white py-2 px-3 rounded text-sm font-medium hover:bg-red-700 transition-colors">
+                                    class="w-full bg-red-600 text-white py-1.5 sm:py-2 px-2 sm:px-3 rounded text-xs sm:text-sm font-medium hover:bg-red-700 transition-colors">
                                 Hapus
                             </button>
                         </form>
@@ -208,9 +208,9 @@
 @endif
 
 <!-- Common Sections Info -->
-<div class="mt-8 bg-blue-50 rounded-lg p-6">
-    <h3 class="font-semibold text-blue-900 mb-3">Panduan Section Landing Page</h3>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-blue-800">
+<div class="mt-6 sm:mt-8 bg-blue-50 rounded-lg p-4 sm:p-6">
+    <h3 class="font-semibold text-blue-900 mb-3 text-sm sm:text-base">Panduan Section Landing Page</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 text-xs sm:text-sm text-blue-800">
         <div>
             <h4 class="font-medium mb-1">Hero Section</h4>
             <p>Bagian utama dengan headline dan call-to-action</p>

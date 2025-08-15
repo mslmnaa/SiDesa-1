@@ -4,17 +4,17 @@
 
 @section('content')
 <div class="bg-gray-50 min-h-screen">
-    <div class="max-w-7xl mx-auto py-8 px-4">
+    <div class="max-w-7xl mx-auto py-6 sm:py-8 px-4 sm:px-6">
         <!-- Header -->
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">Semua Produk</h1>
-            <p class="text-gray-600 mt-2">Temukan produk lokal berkualitas dari berbagai desa</p>
+        <div class="mb-6 sm:mb-8">
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Semua Produk</h1>
+            <p class="text-gray-600 mt-2 text-sm sm:text-base">Temukan produk lokal berkualitas dari berbagai desa</p>
         </div>
 
         <!-- Search & Filter -->
-        <div class="bg-white rounded-lg shadow p-6 mb-8">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6 mb-6 sm:mb-8">
             <form method="GET" action="{{ route('products.index') }}" class="space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <!-- Search -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Cari Produk</label>
@@ -37,18 +37,15 @@
                     </div>
 
                     <!-- Price Range -->
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Harga Min</label>
+                    <div class="sm:col-span-2 lg:col-span-1">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Rentang Harga</label>
+                        <div class="grid grid-cols-2 gap-2">
                             <input type="number" name="min_price" value="{{ request('min_price') }}" 
-                                   placeholder="0"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Harga Max</label>
+                                   placeholder="Min"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 text-sm">
                             <input type="number" name="max_price" value="{{ request('max_price') }}" 
-                                   placeholder="1000000"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+                                   placeholder="Max"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 text-sm">
                         </div>
                     </div>
 
@@ -63,17 +60,17 @@
                     </div>
                 </div>
 
-                <div class="flex justify-between items-center">
-                    <div class="flex space-x-3">
-                        <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition-colors">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
+                        <button type="submit" class="w-full sm:w-auto bg-green-600 text-white px-4 sm:px-6 py-2 rounded-md hover:bg-green-700 transition-colors text-sm font-medium">
                             Terapkan Filter
                         </button>
-                        <a href="{{ route('products.index') }}" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-md hover:bg-gray-300 transition-colors">
+                        <a href="{{ route('products.index') }}" class="w-full sm:w-auto bg-gray-200 text-gray-700 px-4 sm:px-6 py-2 rounded-md hover:bg-gray-300 transition-colors text-center text-sm font-medium">
                             Reset
                         </a>
                     </div>
-                    <p class="text-sm text-gray-500">
-                        Menampilkan {{ $products->count() }} dari {{ $products->total() }} produk
+                    <p class="text-xs sm:text-sm text-gray-500 w-full sm:w-auto text-center sm:text-right">
+                        {{ $products->count() }} dari {{ $products->total() }} produk
                     </p>
                 </div>
             </form>

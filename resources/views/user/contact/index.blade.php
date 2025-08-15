@@ -4,18 +4,18 @@
 
 @section('content')
 <div class="bg-gray-50 min-h-screen py-12">
-    <div class="max-w-4xl mx-auto px-4">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
         <!-- Header -->
-        <div class="text-center mb-12">
-            <h1 class="text-4xl font-bold text-gray-900 mb-4">Hubungi Kami</h1>
-            <p class="text-xl text-gray-600">
+        <div class="text-center mb-8 sm:mb-12">
+            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">Hubungi Kami</h1>
+            <p class="text-base sm:text-lg lg:text-xl text-gray-600">
                 Kirim pesan Anda langsung ke kepala desa
             </p>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12">
             <!-- Contact Form -->
-            <div class="bg-white rounded-lg shadow-lg p-8">
+            <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6 lg:p-8">
                 <h2 class="text-2xl font-semibold text-gray-900 mb-6">Kirim Pesan</h2>
                 
                 <!-- Success/Error Messages -->

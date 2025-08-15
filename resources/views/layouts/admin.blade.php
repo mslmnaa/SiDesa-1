@@ -9,12 +9,32 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-100">
-    <div class="flex h-screen">
+    <div class="flex h-screen overflow-hidden" x-data="{ sidebarOpen: false }">
+        <!-- Mobile sidebar overlay -->
+        <div x-show="sidebarOpen" 
+             x-transition:enter="transition-opacity ease-linear duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition-opacity ease-linear duration-300"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 z-20 bg-black bg-opacity-50 lg:hidden"
+             @click="sidebarOpen = false">
+        </div>
+
         <!-- Sidebar -->
-        <div class="bg-gray-800 text-white w-64 flex-shrink-0">
-            <div class="p-4">
-                <h2 class="text-xl font-semibold">Admin Panel</h2>
-                <p class="text-gray-400 text-sm">BUMDes Marketplace</p>
+        <div class="fixed inset-y-0 left-0 z-30 w-64 bg-gray-800 text-white transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0"
+             :class="{ '-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }">
+            <div class="flex items-center justify-between p-4 lg:justify-center">
+                <div>
+                    <h2 class="text-xl font-semibold">Admin Panel</h2>
+                    <p class="text-gray-400 text-sm">BUMDes Marketplace</p>
+                </div>
+                <button @click="sidebarOpen = false" class="lg:hidden">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
             </div>
 
             <nav class="mt-8">
@@ -89,20 +109,29 @@
         </div>
 
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col">
+        <div class="flex-1 flex flex-col overflow-hidden lg:ml-0">
             <!-- Top Bar -->
-            <header class="bg-white shadow-sm border-b px-6 py-4">
+            <header class="bg-white shadow-sm border-b px-4 sm:px-6 py-3 sm:py-4">
                 <div class="flex justify-between items-center">
-                    <h1 class="text-2xl font-semibold text-gray-800">@yield('title', 'Dashboard')</h1>
+                    <div class="flex items-center">
+                        <button @click="sidebarOpen = true" class="lg:hidden mr-3 p-1">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                            </svg>
+                        </button>
+                        <h1 class="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-800 truncate">@yield('title', 'Dashboard')</h1>
+                    </div>
                     
-                    <div class="flex items-center space-x-4">
-                        <span class="text-gray-600">{{ auth()->user()->name }}</span>
-                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
-                            {{ ucfirst(auth()->user()->role) }}
-                        </span>
+                    <div class="flex items-center space-x-2 sm:space-x-4">
+                        <div class="hidden sm:flex items-center space-x-3">
+                            <span class="text-gray-600 text-sm lg:text-base max-w-32 truncate">{{ auth()->user()->name }}</span>
+                            <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                                {{ ucfirst(auth()->user()->role) }}
+                            </span>
+                        </div>
                         <form method="POST" action="{{ route('logout') }}" class="inline">
                             @csrf
-                            <button type="submit" class="text-red-600 hover:text-red-800">
+                            <button type="submit" class="text-red-600 hover:text-red-800 p-1 sm:p-2" title="Logout">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                                 </svg>
@@ -113,7 +142,7 @@
             </header>
 
             <!-- Flash Messages -->
-            <div class="px-6 py-4">
+            <div class="px-4 sm:px-6 py-4">
                 @if(session('success'))
                     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
                         <span class="block sm:inline">{{ session('success') }}</span>
@@ -128,7 +157,7 @@
             </div>
 
             <!-- Page Content -->
-            <div class="flex-1 px-6 pb-6">
+            <div class="flex-1 px-4 sm:px-6 pb-6 overflow-auto">
                 @yield('content')
             </div>
         </div>

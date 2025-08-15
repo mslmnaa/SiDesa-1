@@ -173,7 +173,7 @@
                                     @foreach($order->orderItems->take(3) as $item)
                                         <div class="w-8 h-8 rounded-full border-2 border-white overflow-hidden">
                                             @if($item->product->images && count($item->product->images) > 0)
-                                                <img src="{{ Storage::url($item->product->images[0]) }}" 
+                                                <img src="{{ $item->product->getImageDataUri(0) }}" 
                                                      alt="{{ $item->product->name }}" 
                                                      class="w-full h-full object-cover">
                                             @else

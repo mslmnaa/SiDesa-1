@@ -52,7 +52,7 @@
                                     <div class="flex items-center space-x-3">
                                         <div class="flex-shrink-0">
                                             @if($item->product->images && count($item->product->images) > 0)
-                                                <img src="{{ Storage::url($item->product->images[0]) }}" 
+                                                <img src="{{ $item->product->getImageDataUri(0) }}" 
                                                      alt="{{ $item->product->name }}" 
                                                      class="w-12 h-12 object-cover rounded">
                                             @else
