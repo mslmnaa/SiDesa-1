@@ -14,7 +14,7 @@
            class="bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center text-sm sm:text-base">
             Preview Website
         </a>
-        <a href="{{ route('admin.landing-contents.create') }}" 
+        <a href="{{ route('admin.content.create') }}" 
            class="bg-green-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors text-center text-sm sm:text-base">
             Tambah Konten
         </a>
@@ -23,7 +23,7 @@
 
 <!-- Search and Filters -->
 <div class="bg-white rounded-lg shadow p-4 sm:p-6 mb-6">
-    <form method="GET" action="{{ route('admin.landing-contents.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <form method="GET" action="{{ route('admin.content.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- Search -->
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Cari Konten</label>
@@ -60,7 +60,7 @@
             <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors text-sm font-medium">
                 Filter
             </button>
-            <a href="{{ route('admin.landing-contents.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors text-center text-sm font-medium">
+            <a href="{{ route('admin.content.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors text-center text-sm font-medium">
                 Reset
             </a>
         </div>
@@ -92,25 +92,22 @@
                     <!-- Section & Status -->
                     <div class="flex items-center justify-between mb-3">
                         <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                            {{ ucfirst($content->section) }}
+                            {{ ucfirst($content->key) }}
                         </span>
-                        <form method="POST" action="{{ route('admin.landing-contents.toggle-status', $content) }}" class="inline-block">
+                        <form method="POST" action="{{ route('admin.content.toggle-status', $content) }}" class="inline-block">
                             @csrf
-                            <select name="status" onchange="this.form.submit()" 
-                                    class="text-xs rounded-full px-2 py-1 font-semibold border-0 focus:ring-2 focus:ring-green-500
-                                        {{ $content->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                <option value="active" {{ $content->status === 'active' ? 'selected' : '' }}>Aktif</option>
-                                <option value="inactive" {{ $content->status === 'inactive' ? 'selected' : '' }}>Tidak Aktif</option>
-                            </select>
+                            <input type="hidden" name="is_active" value="{{ !$content->is_active }}">
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full cursor-pointer
+                                {{ $content->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}"
+                                onclick="this.closest('form').submit()">
+                                {{ $content->is_active ? 'Aktif' : 'Tidak Aktif' }}
+                            </span>
                         </form>
                     </div>
                     
-                    <!-- Title & Subtitle -->
+                    <!-- Title -->
                     <div class="mb-3 sm:mb-4">
                         <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-1 line-clamp-2">{{ $content->title }}</h3>
-                        @if($content->subtitle)
-                            <p class="text-xs sm:text-sm text-gray-600 line-clamp-2">{{ Str::limit($content->subtitle, 60) }}</p>
-                        @endif
                     </div>
                     
                     <!-- Content Preview -->
@@ -120,36 +117,23 @@
                         </div>
                     @endif
                     
-                    <!-- Button Info -->
-                    @if($content->button_text)
-                        <div class="mb-3 sm:mb-4 p-2 sm:p-3 bg-gray-50 rounded-lg">
-                            <p class="text-xs text-gray-600 mb-1">Button:</p>
-                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-                                <span class="text-xs sm:text-sm font-medium text-blue-600 truncate">{{ $content->button_text }}</span>
-                                @if($content->button_link)
-                                    <span class="text-xs text-gray-500">→ {{ Str::limit($content->button_link, 15) }}</span>
-                                @endif
-                            </div>
-                        </div>
-                    @endif
-                    
                     <!-- Meta Info -->
                     <div class="flex items-center justify-between text-xs text-gray-500 mb-3 sm:mb-4">
-                        <span>Order: {{ $content->order }}</span>
+                        <span>{{ $content->created_at->format('d M Y') }}</span>
                         <span>{{ $content->updated_at->format('d M Y') }}</span>
                     </div>
                     
                     <!-- Actions -->
                     <div class="flex flex-col sm:flex-row gap-1 sm:gap-2">
-                        <a href="{{ route('admin.landing-contents.show', $content) }}" 
+                        <a href="{{ route('admin.content.show', $content) }}" 
                            class="flex-1 bg-blue-600 text-white py-1.5 sm:py-2 px-2 sm:px-3 rounded text-center text-xs sm:text-sm font-medium hover:bg-blue-700 transition-colors">
                             Lihat
                         </a>
-                        <a href="{{ route('admin.landing-contents.edit', $content) }}" 
+                        <a href="{{ route('admin.content.edit', $content) }}" 
                            class="flex-1 bg-green-600 text-white py-1.5 sm:py-2 px-2 sm:px-3 rounded text-center text-xs sm:text-sm font-medium hover:bg-green-700 transition-colors">
                             Edit
                         </a>
-                        <form method="POST" action="{{ route('admin.landing-contents.destroy', $content) }}" 
+                        <form method="POST" action="{{ route('admin.content.destroy', $content) }}" 
                               class="flex-1" 
                               onsubmit="return confirm('Yakin ingin menghapus konten {{ $content->title }}?')">
                             @csrf
@@ -183,7 +167,7 @@
         </p>
         @if(!request()->hasAny(['search', 'section', 'status']))
             <div class="space-x-4">
-                <a href="{{ route('admin.landing-contents.create') }}" 
+                <a href="{{ route('admin.content.create') }}" 
                    class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
                     Tambah Konten Pertama
                 </a>
@@ -194,11 +178,11 @@
             </div>
         @else
             <div class="space-x-4">
-                <a href="{{ route('admin.landing-contents.create') }}" 
+                <a href="{{ route('admin.content.create') }}" 
                    class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
                     Tambah Konten
                 </a>
-                <a href="{{ route('admin.landing-contents.index') }}" 
+                <a href="{{ route('admin.content.index') }}" 
                    class="bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-700 transition-colors">
                     Lihat Semua Konten
                 </a>

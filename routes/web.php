@@ -86,8 +86,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('settings/test-email', [SettingController::class, 'testEmail'])->name('settings.test-email');
     
     // Landing Content Management
-    Route::resource('landing-contents', LandingContentController::class);
-    Route::post('landing-contents/{content}/toggle-status', [LandingContentController::class, 'toggleStatus'])->name('landing-contents.toggle-status');
+    Route::resource('content', LandingContentController::class);
+    Route::post('content/{landingContent}/toggle-status', [LandingContentController::class, 'toggleStatus'])->name('content.toggle-status');
     
     // Infaq Management
     Route::get('infaq', [AdminInfaqController::class, 'index'])->name('infaq.index');
