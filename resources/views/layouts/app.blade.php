@@ -12,17 +12,25 @@
 
 <body class="bg-light">
     <!-- Navigation -->
-    <nav class="fixed w-full top-0 z-50 bg-gradient-to-b from-green-700/95 via-green-700/60 to-transparent text-white">
-        <!-- Mobile Header Text -->
-        <div class="md:hidden py-2">
-            <div class="text-center">
-                <a href="{{ route('home') }}" class="text-sm font-bold text-white">
-                    BUMDes Marketplace
-                </a>
-            </div>
+    <nav class="fixed w-full top-0 z-50 bg-gradient-to-b from-green-700/95 via-green-700/60 to-transparent text-white"
+        x-data="{ mobileOpen: false }">
+        <!-- Mobile Bar -->
+        <div class="md:hidden px-4 py-2 flex items-center justify-between">
+            <a href="{{ route('home') }}" class="text-base font-bold text-white tracking-tight">BUMDes Marketplace</a>
+            <button @click="mobileOpen = !mobileOpen" aria-label="Toggle navigation"
+                class="p-2 rounded-md bg-white/15 hover:bg-white/25 focus:outline-none focus:ring-2 focus:ring-white/40 transition">
+                <svg x-show="!mobileOpen" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+                <svg x-show="mobileOpen" x-cloak class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
         </div>
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 hidden md:block">
             <div class="flex justify-between items-center py-3 md:py-4">
                 <!-- Logo -->
                 <div class="flex items-center">
@@ -31,7 +39,7 @@
                     </a>
                 </div>
 
-                <!-- Navigation Links -->
+                <!-- Navigation Links (Desktop) -->
                 <div class="flex items-center space-x-3 md:space-x-6">
                     <a href="{{ route('home') }}"
                         class="text-xs md:text-base text-white hover:text-gray-100 transition-colors">Beranda</a>
@@ -117,6 +125,69 @@
                         @endauth
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Panel -->
+        <div x-show="mobileOpen" x-transition.origin.top.left x-cloak
+            class="md:hidden bg-green-700/95 backdrop-blur-sm border-t border-white/10 px-4 pb-6 space-y-4">
+            <div class="pt-2 flex flex-col space-y-2">
+                <a href="{{ route('home') }}" class="text-white/90 hover:text-white text-sm font-medium">Beranda</a>
+                <div x-data="{ open: false }" class="border border-white/10 rounded-lg overflow-hidden">
+                    <button @click="open=!open"
+                        class="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-white/90 hover:text-white">
+                        <span>Produk</span>
+                        <svg :class="{ 'rotate-180': open }" class="w-4 h-4 transform transition-transform"
+                            fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div x-show="open" x-transition class="bg-white/5 border-t border-white/10">
+                        <a href="{{ route('products.index') }}"
+                            class="block px-4 py-2 text-xs text-white/80 hover:bg-white/10">Semua Produk</a>
+                        <a href="{{ route('products.type', 'barang') }}"
+                            class="block px-4 py-2 text-xs text-white/80 hover:bg-white/10">Produk Barang</a>
+                        <a href="{{ route('products.type', 'jasa') }}"
+                            class="block px-4 py-2 text-xs text-white/80 hover:bg-white/10">Produk Jasa</a>
+                    </div>
+                </div>
+                <a href="{{ route('infaq') }}" class="text-white/90 hover:text-white text-sm font-medium">Infaq
+                    Online</a>
+                <a href="{{ route('contact') }}"
+                    class="text-white/90 hover:text-white text-sm font-medium">Kontak</a>
+            </div>
+            <div class="pt-2 border-t border-white/10">
+                <div class="flex items-center justify-between py-3">
+                    <a href="{{ route('user.cart.index') }}" class="relative text-white/90 hover:text-white p-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M17 13l-1.5 6M9 19.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM20.5 19.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+                        </svg>
+                        <span
+                            class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center text-[10px] leading-none">{{ auth()->check() ? auth()->user()->carts->sum('quantity') : 0 }}</span>
+                    </a>
+                </div>
+                @auth
+                    <div class="space-y-2">
+                        <p class="text-xs uppercase tracking-wide text-white/50">Akun</p>
+                        @if (auth()->user()->isAdmin())
+                            <a href="{{ route('admin.dashboard') }}"
+                                class="block text-sm text-white/90 hover:text-white">Dashboard Admin</a>
+                        @endif
+                        <a href="{{ route('profile') }}" class="block text-sm text-white/90 hover:text-white">Profile</a>
+                        <a href="{{ route('user.orders.index') }}"
+                            class="block text-sm text-white/90 hover:text-white">Riwayat Pesanan</a>
+                        <form method="POST" action="{{ route('logout') }}">@csrf <button type="submit"
+                                class="text-sm text-red-200 hover:text-white">Logout</button></form>
+                    </div>
+                @else
+                    <div class="flex gap-3 pt-4">
+                        <a href="{{ route('login') }}"
+                            class="flex-1 text-center px-4 py-2 rounded-md bg-white/15 text-white text-sm font-medium hover:bg-white/25">Login</a>
+                        <a href="{{ route('register') }}"
+                            class="flex-1 text-center px-4 py-2 rounded-md bg-white text-green-700 text-sm font-semibold hover:bg-green-50">Daftar</a>
+                    </div>
+                @endauth
             </div>
         </div>
     </nav>
@@ -330,17 +401,22 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-secondary-900 text-white mt-16">
+    <footer class="bg-secondary-900 text-white mt-16" x-data="{ sections: { quick: true, service: false, follow: false } }">
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
                 <div>
                     <h3 class="text-lg font-bold mb-4">BUMDes Marketplace</h3>
-                    <p class="text-secondary-300 text-sm">Memajukan ekonomi desa dengan produk lokal berkualitas.
-                    </p>
+                    <p class="text-secondary-300 text-sm leading-relaxed">Memajukan ekonomi desa dengan produk lokal
+                        berkualitas.</p>
                 </div>
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Tautan Cepat</h3>
-                    <ul class="space-y-2 text-sm">
+                <div class="border-t border-secondary-700 pt-4 sm:pt-0 sm:border-none" x-data="{ open: true }"
+                    @resize.window="if(window.innerWidth>=640){open=true}">
+                    <button class="sm:cursor-default w-full flex items-center justify-between sm:block"
+                        @click="if(window.innerWidth<640){open=!open}">
+                        <h3 class="text-lg font-semibold mb-0 sm:mb-4">Tautan Cepat</h3>
+                        <span class="sm:hidden text-secondary-300" :class="{ 'rotate-180': open }">⌄</span>
+                    </button>
+                    <ul x-show="open" x-transition class="space-y-2 text-sm mt-3 sm:mt-0">
                         <li><a href="{{ route('home') }}"
                                 class="text-secondary-300 hover:text-white transition-colors">Beranda</a></li>
                         <li><a href="{{ route('products.index') }}"
@@ -349,40 +425,47 @@
                                 class="text-secondary-300 hover:text-white transition-colors">Kontak</a></li>
                     </ul>
                 </div>
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Layanan</h3>
-                    <ul class="space-y-2 text-sm">
+                <div class="border-t border-secondary-700 pt-4 sm:pt-0 sm:border-none" x-data="{ open: true }"
+                    @resize.window="if(window.innerWidth>=640){open=true}">
+                    <button class="sm:cursor-default w-full flex items-center justify-between sm:block"
+                        @click="if(window.innerWidth<640){open=!open}">
+                        <h3 class="text-lg font-semibold mb-0 sm:mb-4">Layanan</h3>
+                        <span class="sm:hidden text-secondary-300" :class="{ 'rotate-180': open }">⌄</span>
+                    </button>
+                    <ul x-show="open" x-transition class="space-y-2 text-sm mt-3 sm:mt-0">
                         <li><a href="{{ route('infaq') }}"
                                 class="text-secondary-300 hover:text-white transition-colors">Infaq Online</a></li>
                         <li><a href="#" class="text-secondary-300 hover:text-white transition-colors">Pusat
                                 Bantuan</a></li>
                     </ul>
                 </div>
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Ikuti Kami</h3>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-secondary-300 hover:text-white transition-colors"><svg
-                                class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <div class="border-t border-secondary-700 pt-4 sm:pt-0 sm:border-none" x-data="{ open: true }"
+                    @resize.window="if(window.innerWidth>=640){open=true}">
+                    <button class="sm:cursor-default w-full flex items-center justify-between sm:block"
+                        @click="if(window.innerWidth<640){open=!open}">
+                        <h3 class="text-lg font-semibold mb-0 sm:mb-4">Ikuti Kami</h3>
+                        <span class="sm:hidden text-secondary-300" :class="{ 'rotate-180': open }">⌄</span>
+                    </button>
+                    <div x-show="open" x-transition class="flex space-x-4 mt-3 sm:mt-0">
+                        <a href="#" class="text-secondary-300 hover:text-white transition-colors"
+                            aria-label="Twitter"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                                 <path
-                                    d="M22.46 6c-.77.35-1.6.58-2.46.67.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98-3.54-.18-6.69-1.86-8.79-4.45-.37.63-.58 1.37-.58 2.15 0 1.49.76 2.81 1.91 3.58-.71 0-1.37-.22-1.95-.54v.05c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.94.07 4.28 4.28 0 0 0 4 2.98 8.52 8.52 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.48 14.45 20.48 8.68c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z">
-                                </path>
+                                    d="M22.46 6c-.77.35-1.6.58-2.46.67.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98-3.54-.18-6.69-1.86-8.79-4.45-.37.63-.58 1.37-.58 2.15 0 1.49.76 2.81 1.91 3.58-.71 0-1.37-.22-1.95-.54v.05c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.94.07 4.28 4.28 0 0 0 4 2.98 8.52 8.52 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.48 14.45 20.48 8.68c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z" />
                             </svg></a>
-                        <a href="#" class="text-secondary-300 hover:text-white transition-colors"><svg
-                                class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <a href="#" class="text-secondary-300 hover:text-white transition-colors"
+                            aria-label="Instagram"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                                 <path
-                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.584-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.584.069-4.85c.149-3.225 1.664-4.771 4.919-4.919C8.416 2.175 8.796 2.163 12 2.163zm0 1.802c-3.14 0-3.505.012-4.73.068-2.76.126-3.95 1.313-4.078 4.078-.056 1.225-.067 1.585-.067 4.73s.011 3.505.067 4.73c.127 2.765 1.318 3.952 4.078 4.078 1.225.056 1.59.068 4.73.068s3.505-.012 4.73-.068c2.76-.126 3.95-1.313 4.078-4.078.056-1.225.067-1.585.067-4.73s-.011-3.505-.067-4.73c-.127-2.765-1.318-3.952-4.078-4.078-1.225-.056-1.59-.068-4.73-.068zm0 5.838c-1.933 0-3.5 1.567-3.5 3.5s1.567 3.5 3.5 3.5 3.5-1.567 3.5-3.5-1.567-3.5-3.5-3.5zm0 5.25c-1.105 0-2-.895-2-2s.895-2 2-2 2 .895 2 2-.895 2-2 2zm4.965-6.402c-.78 0-1.418.638-1.418 1.418s.638 1.418 1.418 1.418 1.418-.638 1.418-1.418-.638-1.418-1.418-1.418z">
-                                </path>
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.584-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.584.069-4.85c.149-3.225 1.664-4.771 4.919-4.919C8.416 2.175 8.796 2.163 12 2.163zm0 1.802c-3.14 0-3.505.012-4.73.068-2.76.126-3.95 1.313-4.078 4.078-.056 1.225-.067 1.585-.067 4.73s.011 3.505.067 4.73c.127 2.765 1.318 3.952 4.078 4.078 1.225.056 1.59.068 4.73.068s3.505-.012 4.73-.068c2.76-.126 3.95-1.313 4.078-4.078.056-1.225.067-1.585.067-4.73s-.011-3.505-.067-4.73c-.127-2.765-1.318-3.952-4.078-4.078-1.225-.056-1.59-.068-4.73-.068zm0 5.838c-1.933 0-3.5 1.567-3.5 3.5s1.567 3.5 3.5 3.5 3.5-1.567 3.5-3.5-1.567-3.5-3.5-3.5zm0 5.25c-1.105 0-2-.895-2-2s.895-2 2-2 2 .895 2 2-.895 2-2 2zm4.965-6.402c-.78 0-1.418.638-1.418 1.418s.638 1.418 1.418 1.418 1.418-.638 1.418-1.418-.638-1.418-1.418-1.418z" />
                             </svg></a>
-                        <a href="#" class="text-secondary-300 hover:text-white transition-colors"><svg
-                                class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <a href="#" class="text-secondary-300 hover:text-white transition-colors"
+                            aria-label="LinkedIn"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                                 <path
-                                    d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z">
-                                </path>
+                                    d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                             </svg></a>
                     </div>
                 </div>
             </div>
-            <div class="mt-8 border-t border-secondary-700 pt-8 text-center text-sm text-secondary-400">
+            <div class="mt-10 border-t border-secondary-700 pt-8 text-center text-sm text-secondary-400">
                 <p>&copy; {{ date('Y') }} BUMDes Marketplace. All Rights Reserved.</p>
             </div>
         </div>
