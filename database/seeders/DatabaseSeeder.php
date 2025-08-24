@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
 
         User::create([
             'name' => 'Admin BUMDes',
-            'email' => 'admin@bumdes.com', 
+            'email' => 'admin@bumdes.com',
             'password' => Hash::make('123'),
             'role' => 'admin',
             'phone' => '081234567891',
@@ -47,14 +47,14 @@ class DatabaseSeeder extends Seeder
 
         // Create Categories
         $categories = [
-            ['name' => 'Makanan & Minuman', 'type' => 'barang', 'description' => 'Produk makanan dan minuman lokal'],
-            ['name' => 'Kerajinan Tangan', 'type' => 'barang', 'description' => 'Hasil kerajinan tangan masyarakat desa'],
-            ['name' => 'Pertanian', 'type' => 'barang', 'description' => 'Produk hasil pertanian segar'],
-            ['name' => 'Peternakan', 'type' => 'barang', 'description' => 'Produk hasil peternakan'],
-            ['name' => 'Fashion', 'type' => 'barang', 'description' => 'Pakaian dan aksesoris buatan lokal'],
-            ['name' => 'Oleh-oleh', 'type' => 'barang', 'description' => 'Souvenir dan oleh-oleh khas desa'],
-            ['name' => 'Konsultasi', 'type' => 'jasa', 'description' => 'Layanan konsultasi dan bimbingan'],
-            ['name' => 'Perawatan', 'type' => 'jasa', 'description' => 'Layanan perawatan dan maintenance']
+            ['name' => 'Makanan & Minuman', 'type' => 'barang', 'description' => 'Produk makanan dan minuman lokal', 'image' => 'images/categories/makanan-minuman.png'],
+            ['name' => 'Kerajinan Tangan', 'type' => 'barang', 'description' => 'Hasil kerajinan tangan masyarakat desa', 'image' => 'images/categories/kerajinan-tangan.png'],
+            ['name' => 'Pertanian', 'type' => 'barang', 'description' => 'Produk hasil pertanian segar', 'image' => 'images/categories/pertanian.png'],
+            ['name' => 'Peternakan', 'type' => 'barang', 'description' => 'Produk hasil peternakan', 'image' => 'images/categories/peternakan.png'],
+            ['name' => 'Fashion', 'type' => 'barang', 'description' => 'Pakaian dan aksesoris buatan lokal', 'image' => 'images/categories/fashion.png'],
+            ['name' => 'Oleh-oleh', 'type' => 'barang', 'description' => 'Souvenir dan oleh-oleh khas desa', 'image' => 'images/categories/oleh-oleh.png'],
+            ['name' => 'Konsultasi', 'type' => 'jasa', 'description' => 'Layanan konsultasi dan bimbingan', 'image' => 'images/categories/konsultasi.png'],
+            ['name' => 'Perawatan', 'type' => 'jasa', 'description' => 'Layanan perawatan dan maintenance', 'image' => 'images/categories/perawatan.png']
         ];
 
         foreach ($categories as $category) {
@@ -71,7 +71,11 @@ class DatabaseSeeder extends Seeder
                 'stock' => 50,
                 'category_id' => 1,
                 'type' => 'barang',
-                'whatsapp_number' => '081234567890'
+                'whatsapp_number' => '081234567890',
+                'images' => [
+                    'images/products/keripik-singkong-1.jpg',
+                    'images/products/keripik-singkong-2.jpg'
+                ]
             ],
             [
                 'name' => 'Tas Anyaman Pandan',
@@ -81,7 +85,11 @@ class DatabaseSeeder extends Seeder
                 'stock' => 20,
                 'category_id' => 2,
                 'type' => 'barang',
-                'whatsapp_number' => '081234567891'
+                'whatsapp_number' => '081234567891',
+                'images' => [
+                    'images/products/tas-anyaman-pandan-1.jpg',
+                    'images/products/tas-anyaman-pandan-2.jpg'
+                ]
             ],
             [
                 'name' => 'Beras Organik 5kg',
@@ -91,7 +99,10 @@ class DatabaseSeeder extends Seeder
                 'stock' => 100,
                 'category_id' => 3,
                 'type' => 'barang',
-                'whatsapp_number' => '081234567892'
+                'whatsapp_number' => '081234567892',
+                'images' => [
+                    'images/products/beras-organik-1.jpg'
+                ]
             ],
             [
                 'name' => 'Telur Ayam Kampung',
@@ -101,7 +112,10 @@ class DatabaseSeeder extends Seeder
                 'stock' => 200,
                 'category_id' => 4,
                 'type' => 'barang',
-                'whatsapp_number' => '081234567893'
+                'whatsapp_number' => '081234567893',
+                'images' => [
+                    'images/products/telur-ayam-kampung-1.jpg'
+                ]
             ],
             [
                 'name' => 'Kaos Batik Handmade',
@@ -111,7 +125,11 @@ class DatabaseSeeder extends Seeder
                 'stock' => 30,
                 'category_id' => 5,
                 'type' => 'barang',
-                'whatsapp_number' => '081234567894'
+                'whatsapp_number' => '081234567894',
+                'images' => [
+                    'images/products/kaos-batik-1.jpg',
+                    'images/products/kaos-batik-2.jpg'
+                ]
             ],
             [
                 'name' => 'Gula Aren Murni',
@@ -121,7 +139,11 @@ class DatabaseSeeder extends Seeder
                 'stock' => 80,
                 'category_id' => 6,
                 'type' => 'barang',
-                'whatsapp_number' => '081234567895'
+                'whatsapp_number' => '081234567895',
+                'images' => [
+                    'images/products/gula-aren-1.jpg',
+                    'images/products/gula-aren-2.jpg'
+                ]
             ]
         ];
 
