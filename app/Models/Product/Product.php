@@ -160,8 +160,15 @@ class Product extends Model
             return null;
         }
         
-        // Return the base64 data URI directly (images are stored as base64)
-        return $this->images[$index];
+        $image = $this->images[$index];
+        
+        // Check if it's a base64 data URI (starts with 'data:')
+        if (str_starts_with($image, 'data:')) {
+            return $image;
+        }
+        
+        // If it's a file path, use asset() to generate URL
+        return asset($image);
     }
     
     /**
@@ -173,7 +180,14 @@ class Product extends Model
             return [];
         }
         
-        // Return all base64 data URIs directly
-        return $this->images;
+        return collect($this->images)->map(function ($image, $index) {
+            // Check if it's a base64 data URI (starts with 'data:')
+            if (str_starts_with($image, 'data:')) {
+                return $image;
+            }
+            
+            // If it's a file path, use asset() to generate URL
+            return asset($image);
+        })->toArray();
     }
 }
