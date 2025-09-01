@@ -401,70 +401,97 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-secondary-900 text-white mt-16" x-data="{ sections: { quick: true, service: false, follow: false } }">
-        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+    <footer class="relative mt-20 bg-gradient-to-br from-green-900 via-green-800 to-green-900 text-white overflow-hidden">
+        <!-- Decorative circles -->
+        <div class="pointer-events-none absolute inset-0 opacity-10">
+            <div class="absolute -top-24 -left-24 w-72 h-72 bg-green-700 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 right-0 w-96 h-96 bg-emerald-700 rounded-full blur-3xl"></div>
+        </div>
+
+        <!-- Call To Action Strip -->
+        <div class="relative border-b border-white/10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                 <div>
-                    <h3 class="text-lg font-bold mb-4">BUMDes Marketplace</h3>
-                    <p class="text-secondary-300 text-sm leading-relaxed">Memajukan ekonomi desa dengan produk lokal
-                        berkualitas.</p>
+                    <h3 class="text-2xl font-extrabold tracking-tight">Dukung Ekonomi Desa</h3>
+                    <p class="text-green-100 mt-2 text-sm md:text-base max-w-xl leading-relaxed">Belanja dan promosikan produk unggulan desa untuk kesejahteraan bersama.</p>
                 </div>
-                <div class="border-t border-secondary-700 pt-4 sm:pt-0 sm:border-none" x-data="{ open: true }"
-                    @resize.window="if(window.innerWidth>=640){open=true}">
-                    <button class="sm:cursor-default w-full flex items-center justify-between sm:block"
-                        @click="if(window.innerWidth<640){open=!open}">
-                        <h3 class="text-lg font-semibold mb-0 sm:mb-4">Tautan Cepat</h3>
-                        <span class="sm:hidden text-secondary-300" :class="{ 'rotate-180': open }">⌄</span>
-                    </button>
-                    <ul x-show="open" x-transition class="space-y-2 text-sm mt-3 sm:mt-0">
-                        <li><a href="{{ route('home') }}"
-                                class="text-secondary-300 hover:text-white transition-colors">Beranda</a></li>
-                        <li><a href="{{ route('products.index') }}"
-                                class="text-secondary-300 hover:text-white transition-colors">Produk</a></li>
-                        <li><a href="{{ route('contact') }}"
-                                class="text-secondary-300 hover:text-white transition-colors">Kontak</a></li>
-                    </ul>
-                </div>
-                <div class="border-t border-secondary-700 pt-4 sm:pt-0 sm:border-none" x-data="{ open: true }"
-                    @resize.window="if(window.innerWidth>=640){open=true}">
-                    <button class="sm:cursor-default w-full flex items-center justify-between sm:block"
-                        @click="if(window.innerWidth<640){open=!open}">
-                        <h3 class="text-lg font-semibold mb-0 sm:mb-4">Layanan</h3>
-                        <span class="sm:hidden text-secondary-300" :class="{ 'rotate-180': open }">⌄</span>
-                    </button>
-                    <ul x-show="open" x-transition class="space-y-2 text-sm mt-3 sm:mt-0">
-                        <li><a href="{{ route('infaq') }}"
-                                class="text-secondary-300 hover:text-white transition-colors">Infaq Online</a></li>
-                        <li><a href="#" class="text-secondary-300 hover:text-white transition-colors">Pusat
-                                Bantuan</a></li>
-                    </ul>
-                </div>
-                <div class="border-t border-secondary-700 pt-4 sm:pt-0 sm:border-none" x-data="{ open: true }"
-                    @resize.window="if(window.innerWidth>=640){open=true}">
-                    <button class="sm:cursor-default w-full flex items-center justify-between sm:block"
-                        @click="if(window.innerWidth<640){open=!open}">
-                        <h3 class="text-lg font-semibold mb-0 sm:mb-4">Ikuti Kami</h3>
-                        <span class="sm:hidden text-secondary-300" :class="{ 'rotate-180': open }">⌄</span>
-                    </button>
-                    <div x-show="open" x-transition class="flex space-x-4 mt-3 sm:mt-0">
-                        <a href="#" class="text-secondary-300 hover:text-white transition-colors"
-                            aria-label="TikTok">
-                            <svg class="w-6 h-6" viewBox="0 0 48 48" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path fill="currentColor"
-                                    d="M30.8 5.2c.3 3.2 2 5.9 4.6 7.7 2 1.5 4.4 2.3 6.9 2.4v6.6c-3.5.1-6.8-1-9.7-2.9-.7-.5-1.4-1.1-2.1-1.7l-.1 11.9c-.1 5.1-3.5 9.7-8.4 11.3-2.5.8-5.3.8-7.8 0-5-1.6-8.4-6.3-8.3-11.6.1-5.3 3.8-9.8 8.9-11.1 2-.5 3.9-.5 5.8-.1v6.8c-.9-.6-2-.8-3.1-.6-2.1.4-3.6 2.3-3.6 4.5 0 2.6 2.1 4.7 4.6 4.7 2.2 0 4.1-1.6 4.5-3.7.1-.4.1-.9.1-1.3l.1-30h6.6Z" />
-                            </svg>
+                <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                    <a href="{{ route('products.index') }}" class="group inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white text-green-800 font-semibold text-sm shadow hover:shadow-lg hover:-translate-y-0.5 transition">
+                        <span>Lihat Produk</span>
+                        <svg class="w-4 h-4 text-green-600 group-hover:translate-x-0.5 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                    </a>
+                    @guest
+                        <a href="{{ route('register') }}" class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-green-600/40 ring-1 ring-white/10 text-white font-semibold text-sm backdrop-blur hover:bg-green-600/60 transition shadow">
+                            Daftar Sekarang
                         </a>
-                        <a href="#" class="text-secondary-300 hover:text-white transition-colors"
-                            aria-label="Instagram"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.584-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.584.069-4.85c.149-3.225 1.664-4.771 4.919-4.919C8.416 2.175 8.796 2.163 12 2.163zm0 1.802c-3.14 0-3.505.012-4.73.068-2.76.126-3.95 1.313-4.078 4.078-.056 1.225-.067 1.585-.067 4.73s.011 3.505.067 4.73c.127 2.765 1.318 3.952 4.078 4.078 1.225.056 1.59.068 4.73.068s3.505-.012 4.73-.068c2.76-.126 3.95-1.313 4.078-4.078.056-1.225.067-1.585.067-4.73s-.011-3.505-.067-4.73c-.127-2.765-1.318-3.952-4.078-4.078-1.225-.056-1.59-.068-4.73-.068zm0 5.838c-1.933 0-3.5 1.567-3.5 3.5s1.567 3.5 3.5 3.5 3.5-1.567 3.5-3.5-1.567-3.5-3.5-3.5zm0 5.25c-1.105 0-2-.895-2-2s.895-2 2-2 2 .895 2 2-.895 2-2 2zm4.965-6.402c-.78 0-1.418.638-1.418 1.418s.638 1.418 1.418 1.418 1.418-.638 1.418-1.418-.638-1.418-1.418-1.418z" />
-                            </svg></a>
-                    </div>
+                    @endguest
                 </div>
             </div>
-            <div class="mt-10 border-t border-secondary-700 pt-8 text-center text-sm text-secondary-400">
-                <p>&copy; {{ date('Y') }} BUMDes Marketplace. All Rights Reserved.</p>
+        </div>
+
+        <!-- Main Footer Content -->
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="grid gap-12 md:gap-10 lg:gap-16 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+                <!-- Brand -->
+                <div>
+                    <div class="flex items-center gap-2 mb-5">
+                        <span class="text-xl font-bold tracking-tight">BUMDes Marketplace</span>
+                    </div>
+                    <p class="text-sm text-green-100 leading-relaxed">Memajukan ekonomi desa melalui digitalisasi pemasaran produk & jasa lokal berkualitas.</p>
+                    <div class="mt-6 flex items-center gap-3">
+                        <a href="#" aria-label="TikTok" class="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition">
+                            <svg class="w-5 h-5" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M30.8 5.2c.3 3.2 2 5.9 4.6 7.7 2 1.5 4.4 2.3 6.9 2.4v6.6c-3.5.1-6.8-1-9.7-2.9-.7-.5-1.4-1.1-2.1-1.7l-.1 11.9c-.1 5.1-3.5 9.7-8.4 11.3-2.5.8-5.3.8-7.8 0-5-1.6-8.4-6.3-8.3-11.6.1-5.3 3.8-9.8 8.9-11.1 2-.5 3.9-.5 5.8-.1v6.8c-.9-.6-2-.8-3.1-.6-2.1.4-3.6 2.3-3.6 4.5 0 2.6 2.1 4.7 4.6 4.7 2.2 0 4.1-1.6 4.5-3.7.1-.4.1-.9.1-1.3l.1-30h6.6Z"/></svg>
+                        </a>
+                        <a href="#" aria-label="Instagram" class="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.584-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.584.069-4.85c.149-3.225 1.664-4.771 4.919-4.919C8.416 2.175 8.796 2.163 12 2.163zm0 1.802c-3.14 0-3.505.012-4.73.068-2.76.126-3.95 1.313-4.078 4.078-.056 1.225-.067 1.585-.067 4.73s.011 3.505.067 4.73c.127 2.765 1.318 3.952 4.078 4.078 1.225.056 1.59.068 4.73.068s3.505-.012 4.73-.068c2.76-.126 3.95-1.313 4.078-4.078.056-1.225.067-1.585.067-4.73s-.011-3.505-.067-4.73c-.127-2.765-1.318-3.952-4.078-4.078-1.225-.056-1.59-.068-4.73-.068zm0 5.838c-1.933 0-3.5 1.567-3.5 3.5s1.567 3.5 3.5 3.5 3.5-1.567 3.5-3.5-1.567-3.5-3.5-3.5zm0 5.25c-1.105 0-2-.895-2-2s.895-2 2-2 2 .895 2 2-.895 2-2 2zm4.965-6.402c-.78 0-1.418.638-1.418 1.418s.638 1.418 1.418 1.418 1.418-.638 1.418-1.418-.638-1.418-1.418-1.418z"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-sm font-semibold tracking-wider uppercase text-green-200 mb-5">Tautan Cepat</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li><a href="{{ route('home') }}" class="group flex items-center gap-2 text-green-100 hover:text-white transition"><span class="w-1.5 h-1.5 rounded-full bg-green-400 group-hover:scale-110 transition"></span>Beranda</a></li>
+                        <li><a href="{{ route('products.index') }}" class="group flex items-center gap-2 text-green-100 hover:text-white transition"><span class="w-1.5 h-1.5 rounded-full bg-green-400 group-hover:scale-110 transition"></span>Produk</a></li>
+                        <li><a href="{{ route('infaq') }}" class="group flex items-center gap-2 text-green-100 hover:text-white transition"><span class="w-1.5 h-1.5 rounded-full bg-green-400 group-hover:scale-110 transition"></span>Infaq Online</a></li>
+                        <li><a href="{{ route('contact') }}" class="group flex items-center gap-2 text-green-100 hover:text-white transition"><span class="w-1.5 h-1.5 rounded-full bg-green-400 group-hover:scale-110 transition"></span>Kontak</a></li>
+                    </ul>
+                </div>
+
+                <!-- Support -->
+                <div>
+                    <h4 class="text-sm font-semibold tracking-wider uppercase text-green-200 mb-5">Bantuan & Layanan</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li><a href="#" class="text-green-100 hover:text-white transition flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m6 4h6M3 9h12M3 13h6m6 0h6M9 21v-8m6 8v-8"/></svg>Pusat Bantuan</a></li>
+                        <li><a href="{{ route('user.orders.index') }}" class="text-green-100 hover:text-white transition flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M3 12h18M3 17h18"/></svg>Pesanan Saya</a></li>
+                        @auth
+                            <li><a href="{{ route('profile') }}" class="text-green-100 hover:text-white transition flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Profil</a></li>
+                        @endauth
+                        <li><a href="{{ route('login') }}" class="text-green-100 hover:text-white transition flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 3h4a2 2 0 012 2v4M21 9l-7 7-4-4-6 6"/></svg>Masuk</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact / Newsletter -->
+                <div>
+                    <h4 class="text-sm font-semibold tracking-wider uppercase text-green-200 mb-5">Kontak</h4>
+                    <ul class="space-y-3 text-sm text-green-100 mb-6">
+                        <li class="flex items-start gap-3"><svg class="w-5 h-5 mt-0.5 text-green-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C10.82 21 3 13.18 3 4V5z"/></svg><span>+62 812-3456-7890</span></li>
+                        <li class="flex items-start gap-3"><svg class="w-5 h-5 mt-0.5 text-green-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 12a4 4 0 10-8 0 4 4 0 008 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 2a10 10 0 100 20 10 10 0 000-20z"/></svg><span>Jl. Desa Harmoni No. 10, Indonesia</span></li>
+                        <li class="flex items-start gap-3"><svg class="w-5 h-5 mt-0.5 text-green-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 12H8m0 0l4 4m-4-4l4-4"/></svg><span>info@bumdes.local</span></li>
+                    </ul>
+                    <h5 class="text-sm font-semibold tracking-wide mb-2">Dapatkan Update</h5>
+                    <form action="#" method="POST" class="relative group">
+                        <input type="email" name="newsletter_email" required placeholder="Email Anda" class="w-full bg-white/10 placeholder-green-300/60 text-sm rounded-xl py-3 px-4 pr-32 focus:outline-none focus:ring-2 focus:ring-green-400/60 border border-white/10 focus:border-green-300/40">
+                        <button type="submit" class="absolute top-1.5 right-1.5 bg-white text-green-700 text-xs font-semibold px-4 py-2 rounded-lg hover:bg-green-50 transition shadow">Kirim</button>
+                    </form>
+                    <p class="text-[11px] text-green-300/70 mt-3 leading-relaxed">Dengan berlangganan Anda menyetujui kebijakan informasi kami.</p>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="mt-16 pt-8 border-t border-white/10 text-center">
+                <p class="text-xs md:text-sm text-green-300">&copy; {{ date('Y') }} BUMDes Marketplace. Hak Cipta Dilindungi.</p>
             </div>
         </div>
     </footer>
