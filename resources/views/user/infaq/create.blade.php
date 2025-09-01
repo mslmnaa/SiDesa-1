@@ -103,6 +103,7 @@
                                     <option value="">Pilih metode pembayaran</option>
                                     <option value="transfer_bank" {{ old('payment_method') == 'transfer_bank' ? 'selected' : '' }}>Transfer Bank</option>
                                     <option value="e_wallet" {{ old('payment_method') == 'e_wallet' ? 'selected' : '' }}>E-Wallet (Dana/GoPay/OVO)</option>
+                                    <option value="qris" {{ old('payment_method') == 'qris' ? 'selected' : '' }}>QRIS</option>
                                     <option value="cash" {{ old('payment_method') == 'cash' ? 'selected' : '' }}>Tunai</option>
                                 </select>
                                 @error('payment_method')
@@ -144,6 +145,15 @@
                                 <p><span class="font-medium">DANA:</span> 08123456789</p>
                                 <p><span class="font-medium">GoPay:</span> 08123456789</p>
                                 <p><span class="font-medium">OVO:</span> 08123456789</p>
+                            </div>
+                        </div>
+                        
+                        <!-- QRIS Info -->
+                        <div id="qris-info" class="mb-6 p-4 bg-purple-50 border border-purple-200 rounded-lg hidden">
+                            <h3 class="font-semibold text-purple-800 mb-3">Pembayaran QRIS</h3>
+                            <div class="text-center">
+                                <img src="{{ asset('images/qris.jpeg') }}" alt="QRIS Code" class="mx-auto mb-3 max-w-xs rounded-lg border">
+                                <p class="text-sm text-purple-700">Scan QR Code di atas dengan aplikasi pembayaran digital Anda</p>
                             </div>
                         </div>
                         
@@ -201,6 +211,8 @@ function togglePaymentProof() {
     // Hide all info sections
     bankInfo.classList.add('hidden');
     ewalletInfo.classList.add('hidden');
+    const qrisInfo = document.getElementById('qris-info');
+    qrisInfo.classList.add('hidden');
     cashInfo.classList.add('hidden');
     paymentProofSection.classList.add('hidden');
     
@@ -213,6 +225,10 @@ function togglePaymentProof() {
         paymentProofInput.setAttribute('required', 'required');
     } else if (paymentMethod === 'e_wallet') {
         ewalletInfo.classList.remove('hidden');
+        paymentProofSection.classList.remove('hidden');
+        paymentProofInput.setAttribute('required', 'required');
+    } else if (paymentMethod === 'qris') {
+        qrisInfo.classList.remove('hidden');
         paymentProofSection.classList.remove('hidden');
         paymentProofInput.setAttribute('required', 'required');
     } else if (paymentMethod === 'cash') {

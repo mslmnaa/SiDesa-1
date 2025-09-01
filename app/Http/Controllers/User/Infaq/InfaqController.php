@@ -43,15 +43,15 @@ class InfaqController extends Controller
             'donor_email' => 'nullable|email|max:255',
             'amount' => 'required|numeric|min:10000', // minimum 10rb
             'message' => 'nullable|string|max:1000',
-            'payment_method' => 'required|in:transfer_bank,e_wallet,cash',
-            'payment_proof' => 'required_if:payment_method,transfer_bank,e_wallet|image|mimes:jpeg,png,jpg|max:2048',
+            'payment_method' => 'required|in:transfer_bank,e_wallet,qris,cash',
+            'payment_proof' => 'required_if:payment_method,transfer_bank,e_wallet,qris|image|mimes:jpeg,png,jpg|max:2048',
             'anonymous' => 'boolean'
         ], [
             'donor_name.required' => 'Nama donatur wajib diisi.',
             'amount.required' => 'Jumlah donasi wajib diisi.',
             'amount.min' => 'Minimum donasi adalah Rp 10.000.',
             'payment_method.required' => 'Metode pembayaran wajib dipilih.',
-            'payment_proof.required_if' => 'Bukti pembayaran wajib diupload untuk transfer bank dan e-wallet.',
+            'payment_proof.required_if' => 'Bukti pembayaran wajib diupload untuk transfer bank, e-wallet, dan QRIS.',
             'payment_proof.image' => 'Bukti pembayaran harus berupa gambar.',
             'payment_proof.max' => 'Ukuran file maksimal 2MB.'
         ]);

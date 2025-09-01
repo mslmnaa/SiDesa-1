@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('donor_email')->nullable();
             $table->decimal('amount', 12, 2);
             $table->text('message')->nullable();
-            $table->enum('payment_method', ['transfer_bank', 'e_wallet', 'cash'])->default('transfer_bank');
+            $table->enum('payment_method', ['transfer_bank', 'e_wallet', 'qris', 'cash'])->default('transfer_bank');
             $table->string('payment_proof')->nullable(); // bukti transfer
             $table->enum('status', ['pending', 'verified', 'completed', 'rejected'])->default('pending');
             $table->boolean('anonymous')->default(false);
