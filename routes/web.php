@@ -59,6 +59,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('user.orders.show');
     Route::get('/checkout', [OrderController::class, 'checkout'])->name('user.checkout');
     Route::post('/checkout', [OrderController::class, 'placeOrder'])->name('user.orders.place');
+    
+    // User Infaq History Routes
+    Route::get('/my-infaq', [InfaqController::class, 'userHistory'])->name('user.infaq.index');
 });
 
 // Admin Routes

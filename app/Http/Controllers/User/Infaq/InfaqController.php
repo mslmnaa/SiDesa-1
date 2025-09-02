@@ -80,4 +80,14 @@ class InfaqController extends Controller
     {
         return view('user.infaq.show', compact('infaq'));
     }
+
+    public function userHistory()
+    {
+        $infaqs = Infaq::where('donor_email', auth()->user()->email)
+            ->orWhere('donor_phone', auth()->user()->phone)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('user.infaq.history', compact('infaqs'));
+    }
 }

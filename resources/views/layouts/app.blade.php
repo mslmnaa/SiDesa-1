@@ -107,9 +107,6 @@
                                     @endif
                                     <a href="{{ route('profile') }}"
                                         class="block px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm text-secondary-700 hover:bg-cream">Profile</a>
-                                    <a href="{{ route('user.orders.index') }}"
-                                        class="block px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100">Riwayat
-                                        Pesanan</a>
                                     <form method="POST" action="{{ route('logout') }}" class="block">
                                         @csrf
                                         <button type="submit"
@@ -175,8 +172,6 @@
                                 class="block text-sm text-white/90 hover:text-white">Dashboard Admin</a>
                         @endif
                         <a href="{{ route('profile') }}" class="block text-sm text-white/90 hover:text-white">Profile</a>
-                        <a href="{{ route('user.orders.index') }}"
-                            class="block text-sm text-white/90 hover:text-white">Riwayat Pesanan</a>
                         <form method="POST" action="{{ route('logout') }}">@csrf <button type="submit"
                                 class="text-sm text-red-200 hover:text-white">Logout</button></form>
                     </div>

@@ -67,6 +67,7 @@ class Infaq extends Model
         return match($this->payment_method) {
             'transfer_bank' => 'Transfer Bank',
             'e_wallet' => 'E-Wallet',
+            'qris' => 'QRIS',
             'cash' => 'Tunai',
             default => 'Tidak Dikenal'
         };
