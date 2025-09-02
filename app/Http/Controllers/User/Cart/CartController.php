@@ -29,12 +29,6 @@ class CartController extends Controller
         $product = Product::findOrFail($request->product_id);
         $quantity = $request->quantity ?? 1;
         
-        // Check stock availability
-        if ($product->stock < $quantity) {
-            return back()->with('error', 'Stok produk tidak mencukupi. Stok tersedia: ' . $product->stock);
-        }
-        
-        // Check if product is active
         if ($product->status !== 'active') {
             return back()->with('error', 'Produk ini sedang tidak tersedia.');
         }
@@ -44,16 +38,8 @@ class CartController extends Controller
                    ->first();
                    
         if ($cart) {
-            // Update existing cart item
-            $newQuantity = $cart->quantity + $quantity;
-            
-            if ($newQuantity > $product->stock) {
-                return back()->with('error', 'Total quantity melebihi stok yang tersedia. Stok tersedia: ' . $product->stock);
-            }
-            
-            $cart->update(['quantity' => $newQuantity]);
+            $cart->update(['quantity' => $cart->quantity + $quantity]);
         } else {
-            // Create new cart item
             Cart::create([
                 'user_id' => auth()->id(),
                 'product_id' => $product->id,
@@ -66,7 +52,6 @@ class CartController extends Controller
     
     public function update(Request $request, Cart $cart)
     {
-        // Ensure cart belongs to current user
         if ($cart->user_id !== auth()->id()) {
             abort(403);
         }
@@ -75,12 +60,6 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1|max:100'
         ]);
         
-        $product = $cart->product;
-        
-        if ($request->quantity > $product->stock) {
-            return back()->with('error', 'Quantity melebihi stok yang tersedia. Stok tersedia: ' . $product->stock);
-        }
-        
         $cart->update(['quantity' => $request->quantity]);
         
         return back()->with('success', 'Keranjang berhasil diperbarui!');
@@ -88,7 +67,6 @@ class CartController extends Controller
     
     public function remove(Cart $cart)
     {
-        // Ensure cart belongs to current user
         if ($cart->user_id !== auth()->id()) {
             abort(403);
         }

@@ -58,10 +58,6 @@ class User extends Authenticatable
         return $this->role === 'superadmin';
     }
 
-    public function orders()
-    {
-        return $this->hasMany(Order::class);
-    }
 
     public function carts()
     {

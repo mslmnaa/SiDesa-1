@@ -176,7 +176,7 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900">{{ $user->orders_count }} pesanan</div>
+                                <div class="text-sm font-medium text-gray-900">{{ $user->carts->count() }} keranjang</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {{ $user->created_at->format('d M Y') }}
@@ -187,7 +187,6 @@
                                 @if($user->id !== auth()->id())
                                     <a href="{{ route('admin.users.edit', $user) }}" 
                                        class="text-green-600 hover:text-green-800">Edit</a>
-                                    @if($user->orders_count == 0)
                                         <form method="POST" action="{{ route('admin.users.destroy', $user) }}" 
                                               class="inline-block" 
                                               onsubmit="return confirm('Yakin ingin menghapus user {{ $user->name }}?')">

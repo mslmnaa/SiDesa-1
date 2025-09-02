@@ -97,81 +97,46 @@
                         dari desa kami.</p>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
                     @foreach ($featuredProducts as $product)
-                        <div
-                            class="bg-white rounded-2xl shadow-md overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
-                            <div class="relative">
-                                <a href="{{ route('products.show', $product) }}" class="block h-56">
-                                    @if ($product->images && count($product->images) > 0)
-                                        <img src="{{ $product->getImageDataUri(0) }}" alt="{{ $product->name }}"
-                                            class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
-                                    @else
-                                        <div
-                                            class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                                            <svg class="w-16 h-16 text-gray-300" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                                </path>
-                                            </svg>
-                                        </div>
-                                    @endif
-                                </a>
-                                <div class="absolute top-3 left-3">
-                                    <span
-                                        class="text-xs font-bold text-primary-800 bg-primary-100 px-3 py-1 rounded-full">{{ Str::limit($product->category->name, 15) }}</span>
-                                </div>
-                                @if ($product->stock <= 5 && $product->stock > 0)
-                                    <div class="absolute top-3 right-3">
-                                        <span class="text-xs font-bold text-red-800 bg-red-100 px-3 py-1 rounded-full">Stok
-                                            Terbatas</span>
-                                    </div>
-                                @elseif ($product->stock == 0)
-                                    <div class="absolute top-3 right-3">
-                                        <span
-                                            class="text-xs font-bold text-gray-800 bg-gray-200 px-3 py-1 rounded-full">Habis</span>
+                        <a href="{{ route('products.show', $product) }}" 
+                           class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md hover:border-green-300 transition-all duration-200 group block">
+                            <!-- Product Image -->
+                            <div class="relative overflow-hidden">
+                                @if ($product->images && count($product->images) > 0)
+                                    <img src="{{ $product->getImageDataUri(0) }}" alt="{{ $product->name }}" 
+                                         class="w-full h-32 sm:h-40 md:h-44 object-cover group-hover:scale-105 transition-transform duration-300">
+                                @else
+                                    <div class="w-full h-32 sm:h-40 md:h-44 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                        </svg>
                                     </div>
                                 @endif
                             </div>
-                            <div class="p-5">
-                                <h3 class="font-bold text-lg text-gray-900 mb-2 h-14 overflow-hidden">
-                                    <a href="{{ route('products.show', $product) }}"
-                                        class="hover:text-primary-600 transition-colors">
-                                        {{ $product->name }}
-                                    </a>
+
+                            <!-- Product Info -->
+                            <div class="p-2 sm:p-3">
+                                <!-- Product Name -->
+                                <h3 class="font-normal text-gray-800 mb-1 text-xs sm:text-sm line-clamp-2 leading-tight">
+                                    {{ $product->name }}
                                 </h3>
-                                <p class="text-gray-600 text-sm mb-4 h-10 overflow-hidden">
-                                    {{ Str::limit($product->description, 60) }}
-                                </p>
-                                <div class="flex items-center justify-between mb-4">
-                                    <span class="text-2xl font-extrabold text-primary-600">
-                                        Rp {{ number_format($product->price, 0, ',', '.') }}
+                                
+                                <!-- Price -->
+                                <div class="mt-2">
+                                    <span class="text-sm sm:text-base font-bold text-gray-900">
+                                        Rp{{ number_format($product->price, 0, ',', '.') }}
                                     </span>
                                 </div>
-                                @auth
-                                    <form action="{{ route('user.cart.add') }}" method="POST" class="w-full">
-                                        @csrf
-                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                        <button type="submit"
-                                            class="w-full bg-primary-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-primary-700 focus:ring-4 focus:ring-primary-300 transition-all duration-300 flex items-center justify-center gap-2 disabled:bg-gray-400"
-                                            {{ $product->stock == 0 ? 'disabled' : '' }}>
-                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                                <path
-                                                    d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z">
-                                                </path>
-                                            </svg>
-                                            <span>{{ $product->stock == 0 ? 'Stok Habis' : 'Tambah Keranjang' }}</span>
-                                        </button>
-                                    </form>
-                                @else
-                                    <a href="{{ route('login') }}"
-                                        class="w-full block text-center bg-primary-600 text-white px-4 py-3 rounded-xl font-bold hover:bg-primary-700 focus:ring-4 focus:ring-primary-300 transition-all duration-300">
-                                        Login untuk Beli
-                                    </a>
-                                @endauth
+                                
+                                <!-- Location/Category -->
+                                <div class="mt-1">
+                                    <span class="text-xs text-gray-500">
+                                        {{ $product->category->name }}
+                                    </span>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     @endforeach
                 </div>
 

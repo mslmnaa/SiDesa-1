@@ -10,7 +10,6 @@ use App\Http\Controllers\User\Infaq\InfaqController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\Product\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\Product\CategoryController as AdminCategoryController;
-use App\Http\Controllers\Admin\Order\OrderController as AdminOrderController;
 use App\Http\Controllers\SuperAdmin\User\UserController as AdminUserController;
 use App\Http\Controllers\Admin\Content\LandingContentController;
 use App\Http\Controllers\Admin\Infaq\InfaqController as AdminInfaqController;
@@ -29,6 +28,7 @@ Route::get('/products', [ProductController::class, 'index'])->name('products.ind
 Route::get('/products/type/{type}', [ProductController::class, 'byType'])->name('products.type');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/products/category/{category}', [ProductController::class, 'category'])->name('products.category');
+Route::post('/products/{product}/whatsapp-inquiry', [ProductController::class, 'whatsappInquiry'])->name('products.whatsapp-inquiry');
 Route::get('/infaq', [InfaqController::class, 'index'])->name('infaq');
 Route::get('/infaq/create', [InfaqController::class, 'create'])->name('infaq.create');
 Route::post('/infaq', [InfaqController::class, 'store'])->name('infaq.store');
@@ -54,11 +54,6 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/cart/{cart}', [CartController::class, 'update'])->name('user.cart.update');
     Route::delete('/cart/{cart}', [CartController::class, 'remove'])->name('user.cart.remove');
     
-    // Order Routes
-    Route::get('/orders', [OrderController::class, 'index'])->name('user.orders.index');
-    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('user.orders.show');
-    Route::get('/checkout', [OrderController::class, 'checkout'])->name('user.checkout');
-    Route::post('/checkout', [OrderController::class, 'placeOrder'])->name('user.orders.place');
 });
 
 // Admin Routes
@@ -72,9 +67,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Category Management
     Route::resource('categories', AdminCategoryController::class);
     
-    // Order Management
-    Route::resource('orders', AdminOrderController::class)->only(['index', 'show', 'edit', 'update']);
-    Route::put('orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
     
     // User Management (Super Admin Only)
     Route::resource('users', AdminUserController::class);

@@ -107,9 +107,6 @@
                                     @endif
                                     <a href="{{ route('profile') }}"
                                         class="block px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm text-secondary-700 hover:bg-cream">Profile</a>
-                                    <a href="{{ route('user.orders.index') }}"
-                                        class="block px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100">Riwayat
-                                        Pesanan</a>
                                     <form method="POST" action="{{ route('logout') }}" class="block">
                                         @csrf
                                         <button type="submit"
@@ -175,8 +172,6 @@
                                 class="block text-sm text-white/90 hover:text-white">Dashboard Admin</a>
                         @endif
                         <a href="{{ route('profile') }}" class="block text-sm text-white/90 hover:text-white">Profile</a>
-                        <a href="{{ route('user.orders.index') }}"
-                            class="block text-sm text-white/90 hover:text-white">Riwayat Pesanan</a>
                         <form method="POST" action="{{ route('logout') }}">@csrf <button type="submit"
                                 class="text-sm text-red-200 hover:text-white">Logout</button></form>
                     </div>
@@ -360,10 +355,6 @@
                                 🛒 Keranjang
                             </a>
                             @auth
-                                <a href="{{ route('user.orders.index') }}"
-                                    class="bg-blue-100 p-2 rounded text-center hover:bg-blue-200 transition-colors">
-                                    📋 Riwayat Pesanan
-                                </a>
                             @else
                                 <a href="{{ route('contact') }}"
                                     class="bg-gray-100 p-2 rounded text-center hover:bg-gray-200 transition-colors">
@@ -464,7 +455,6 @@
                     <h4 class="text-sm font-semibold tracking-wider uppercase text-green-200 mb-5">Bantuan & Layanan</h4>
                     <ul class="space-y-3 text-sm">
                         <li><a href="#" class="text-green-100 hover:text-white transition flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m6 4h6M3 9h12M3 13h6m6 0h6M9 21v-8m6 8v-8"/></svg>Pusat Bantuan</a></li>
-                        <li><a href="{{ route('user.orders.index') }}" class="text-green-100 hover:text-white transition flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M3 12h18M3 17h18"/></svg>Pesanan Saya</a></li>
                         @auth
                             <li><a href="{{ route('profile') }}" class="text-green-100 hover:text-white transition flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Profil</a></li>
                         @endauth

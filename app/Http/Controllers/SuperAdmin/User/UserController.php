@@ -4,7 +4,6 @@ namespace App\Http\Controllers\SuperAdmin\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\Order\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -18,7 +17,7 @@ class UserController extends Controller
             abort(403, 'Unauthorized');
         }
         
-        $query = User::withCount(['orders']);
+        $query = User::query();
         
         // Search functionality
         if ($request->filled('search')) {
@@ -99,10 +98,7 @@ class UserController extends Controller
             abort(403, 'Unauthorized');
         }
         
-        $user->loadCount(['orders']);
-        $recentOrders = $user->orders()->with('orderItems.product')->latest()->take(5)->get();
-        
-        return view('admin.users.show', compact('user', 'recentOrders'));
+        return view('admin.users.show', compact('user'));
     }
     
     public function edit(User $user)
@@ -175,11 +171,6 @@ class UserController extends Controller
                             ->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
         }
         
-        // Check if user has orders
-        if ($user->orders()->count() > 0) {
-            return redirect()->route('admin.users.index')
-                            ->with('error', 'Tidak dapat menghapus user yang memiliki riwayat pesanan.');
-        }
         
         $user->delete();
         
