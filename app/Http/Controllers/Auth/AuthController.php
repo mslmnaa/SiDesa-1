@@ -78,7 +78,37 @@ class AuthController extends Controller
 
     public function profile()
     {
-        return view('auth.profile');
+        $user = auth()->user();
+        
+        try {
+            // Get user orders
+            $orders = $user->orders()
+                ->with(['orderItems.product'])
+                ->orderBy('created_at', 'desc')
+                ->paginate(5, ['*'], 'orders_page');
+            
+            // Get user infaq history  
+            $infaqs = \App\Models\Infaq\Infaq::where('donor_email', $user->email)
+                ->orWhere('donor_phone', $user->phone)
+                ->orderBy('created_at', 'desc')
+                ->paginate(5, ['*'], 'infaq_page');
+            
+            // Debug info
+            \Log::info('Profile Debug', [
+                'user_id' => $user->id,
+                'user_email' => $user->email,
+                'orders_count' => $orders->count(),
+                'infaqs_count' => $infaqs->count()
+            ]);
+            
+        } catch (\Exception $e) {
+            \Log::error('Profile Error: ' . $e->getMessage());
+            // Fallback to empty collections
+            $orders = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 5);
+            $infaqs = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 5);
+        }
+        
+        return view('auth.profile', compact('orders', 'infaqs'));
     }
 
     public function updateProfile(Request $request)
