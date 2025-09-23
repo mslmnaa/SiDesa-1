@@ -17,9 +17,15 @@
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                     <div class="p-6 border-b border-gray-200">
                         <div class="flex items-center">
-                            <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
-                                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                            </div>
+                            @if(auth()->user()->profile_photo)
+                                <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" 
+                                     alt="Profile Photo" 
+                                     class="w-16 h-16 rounded-full object-cover border-2 border-gray-200">
+                            @else
+                                <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                                </div>
+                            @endif
                             <div class="ml-4">
                                 <h3 class="text-lg font-semibold text-gray-900">{{ auth()->user()->name }}</h3>
                                 <p class="text-sm text-gray-600">{{ ucfirst(auth()->user()->role) }}</p>
@@ -38,16 +44,6 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                     </svg>
                                     Profil
-                                </button>
-                            </li>
-                            <li>
-                                <button @click="activeTab = 'orders'" 
-                                        :class="activeTab === 'orders' ? 'bg-green-50 text-green-700 border-green-200' : 'text-gray-700 hover:bg-gray-50'"
-                                        class="w-full flex items-center px-4 py-3 text-left rounded-lg border transition-colors">
-                                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                                    </svg>
-                                    Riwayat Pesanan
                                 </button>
                             </li>
                             <li>
@@ -78,9 +74,50 @@
                                 </span>
                             </div>
 
-                            <form action="{{ route('profile.update') }}" method="POST">
+                            <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 @method('PUT')
+                                
+                                <!-- Profile Photo Section -->
+                                <div class="flex items-center justify-center mb-8">
+                                    <div class="flex flex-col items-center space-y-4">
+                                        <div class="relative">
+                                            @if(auth()->user()->profile_photo)
+                                                <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" 
+                                                     alt="Profile Photo" 
+                                                     class="w-32 h-32 rounded-full object-cover border-4 border-gray-200 shadow-lg"
+                                                     id="preview-image">
+                                            @else
+                                                <div class="w-32 h-32 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-4xl shadow-lg"
+                                                     id="preview-image">
+                                                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                                                </div>
+                                            @endif
+                                            
+                                            <!-- Upload Button Overlay -->
+                                            <label for="profile_photo" class="absolute bottom-2 right-2 bg-green-600 text-white rounded-full p-2 cursor-pointer hover:bg-green-700 transition-colors shadow-lg">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                </svg>
+                                            </label>
+                                        </div>
+                                        
+                                        <div class="text-center">
+                                            <input type="file" 
+                                                   id="profile_photo" 
+                                                   name="profile_photo" 
+                                                   accept="image/*" 
+                                                   class="hidden"
+                                                   onchange="previewProfilePhoto(this)">
+                                            <p class="text-sm text-gray-600">Klik ikon kamera untuk mengubah foto profil</p>
+                                            <p class="text-xs text-gray-500">Format: JPG, PNG, JPEG (Max: 2MB)</p>
+                                            @error('profile_photo')
+                                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
                                 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                     <div>
@@ -164,140 +201,6 @@
                         </div>
                     </div>
 
-                    <!-- Orders Tab -->
-                    <div x-show="activeTab === 'orders'" x-transition>
-                        <div class="p-8">
-                            <div class="flex items-center justify-between mb-6">
-                                <h2 class="text-2xl font-bold text-gray-900">Riwayat Pesanan</h2>
-                                <a href="{{ route('products.index') }}" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                                    </svg>
-                                    Belanja Sekarang
-                                </a>
-                            </div>
-                            
-                            @if($orders->count() > 0)
-                                <div class="space-y-4">
-                                    @foreach($orders as $order)
-                                        <div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
-                                            <!-- Order Header -->
-                                            <div class="px-6 py-4 border-b border-gray-200 bg-white">
-                                                <div class="flex items-center justify-between">
-                                                    <div class="flex items-center space-x-4">
-                                                        <div>
-                                                            <h3 class="text-lg font-semibold text-gray-900">{{ $order->order_number }}</h3>
-                                                            <p class="text-sm text-gray-500">{{ $order->created_at->format('d M Y, H:i') }}</p>
-                                                        </div>
-                                                        <div class="px-3 py-1 rounded-full text-sm font-medium
-                                                            @if($order->status === 'pending') bg-yellow-100 text-yellow-800
-                                                            @elseif($order->status === 'processing') bg-blue-100 text-blue-800
-                                                            @elseif($order->status === 'shipped') bg-purple-100 text-purple-800
-                                                            @elseif($order->status === 'delivered') bg-green-100 text-green-800
-                                                            @else bg-red-100 text-red-800 @endif">
-                                                            @if($order->status === 'pending') Menunggu Konfirmasi
-                                                            @elseif($order->status === 'processing') Diproses
-                                                            @elseif($order->status === 'shipped') Dikirim
-                                                            @elseif($order->status === 'delivered') Selesai
-                                                            @else Dibatalkan @endif
-                                                        </div>
-                                                    </div>
-                                                    <div class="text-right">
-                                                        <p class="text-lg font-bold text-green-600">
-                                                            Rp {{ number_format($order->total_amount, 0, ',', '.') }}
-                                                        </p>
-                                                        <p class="text-sm text-gray-500">{{ $order->orderItems->count() }} item</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Order Items Preview -->
-                                            <div class="px-6 py-4 bg-white">
-                                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                                    @foreach($order->orderItems->take(3) as $item)
-                                                        <div class="flex items-center space-x-3">
-                                                            <div class="flex-shrink-0">
-                                                                @if($item->product->images && count($item->product->images) > 0)
-                                                                    <img src="{{ $item->product->getImageDataUri(0) }}" 
-                                                                         alt="{{ $item->product->name }}" 
-                                                                         class="w-12 h-12 object-cover rounded">
-                                                                @else
-                                                                    <div class="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
-                                                                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                                                        </svg>
-                                                                    </div>
-                                                                @endif
-                                                            </div>
-                                                            <div class="flex-1 min-w-0">
-                                                                <p class="text-sm font-medium text-gray-900 truncate">{{ $item->product->name }}</p>
-                                                                <p class="text-xs text-gray-500">{{ $item->quantity }}x Rp {{ number_format($item->price, 0, ',', '.') }}</p>
-                                                            </div>
-                                                        </div>
-                                                    @endforeach
-                                                    
-                                                    @if($order->orderItems->count() > 3)
-                                                        <div class="flex items-center justify-center text-gray-500">
-                                                            <span class="text-sm">+{{ $order->orderItems->count() - 3 }} item lainnya</span>
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-
-                                            <!-- Order Actions -->
-                                            <div class="px-6 py-4 bg-gray-50 border-t">
-                                                <div class="flex items-center justify-between">
-                                                    <div class="flex items-center space-x-2 text-sm text-gray-600">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                                        </svg>
-                                                        <span>Dikirim ke {{ Str::limit($order->shipping_address, 50) }}</span>
-                                                    </div>
-                                                    
-                                                    <div class="flex space-x-3">
-                                                        <a href="{{ route('user.orders.show', $order) }}" 
-                                                           class="text-green-600 hover:text-green-800 text-sm font-medium">
-                                                            Lihat Detail
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                                
-                                <!-- Pagination -->
-                                <div class="mt-6">
-                                    {{ $orders->appends(request()->query())->fragment('orders')->links() }}
-                                </div>
-                                
-                                <div class="mt-6 text-center">
-                                    <a href="{{ route('user.orders.index') }}" class="text-green-600 hover:text-green-800 font-medium">
-                                        Lihat Semua Riwayat Pesanan →
-                                    </a>
-                                </div>
-                            @else
-                                <!-- Empty Orders -->
-                                <div class="text-center py-12">
-                                    <div class="w-20 h-20 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
-                                        <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                                        </svg>
-                                    </div>
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Belum Ada Pesanan</h3>
-                                    <p class="text-gray-600 mb-6">Anda belum pernah melakukan pemesanan apapun</p>
-                                    <a href="{{ route('products.index') }}" 
-                                       class="inline-flex items-center px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors">
-                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                                        </svg>
-                                        Mulai Berbelanja
-                                    </a>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
 
                     <!-- Infaq Tab -->
                     <div x-show="activeTab === 'infaq'" x-transition>
@@ -433,5 +336,23 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+function previewProfilePhoto(input) {
+    const preview = document.getElementById('preview-image');
+    const file = input.files[0];
+    
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // Replace the existing preview with an img element
+            preview.outerHTML = `<img src="${e.target.result}" alt="Profile Photo Preview" class="w-32 h-32 rounded-full object-cover border-4 border-gray-200 shadow-lg" id="preview-image">`;
+        };
+        reader.readAsDataURL(file);
+    }
+}
+</script>
+@endpush
 
 @endsection

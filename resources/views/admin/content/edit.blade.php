@@ -7,21 +7,21 @@
 <div class="flex items-center justify-between mb-8">
     <div>
         <h1 class="text-3xl font-bold text-gray-900">Edit Konten: {{ $landingContent->title }}</h1>
-        <p class="text-gray-600 mt-2">Edit konten landing page - Section: {{ ucfirst($landingContent->section) }}</p>
+        <p class="text-gray-600 mt-2">Edit konten landing page - Section: {{ ucfirst($landingContent->key) }}</p>
     </div>
     <div class="space-x-3">
-        <a href="{{ route('admin.landing-contents.show', $landingContent) }}" 
+        <a href="{{ route('admin.content.show', $landingContent) }}" 
            class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
             Lihat Detail
         </a>
-        <a href="{{ route('admin.landing-contents.index') }}" 
+        <a href="{{ route('admin.content.index') }}" 
            class="bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-700 transition-colors">
             Kembali
         </a>
     </div>
 </div>
 
-<form action="{{ route('admin.landing-contents.update', $landingContent) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+<form action="{{ route('admin.content.update', $landingContent) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
     @csrf
     @method('PUT')
     
@@ -35,19 +35,19 @@
                 <div class="space-y-4">
                     <!-- Section -->
                     <div>
-                        <label for="section" class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="key" class="block text-sm font-medium text-gray-700 mb-2">
                             Section *
                         </label>
-                        <select id="section" name="section" required
+                        <select id="key" name="key" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('section') border-red-500 @enderror">
                             <option value="">Pilih Section</option>
-                            <option value="hero" {{ old('section', $landingContent->section) === 'hero' ? 'selected' : '' }}>Hero - Bagian Utama</option>
-                            <option value="about" {{ old('section', $landingContent->section) === 'about' ? 'selected' : '' }}>About - Tentang BUMDes</option>
-                            <option value="services" {{ old('section', $landingContent->section) === 'services' ? 'selected' : '' }}>Services - Layanan</option>
-                            <option value="features" {{ old('section', $landingContent->section) === 'features' ? 'selected' : '' }}>Features - Keunggulan</option>
-                            <option value="testimonial" {{ old('section', $landingContent->section) === 'testimonial' ? 'selected' : '' }}>Testimonial - Testimoni</option>
-                            <option value="contact" {{ old('section', $landingContent->section) === 'contact' ? 'selected' : '' }}>Contact - Kontak</option>
-                            <option value="custom" {{ old('section', $landingContent->section) === 'custom' ? 'selected' : '' }}>Custom - Section Khusus</option>
+                            <option value="hero" {{ old('key', $landingContent->key) === 'hero' ? 'selected' : '' }}>Hero - Bagian Utama</option>
+                            <option value="about-us" {{ old('key', $landingContent->key) === 'about-us' ? 'selected' : '' }}>About Us - Tentang BUMDes</option>
+                            <option value="services" {{ old('key', $landingContent->key) === 'services' ? 'selected' : '' }}>Services - Layanan</option>
+                            <option value="features" {{ old('key', $landingContent->key) === 'features' ? 'selected' : '' }}>Features - Keunggulan</option>
+                            <option value="testimonial" {{ old('key', $landingContent->key) === 'testimonial' ? 'selected' : '' }}>Testimonial - Testimoni</option>
+                            <option value="contact" {{ old('key', $landingContent->key) === 'contact' ? 'selected' : '' }}>Contact - Kontak</option>
+                            <option value="gallery" {{ old('key', $landingContent->key) === 'gallery' ? 'selected' : '' }}>Gallery - Galeri</option>
                         </select>
                         @error('section')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -185,13 +185,13 @@
                 
                 <div class="text-center mb-4">
                     <span class="inline-flex px-4 py-2 text-lg font-semibold rounded-full 
-                        {{ $landingContent->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                        {{ $landingContent->status === 'active' ? 'Aktif' : 'Tidak Aktif' }}
+                        {{ $landingContent->is_active === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                        {{ $landingContent->is_active === 'active' ? 'Aktif' : 'Tidak Aktif' }}
                     </span>
                 </div>
                 
                 <div class="text-sm text-gray-600 text-center space-y-1">
-                    <p>Section: <span class="font-medium">{{ ucfirst($landingContent->section) }}</span></p>
+                    <p>Section: <span class="font-medium">{{ ucfirst($landingContent->key) }}</span></p>
                     <p>Order: <span class="font-medium">{{ $landingContent->order }}</span></p>
                     <p>Dibuat: {{ $landingContent->created_at->format('d M Y') }}</p>
                     @if($landingContent->updated_at != $landingContent->created_at)
@@ -223,13 +223,13 @@
                     
                     <!-- Status -->
                     <div>
-                        <label for="status" class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="is_active" class="block text-sm font-medium text-gray-700 mb-2">
                             Status *
                         </label>
-                        <select id="status" name="status" required
+                        <select id="is_active" name="is_active" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('status') border-red-500 @enderror">
-                            <option value="active" {{ old('status', $landingContent->status) === 'active' ? 'selected' : '' }}>Aktif - Tampil di website</option>
-                            <option value="inactive" {{ old('status', $landingContent->status) === 'inactive' ? 'selected' : '' }}>Tidak Aktif - Disembunyikan</option>
+                            <option value="1" {{ old('is_active', $landingContent->is_active) ? 'selected' : '' }}>Aktif - Tampil di website</option>
+                            <option value="0" {{ !old('is_active', $landingContent->is_active) ? 'selected' : '' }}>Tidak Aktif - Disembunyikan</option>
                         </select>
                         @error('status')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -264,7 +264,7 @@
                         Simpan Perubahan
                     </button>
                     
-                    <a href="{{ route('admin.landing-contents.show', $landingContent) }}" 
+                    <a href="{{ route('admin.content.show', $landingContent) }}" 
                        class="w-full bg-gray-500 text-white py-3 px-4 rounded-lg font-semibold hover:bg-gray-600 transition-colors text-center block">
                         Batal
                     </a>
@@ -280,7 +280,7 @@
     <p class="text-red-700 mb-4">
         Menghapus konten akan menghapus semua data terkait termasuk gambar. Aksi ini tidak dapat dibatalkan.
     </p>
-    <form method="POST" action="{{ route('admin.landing-contents.destroy', $landingContent) }}" 
+    <form method="POST" action="{{ route('admin.content.destroy', $landingContent) }}" 
           onsubmit="return confirm('Yakin ingin menghapus konten {{ $landingContent->title }}? Aksi ini tidak dapat dibatalkan!')">
         @csrf
         @method('DELETE')

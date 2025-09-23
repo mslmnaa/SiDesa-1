@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
@@ -81,12 +82,6 @@ class AuthController extends Controller
         $user = auth()->user();
         
         try {
-            // Get user orders
-            $orders = $user->orders()
-                ->with(['orderItems.product'])
-                ->orderBy('created_at', 'desc')
-                ->paginate(5, ['*'], 'orders_page');
-            
             // Get user infaq history  
             $infaqs = \App\Models\Infaq\Infaq::where('donor_email', $user->email)
                 ->orWhere('donor_phone', $user->phone)
@@ -97,18 +92,16 @@ class AuthController extends Controller
             \Log::info('Profile Debug', [
                 'user_id' => $user->id,
                 'user_email' => $user->email,
-                'orders_count' => $orders->count(),
                 'infaqs_count' => $infaqs->count()
             ]);
             
         } catch (\Exception $e) {
             \Log::error('Profile Error: ' . $e->getMessage());
             // Fallback to empty collections
-            $orders = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 5);
             $infaqs = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 5);
         }
         
-        return view('auth.profile', compact('orders', 'infaqs'));
+        return view('auth.profile', compact('infaqs'));
     }
 
     public function updateProfile(Request $request)
@@ -121,6 +114,7 @@ class AuthController extends Controller
             'phone' => 'nullable|string|max:15',
             'address' => 'nullable|string|max:500',
             'password' => ['nullable', 'confirmed', Password::min(8)],
+            'profile_photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
         ]);
 
         $updateData = [
@@ -132,6 +126,18 @@ class AuthController extends Controller
 
         if (!empty($validated['password'])) {
             $updateData['password'] = Hash::make($validated['password']);
+        }
+
+        // Handle profile photo upload
+        if ($request->hasFile('profile_photo')) {
+            // Delete old profile photo if exists
+            if ($user->profile_photo && \Storage::disk('public')->exists($user->profile_photo)) {
+                \Storage::disk('public')->delete($user->profile_photo);
+            }
+            
+            // Store new profile photo
+            $path = $request->file('profile_photo')->store('profile_photos', 'public');
+            $updateData['profile_photo'] = $path;
         }
 
         $user->update($updateData);

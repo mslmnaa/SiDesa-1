@@ -7,18 +7,18 @@
 <div class="flex items-center justify-between mb-8">
     <div>
         <h1 class="text-3xl font-bold text-gray-900">{{ $landingContent->title }}</h1>
-        <p class="text-gray-600 mt-2">Detail konten landing page - Section: {{ ucfirst($landingContent->section) }}</p>
+        <p class="text-gray-600 mt-2">Detail konten landing page - Section: {{ ucfirst($landingContent->key) }}</p>
     </div>
     <div class="space-x-3">
         <a href="{{ route('home') }}" target="_blank"
            class="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
             Lihat di Website
         </a>
-        <a href="{{ route('admin.landing-contents.edit', $landingContent) }}" 
+        <a href="{{ route('admin.content.edit', $landingContent) }}" 
            class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
             Edit Konten
         </a>
-        <a href="{{ route('admin.landing-contents.index') }}" 
+        <a href="{{ route('admin.content.index') }}" 
            class="bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-700 transition-colors">
             Kembali
         </a>
@@ -42,11 +42,11 @@
             <div class="mb-6">
                 <div class="flex items-center justify-between mb-4">
                     <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800">
-                        {{ ucfirst($landingContent->section) }}
+                        {{ ucfirst($landingContent->key) }}
                     </span>
                     <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full 
-                        {{ $landingContent->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                        {{ $landingContent->status === 'active' ? 'Aktif' : 'Tidak Aktif' }}
+                        {{ $landingContent->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                        {{ $landingContent->is_active ? 'Aktif' : 'Tidak Aktif' }}
                     </span>
                 </div>
                 
@@ -129,13 +129,13 @@
                 
                 <div class="flex justify-between">
                     <span class="text-gray-600">Section:</span>
-                    <span class="font-medium">{{ ucfirst($landingContent->section) }}</span>
+                    <span class="font-medium">{{ ucfirst($landingContent->key) }}</span>
                 </div>
                 
                 <div class="flex justify-between">
                     <span class="text-gray-600">Status:</span>
-                    <span class="font-medium {{ $landingContent->status === 'active' ? 'text-green-600' : 'text-red-600' }}">
-                        {{ $landingContent->status === 'active' ? 'Aktif' : 'Tidak Aktif' }}
+                    <span class="font-medium {{ $landingContent->is_active ? 'text-green-600' : 'text-red-600' }}">
+                        {{ $landingContent->is_active ? 'Aktif' : 'Tidak Aktif' }}
                     </span>
                 </div>
                 
@@ -203,17 +203,17 @@
             <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
             
             <div class="space-y-3">
-                <a href="{{ route('admin.landing-contents.edit', $landingContent) }}" 
+                <a href="{{ route('admin.content.edit', $landingContent) }}" 
                    class="w-full bg-green-600 text-white py-2 px-4 rounded-lg text-center font-medium hover:bg-green-700 transition-colors block">
                     Edit Konten
                 </a>
                 
-                <form method="POST" action="{{ route('admin.landing-contents.toggle-status', $landingContent) }}" class="w-full">
+                <form method="POST" action="{{ route('admin.content.toggle-status', $landingContent) }}" class="w-full">
                     @csrf
-                    <input type="hidden" name="status" value="{{ $landingContent->status === 'active' ? 'inactive' : 'active' }}">
+                    <input type="hidden" name="status" name="is_active" value="{{ !$landingContent->is_active }}">
                     <button type="submit" 
-                            class="w-full {{ $landingContent->status === 'active' ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700' }} text-white py-2 px-4 rounded-lg font-medium transition-colors">
-                        {{ $landingContent->status === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}
+                            class="w-full {{ $landingContent->is_active ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700' }} text-white py-2 px-4 rounded-lg font-medium transition-colors">
+                        {{ $landingContent->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
                     </button>
                 </form>
                 
@@ -226,9 +226,9 @@
         
         <!-- Section Guide -->
         <div class="bg-blue-50 rounded-lg p-6">
-            <h3 class="font-semibold text-blue-900 mb-3">Section: {{ ucfirst($landingContent->section) }}</h3>
+            <h3 class="font-semibold text-blue-900 mb-3">Section: {{ ucfirst($landingContent->key) }}</h3>
             <div class="text-sm text-blue-800">
-                @switch($landingContent->section)
+                @switch($landingContent->key)
                     @case('hero')
                         <p>Bagian paling atas website dengan headline utama dan call-to-action. Biasanya memiliki gambar background yang menarik.</p>
                         @break
@@ -259,7 +259,7 @@
             <p class="text-red-700 text-sm mb-4">
                 Menghapus konten akan menghapus semua data terkait. Aksi ini tidak dapat dibatalkan.
             </p>
-            <form method="POST" action="{{ route('admin.landing-contents.destroy', $landingContent) }}" 
+            <form method="POST" action="{{ route('admin.content.destroy', $landingContent) }}" 
                   onsubmit="return confirm('Yakin ingin menghapus konten {{ $landingContent->title }}? Aksi ini tidak dapat dibatalkan!')">
                 @csrf
                 @method('DELETE')

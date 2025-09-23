@@ -54,6 +54,9 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/cart/{cart}', [CartController::class, 'update'])->name('user.cart.update');
     Route::delete('/cart/{cart}', [CartController::class, 'remove'])->name('user.cart.remove');
     
+    // User Infaq Routes
+    Route::get('/user/infaq', [InfaqController::class, 'userIndex'])->name('user.infaq.index');
+    
 });
 
 // Admin Routes
@@ -78,7 +81,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('settings/test-email', [SettingController::class, 'testEmail'])->name('settings.test-email');
     
     // Landing Content Management
-    Route::resource('content', LandingContentController::class);
+    Route::resource('content', LandingContentController::class)->parameters([
+        'content' => 'landingContent'
+    ]);
     Route::post('content/{landingContent}/toggle-status', [LandingContentController::class, 'toggleStatus'])->name('content.toggle-status');
     
     // Infaq Management

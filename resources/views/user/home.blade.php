@@ -8,7 +8,11 @@
     <!-- Hero Section -->
     <section class="relative text-white overflow-hidden">
         <div class="absolute inset-0">
-            <img src="/images/Background Dash.png" alt="Hero Background" class="w-full h-full object-cover object-center">
+            @if ($hero && $hero->image)
+                <img src="{{ Storage::url($hero->image) }}" alt="{{ $hero->title ?? 'Hero Background' }}" class="w-full h-full object-cover object-center">
+            @else
+                <img src="/images/Background Dash.png" alt="Hero Background" class="w-full h-full object-cover object-center">
+            @endif
             <div class="absolute inset-0 bg-gradient-to-r from-green-800/90 via-green-700/80 to-green-600/40"></div>
         </div>
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-24 sm:pt-40 sm:pb-32 lg:pt-48 lg:pb-40">
@@ -155,6 +159,11 @@
         <section class="py-16 sm:py-20 bg-light">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="bg-white rounded-2xl shadow-lg p-8 sm:p-12 text-center">
+                    @if ($aboutUs->image)
+                        <div class="mb-8">
+                            <img src="{{ Storage::url($aboutUs->image) }}" alt="{{ $aboutUs->title }}" class="w-full max-w-md mx-auto rounded-xl shadow-md">
+                        </div>
+                    @endif
                     <h2 class="text-3xl sm:text-4xl font-extrabold text-secondary-800 tracking-tight">{{ $aboutUs->title }}
                     </h2>
                     <p class="mt-6 max-w-2xl mx-auto text-lg text-secondary-600 leading-relaxed">{{ $aboutUs->content }}

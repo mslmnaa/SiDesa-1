@@ -187,6 +187,7 @@
                                 @if($user->id !== auth()->id())
                                     <a href="{{ route('admin.users.edit', $user) }}" 
                                        class="text-green-600 hover:text-green-800">Edit</a>
+                                    @if($user->role !== 'superadmin')
                                         <form method="POST" action="{{ route('admin.users.destroy', $user) }}" 
                                               class="inline-block" 
                                               onsubmit="return confirm('Yakin ingin menghapus user {{ $user->name }}?')">
