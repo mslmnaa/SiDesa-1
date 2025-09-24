@@ -26,7 +26,7 @@
                     </p>
                 @else
                     <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white mb-6 drop-shadow">
-                        BUMDes Marketplacee
+                        BUMDes Marketplaceee
                     </h1>
                     <p class="text-lg sm:text-xl text-green-50 max-w-2xl mx-auto lg:mx-0 mb-8">
                         Temukan dan beli produk lokal berkualitas langsung dari desa.
