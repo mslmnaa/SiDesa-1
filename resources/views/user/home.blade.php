@@ -35,7 +35,7 @@
                 <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
                     <a href="{{ route('products.index') }}"
                         class="transform transition duration-300 hover:scale-105 w-full sm:w-auto bg-white text-green-700 px-8 py-3 rounded-full font-bold text-lg shadow-lg hover:bg-green-50">
-                        Jelajahi Produkk
+                        Jelajahi Produk
                     </a>
                     @guest
                         <a href="{{ route('register') }}"
