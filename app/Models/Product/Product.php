@@ -5,6 +5,7 @@ namespace App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Order\Cart;
+use App\Models\Village;
 
 class Product extends Model
 {
@@ -18,6 +19,7 @@ class Product extends Model
         'stock',
         'images',
         'category_id',
+        'village_id',
         'type',
         'whatsapp_number',
         'status',
@@ -37,6 +39,11 @@ class Product extends Model
     public function carts()
     {
         return $this->hasMany(Cart::class);
+    }
+
+    public function village()
+    {
+        return $this->belongsTo(Village::class);
     }
 
     public function scopeActive($query)

@@ -85,14 +85,17 @@
                         </div>
                     </div>
 
-                    <!-- Stock Filter -->
+                    <!-- Village Filter -->
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Ketersediaan</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Desa</label>
                         <div class="relative">
-                            <select name="stock" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-sm appearance-none">
-                                <option value="">📦 Semua Stok</option>
-                                <option value="available" {{ request('stock') == 'available' ? 'selected' : '' }}>✅ Tersedia</option>
-                                <option value="low" {{ request('stock') == 'low' ? 'selected' : '' }}>⚠️ Stok Menipis</option>
+                            <select name="village_id" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-sm appearance-none">
+                                <option value="">🏘️ Semua Desa</option>
+                                @foreach($villages as $village)
+                                    <option value="{{ $village->id }}" {{ request('village_id') == $village->id ? 'selected' : '' }}>
+                                        {{ $village->name }}
+                                    </option>
+                                @endforeach
                             </select>
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                                 <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,10 +167,22 @@
                                     Rp{{ number_format($product->price, 0, ',', '.') }}
                                 </span>
                             </div>
-                            
-                            <!-- Location/Category (Optional) -->
+
+                            <!-- Village Badge -->
+                            @if($product->village)
+                                <div class="mt-2 flex items-center gap-1">
+                                    <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                    </svg>
+                                    <span class="text-xs text-gray-500 truncate">
+                                        {{ $product->village->name }}
+                                    </span>
+                                </div>
+                            @endif
+
+                            <!-- Category -->
                             <div class="mt-1">
-                                <span class="text-xs text-gray-500">
+                                <span class="text-xs text-gray-400">
                                     {{ $product->category->name }}
                                 </span>
                             </div>

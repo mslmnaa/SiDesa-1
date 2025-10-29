@@ -6,7 +6,6 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Product\Category;
 use App\Models\Product\Product;
-use App\Models\Content\LandingContent;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -17,32 +16,58 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create Users
+        // Call Village seeder first (must be before users)
+        $this->call([
+            \Database\Seeders\System\SettingSeeder::class,
+            \Database\Seeders\Product\CategoryTypeSeeder::class,
+            VillageSeeder::class,
+        ]);
+
+        // Create SuperAdmin
         User::create([
             'name' => 'Super Admin',
             'email' => 'superadmin@bumdes.com',
             'password' => Hash::make('123'),
             'role' => 'superadmin',
             'phone' => '081234567890',
-            'address' => 'Jl. Admin No. 1, Desa Maju'
+            'address' => 'Jl. Admin Pusat No. 1',
+            'village_id' => null // SuperAdmin tidak terikat desa
         ]);
 
-        User::create([
-            'name' => 'Admin BUMDes',
-            'email' => 'admin@bumdes.com',
-            'password' => Hash::make('123'),
-            'role' => 'admin',
-            'phone' => '081234567891',
-            'address' => 'Jl. BUMDes No. 2, Desa Sejahtera'
-        ]);
+        // Create Admin for each village (first 5 villages)
+        $villages = \App\Models\Village::take(5)->get();
 
+        foreach ($villages as $index => $village) {
+            User::create([
+                'name' => 'Admin ' . $village->name,
+                'email' => 'admin' . ($index + 1) . '@bumdes.com',
+                'password' => Hash::make('123'),
+                'role' => 'admin',
+                'phone' => '0812345678' . (91 + $index),
+                'address' => $village->address,
+                'village_id' => $village->id // Admin terikat ke desa tertentu
+            ]);
+        }
+
+        // Create regular users
         User::create([
             'name' => 'Budi Santoso',
             'email' => 'budi@example.com',
             'password' => Hash::make('123'),
             'role' => 'user',
-            'phone' => '081234567892',
-            'address' => 'Jl. Mawar No. 3, Desa Indah'
+            'phone' => '081234567899',
+            'address' => 'Jl. Mawar No. 3, Jakarta',
+            'village_id' => null
+        ]);
+
+        User::create([
+            'name' => 'Siti Nurhaliza',
+            'email' => 'siti@example.com',
+            'password' => Hash::make('123'),
+            'role' => 'user',
+            'phone' => '081234567898',
+            'address' => 'Jl. Melati No. 5, Bandung',
+            'village_id' => null
         ]);
 
         // Create Categories
@@ -151,23 +176,27 @@ class DatabaseSeeder extends Seeder
             Product::create($product);
         }
 
-        // Create Landing Contents
-        LandingContent::create([
-            'key' => 'hero',
-            'title' => 'Selamat Datang di BUMDes Marketplace',
-            'content' => 'Platform jual beli produk lokal terpercaya yang menghubungkan konsumen dengan produk berkualitas dari desa-desa di Indonesia'
-        ]);
-
-        LandingContent::create([
-            'key' => 'about-us',
-            'title' => 'Tentang BUMDes Marketplace',
-            'content' => 'Kami adalah platform digital yang berkomitmen untuk memajukan ekonomi desa melalui pemasaran produk lokal berkualitas. Bergabunglah dengan kami untuk mendukung UMKM dan produk desa Indonesia.'
-        ]);
-
-        // Call additional seeders
+        // Call Product seeder last
         $this->call([
-            \Database\Seeders\System\SettingSeeder::class,
-            \Database\Seeders\Product\CategoryTypeSeeder::class,
+            ProductSeeder::class,
         ]);
+
+        $this->command->info('');
+        $this->command->info('🎉 Database seeding completed!');
+        $this->command->info('📊 Summary:');
+        $this->command->info('   - Users: ' . User::count());
+        $this->command->info('   - Villages: ' . \App\Models\Village::count());
+        $this->command->info('   - Categories: ' . Category::count());
+        $this->command->info('   - Products: ' . Product::count());
+        $this->command->info('');
+        $this->command->info('🔐 Login credentials:');
+        $this->command->info('   SuperAdmin: superadmin@bumdes.com / 123');
+        $this->command->info('   Admin Desa 1: admin1@bumdes.com / 123 (BUMDes Maju Jaya)');
+        $this->command->info('   Admin Desa 2: admin2@bumdes.com / 123 (BUMDes Sejahtera Ungaran)');
+        $this->command->info('   Admin Desa 3: admin3@bumdes.com / 123 (Desa Kreatif Sidoarjo)');
+        $this->command->info('   Admin Desa 4: admin4@bumdes.com / 123 (BUMDes Mandiri Ubud)');
+        $this->command->info('   Admin Desa 5: admin5@bumdes.com / 123 (Desa Berkah Bantul)');
+        $this->command->info('   User: budi@example.com / 123');
+        $this->command->info('   User: siti@example.com / 123');
     }
 }

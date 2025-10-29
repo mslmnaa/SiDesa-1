@@ -43,6 +43,8 @@
                 <div class="flex items-center space-x-3 md:space-x-6">
                     <a href="{{ route('home') }}"
                         class="text-xs md:text-base text-white hover:text-gray-100 transition-colors">Beranda</a>
+                    <a href="{{ route('villages.index') }}"
+                        class="text-xs md:text-base text-white hover:text-gray-100 transition-colors">Desa</a>
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open"
                             class="flex items-center text-xs md:text-base text-white hover:text-gray-100 transition-colors">
@@ -66,8 +68,6 @@
                                 Jasa</a>
                         </div>
                     </div>
-                    <a href="{{ route('infaq') }}"
-                        class="text-xs md:text-base text-white hover:text-gray-100 transition-colors">Infaq Online</a>
                     <a href="{{ route('contact') }}"
                         class="text-xs md:text-base text-white hover:text-gray-100 transition-colors">Kontak</a>
                 </div>
@@ -130,6 +130,7 @@
             class="md:hidden bg-green-700/95 backdrop-blur-sm border-t border-white/10 px-4 pb-6 space-y-4">
             <div class="pt-2 flex flex-col space-y-2">
                 <a href="{{ route('home') }}" class="text-white/90 hover:text-white text-sm font-medium">Beranda</a>
+                <a href="{{ route('villages.index') }}" class="text-white/90 hover:text-white text-sm font-medium">Desa</a>
                 <div x-data="{ open: false }" class="border border-white/10 rounded-lg overflow-hidden">
                     <button @click="open=!open"
                         class="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-white/90 hover:text-white">
@@ -148,8 +149,6 @@
                             class="block px-4 py-2 text-xs text-white/80 hover:bg-white/10">Produk Jasa</a>
                     </div>
                 </div>
-                <a href="{{ route('infaq') }}" class="text-white/90 hover:text-white text-sm font-medium">Infaq
-                    Online</a>
                 <a href="{{ route('contact') }}"
                     class="text-white/90 hover:text-white text-sm font-medium">Kontak</a>
             </div>
@@ -346,10 +345,6 @@
                                 class="bg-gray-100 p-2 rounded text-center hover:bg-gray-200 transition-colors">
                                 🛍️ Produk
                             </a>
-                            <a href="{{ route('infaq') }}"
-                                class="bg-gray-100 p-2 rounded text-center hover:bg-gray-200 transition-colors">
-                                💝 Infaq Online
-                            </a>
                             <a href="{{ route('user.cart.index') }}"
                                 class="bg-gray-100 p-2 rounded text-center hover:bg-gray-200 transition-colors">
                                 🛒 Keranjang
@@ -444,8 +439,8 @@
                     <h4 class="text-sm font-semibold tracking-wider uppercase text-green-200 mb-5">Tautan Cepat</h4>
                     <ul class="space-y-3 text-sm">
                         <li><a href="{{ route('home') }}" class="group flex items-center gap-2 text-green-100 hover:text-white transition"><span class="w-1.5 h-1.5 rounded-full bg-green-400 group-hover:scale-110 transition"></span>Beranda</a></li>
+                        <li><a href="{{ route('villages.index') }}" class="group flex items-center gap-2 text-green-100 hover:text-white transition"><span class="w-1.5 h-1.5 rounded-full bg-green-400 group-hover:scale-110 transition"></span>Desa</a></li>
                         <li><a href="{{ route('products.index') }}" class="group flex items-center gap-2 text-green-100 hover:text-white transition"><span class="w-1.5 h-1.5 rounded-full bg-green-400 group-hover:scale-110 transition"></span>Produk</a></li>
-                        <li><a href="{{ route('infaq') }}" class="group flex items-center gap-2 text-green-100 hover:text-white transition"><span class="w-1.5 h-1.5 rounded-full bg-green-400 group-hover:scale-110 transition"></span>Infaq Online</a></li>
                         <li><a href="{{ route('contact') }}" class="group flex items-center gap-2 text-green-100 hover:text-white transition"><span class="w-1.5 h-1.5 rounded-full bg-green-400 group-hover:scale-110 transition"></span>Kontak</a></li>
                     </ul>
                 </div>

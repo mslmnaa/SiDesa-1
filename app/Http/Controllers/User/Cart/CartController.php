@@ -11,12 +11,16 @@ class CartController extends Controller
 {
     public function index()
     {
-        $cartItems = auth()->user()->carts()->with('product.category')->get();
+        $cartItems = auth()->user()->carts()->with(['product.category', 'product.village'])->get();
+
+        // Group by village untuk tampilan
+        $groupedByVillage = $cartItems->groupBy('product.village_id');
+
         $total = $cartItems->sum(function ($item) {
             return $item->quantity * $item->product->price;
         });
-        
-        return view('user.cart.index', compact('cartItems', 'total'));
+
+        return view('user.cart.index', compact('cartItems', 'groupedByVillage', 'total'));
     }
     
     public function add(Request $request)

@@ -8,30 +8,17 @@
     <!-- Hero Section -->
     <section class="relative text-white overflow-hidden">
         <div class="absolute inset-0">
-            @if ($hero && $hero->image)
-                <img src="{{ Storage::url($hero->image) }}" alt="{{ $hero->title ?? 'Hero Background' }}" class="w-full h-full object-cover object-center">
-            @else
-                <img src="/images/Background Dash.png" alt="Hero Background" class="w-full h-full object-cover object-center">
-            @endif
+            <img src="/images/Background Dash.png" alt="Hero Background" class="w-full h-full object-cover object-center">
             <div class="absolute inset-0 bg-gradient-to-r from-green-800/90 via-green-700/80 to-green-600/40"></div>
         </div>
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-24 sm:pt-40 sm:pb-32 lg:pt-48 lg:pb-40">
             <div class="lg:w-1/2 text-center lg:text-left">
-                @if ($hero)
-                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white mb-6 drop-shadow">
-                        {{ $hero->title }}
-                    </h1>
-                    <p class="text-lg sm:text-xl text-green-50 max-w-2xl mx-auto lg:mx-0 mb-8">
-                        {{ $hero->content }}
-                    </p>
-                @else
-                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white mb-6 drop-shadow">
-                        BUMDes Marketplaceea
-                    </h1>
-                    <p class="text-lg sm:text-xl text-green-50 max-w-2xl mx-auto lg:mx-0 mb-8">
-                        Temukan dan beli produk lokal berkualitas langsung dari desa.
-                    </p>
-                @endif
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white mb-6 drop-shadow">
+                    BUMDes Marketplace
+                </h1>
+                <p class="text-lg sm:text-xl text-green-50 max-w-2xl mx-auto lg:mx-0 mb-8">
+                    Temukan dan beli produk lokal berkualitas langsung dari desa. Dukung ekonomi desa dan nikmati produk segar dari petani dan pengrajin lokal.
+                </p>
                 <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
                     <a href="{{ route('products.index') }}"
                         class="transform transition duration-300 hover:scale-105 w-full sm:w-auto bg-white text-green-700 px-8 py-3 rounded-full font-bold text-lg shadow-lg hover:bg-green-50">
@@ -47,6 +34,90 @@
             </div>
         </div>
     </section>
+
+    <!-- Featured Villages Section -->
+    @if ($featuredVillages->count() > 0)
+        <section class="py-16 sm:py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-secondary-800 tracking-tight">Desa-Desa Kami</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-secondary-600">Jelajahi BUMDes dari berbagai desa dengan produk unggulan mereka.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @foreach ($featuredVillages as $village)
+                        <a href="{{ route('villages.show', $village->slug) }}"
+                           class="bg-white rounded-xl border-2 border-gray-200 overflow-hidden hover:shadow-xl hover:border-green-500 transition-all duration-300 group">
+                            <!-- Village Header -->
+                            <div class="relative h-32 bg-gradient-to-r from-green-600 to-green-700">
+                                @if($village->logo)
+                                    <div class="absolute inset-0 bg-cover bg-center opacity-20" style="background-image: url('{{ asset('storage/' . $village->logo) }}')"></div>
+                                @endif
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="text-center text-white">
+                                        <div class="w-20 h-20 mx-auto mb-2 bg-white rounded-full p-2 shadow-lg group-hover:scale-110 transition-transform">
+                                            @if($village->logo)
+                                                <img src="{{ asset('storage/' . $village->logo) }}" alt="{{ $village->name }}" class="w-full h-full object-contain rounded-full">
+                                            @else
+                                                <div class="w-full h-full bg-green-100 rounded-full flex items-center justify-center">
+                                                    <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                                    </svg>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Village Info -->
+                            <div class="p-5">
+                                <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-green-600 transition-colors">
+                                    {{ $village->name }}
+                                </h3>
+
+                                <div class="flex items-center text-sm text-gray-600 mb-3">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                    <span class="truncate">{{ $village->district }}, {{ $village->city }}</span>
+                                </div>
+
+                                @if($village->description)
+                                    <p class="text-sm text-gray-600 mb-4 line-clamp-2">
+                                        {{ $village->description }}
+                                    </p>
+                                @endif
+
+                                <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+                                    <div class="flex items-center text-green-600">
+                                        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                                        </svg>
+                                        <span class="font-semibold">{{ $village->products_count }} Produk</span>
+                                    </div>
+                                    <span class="text-green-600 font-medium group-hover:translate-x-1 transition-transform">
+                                        Kunjungi →
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+
+                <div class="text-center mt-12">
+                    <a href="{{ route('villages.index') }}"
+                        class="inline-flex items-center px-8 py-3 bg-green-600 text-white font-semibold rounded-full hover:bg-green-700 transition-colors shadow-lg">
+                        <span>Lihat Semua Desa</span>
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+    @endif
 
     <!-- Categories Section -->
     @if ($categories->count() > 0)
@@ -125,17 +196,29 @@
                                 <h3 class="font-normal text-gray-800 mb-1 text-xs sm:text-sm line-clamp-2 leading-tight">
                                     {{ $product->name }}
                                 </h3>
-                                
+
                                 <!-- Price -->
                                 <div class="mt-2">
                                     <span class="text-sm sm:text-base font-bold text-gray-900">
                                         Rp{{ number_format($product->price, 0, ',', '.') }}
                                     </span>
                                 </div>
-                                
-                                <!-- Location/Category -->
+
+                                <!-- Village Badge -->
+                                @if($product->village)
+                                    <div class="mt-2 flex items-center gap-1">
+                                        <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                        </svg>
+                                        <span class="text-xs text-gray-500 truncate">
+                                            {{ $product->village->name }}
+                                        </span>
+                                    </div>
+                                @endif
+
+                                <!-- Category -->
                                 <div class="mt-1">
-                                    <span class="text-xs text-gray-500">
+                                    <span class="text-xs text-gray-400">
                                         {{ $product->category->name }}
                                     </span>
                                 </div>
@@ -154,28 +237,4 @@
         </section>
     @endif
 
-    <!-- About Us Section -->
-    @if ($aboutUs)
-        <section class="py-16 sm:py-20 bg-light">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="bg-white rounded-2xl shadow-lg p-8 sm:p-12 text-center">
-                    @if ($aboutUs->image)
-                        <div class="mb-8">
-                            <img src="{{ Storage::url($aboutUs->image) }}" alt="{{ $aboutUs->title }}" class="w-full max-w-md mx-auto rounded-xl shadow-md">
-                        </div>
-                    @endif
-                    <h2 class="text-3xl sm:text-4xl font-extrabold text-secondary-800 tracking-tight">{{ $aboutUs->title }}
-                    </h2>
-                    <p class="mt-6 max-w-2xl mx-auto text-lg text-secondary-600 leading-relaxed">{{ $aboutUs->content }}
-                    </p>
-                    <div class="mt-8">
-                        <a href="{{ route('register') }}"
-                            class="transform transition duration-300 hover:scale-105 inline-block bg-primary-600 text-white px-8 py-3 rounded-full font-bold text-lg shadow-lg hover:bg-primary-700">
-                            Gabung Sekarang
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-    @endif
 @endsection

@@ -24,6 +24,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'village_id',
         'phone',
         'address',
         'profile_photo',
@@ -63,5 +64,15 @@ class User extends Authenticatable
     public function carts()
     {
         return $this->hasMany(Cart::class);
+    }
+
+    public function village()
+    {
+        return $this->belongsTo(Village::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 }

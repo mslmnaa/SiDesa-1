@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Product\Product;
 use App\Models\Product\Category;
-use App\Models\Infaq\Infaq;
+use App\Models\Village;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -15,58 +16,92 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        $user = auth()->user();
+
+        // Basic Statistics
         $totalUsers = User::where('role', 'user')->count();
-        $totalProducts = Product::count();
+        $totalVillages = Village::where('status', 'active')->count();
         $totalCategories = Category::count();
-        
-        $recentProducts = Product::with('category')
+
+        // Admin hanya lihat produk desanya, SuperAdmin lihat semua
+        $productsQuery = Product::query();
+        if ($user->isAdmin() && $user->village_id) {
+            $productsQuery->where('village_id', $user->village_id);
+        }
+
+        $totalProducts = $productsQuery->count();
+        $activeProducts = (clone $productsQuery)->where('status', 'active')->count();
+        $inactiveProducts = (clone $productsQuery)->where('status', 'inactive')->count();
+        $lowStockProducts = (clone $productsQuery)->where('stock', '<', 10)->where('stock', '>', 0)->count();
+        $outOfStockProducts = (clone $productsQuery)->where('stock', 0)->count();
+
+        // Recent Products
+        $recentProducts = (clone $productsQuery)
+            ->with(['category', 'village'])
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
-        
-        $popularProducts = Product::with('category')
-            ->where('status', 'active')
-            ->orderBy('created_at', 'desc')
-            ->take(5)
-            ->get();
-        
-        $categoryStats = Category::withCount('products')
-            ->orderBy('products_count', 'desc')
-            ->get();
-        
-        $activeProducts = Product::where('status', 'active')->count();
-        $inactiveProducts = Product::where('status', 'inactive')->count();
-        
-        // Infaq Statistics
-        $infaqStats = [
-            'total_pending' => Infaq::where('status', 'pending')->count(),
-            'total_verified' => Infaq::where('status', 'verified')->count(),
-            'total_completed' => Infaq::where('status', 'completed')->count(),
-            'total_amount_collected' => Infaq::whereIn('status', ['verified', 'completed'])->sum('amount'),
-            'total_donors' => Infaq::whereIn('status', ['verified', 'completed'])->count(),
-            'monthly_infaq' => Infaq::whereIn('status', ['verified', 'completed'])
-                ->where('created_at', '>=', now()->subMonths(6))
-                ->select(
-                    DB::raw('MONTH(created_at) as month'),
-                    DB::raw('YEAR(created_at) as year'),
-                    DB::raw('SUM(amount) as total')
-                )
-                ->groupBy('year', 'month')
-                ->orderBy('year', 'asc')
-                ->orderBy('month', 'asc')
-                ->get()
+
+        // Top Villages by Product Count (SuperAdmin only)
+        $topVillages = null;
+        if ($user->isSuperAdmin()) {
+            $topVillages = Village::withCount('products')
+                ->where('status', 'active')
+                ->orderBy('products_count', 'desc')
+                ->take(5)
+                ->get();
+        }
+
+        // Category Statistics
+        $categoryStats = Category::withCount(['products' => function($query) use ($user) {
+            if ($user->isAdmin() && $user->village_id) {
+                $query->where('village_id', $user->village_id);
+            }
+        }])
+        ->orderBy('products_count', 'desc')
+        ->take(6)
+        ->get();
+
+        // Orders Statistics (if user's village or all for superadmin)
+        $ordersQuery = Order::query();
+        if ($user->isAdmin() && $user->village_id) {
+            $ordersQuery->whereHas('items', function($query) use ($user) {
+                $query->where('village_id', $user->village_id);
+            });
+        }
+
+        $totalOrders = $ordersQuery->count();
+        $pendingOrders = (clone $ordersQuery)->where('status', 'pending')->count();
+        $completedOrders = (clone $ordersQuery)->where('status', 'completed')->count();
+
+        // Revenue (if needed)
+        $totalRevenue = (clone $ordersQuery)
+            ->where('payment_status', 'paid')
+            ->sum('total_amount');
+
+        // Product Type Distribution
+        $productsByType = [
+            'barang' => (clone $productsQuery)->where('type', 'barang')->count(),
+            'jasa' => (clone $productsQuery)->where('type', 'jasa')->count(),
         ];
-        
+
         return view('admin.dashboard', compact(
             'totalUsers',
+            'totalVillages',
             'totalProducts',
             'totalCategories',
-            'recentProducts',
-            'popularProducts',
-            'categoryStats',
             'activeProducts',
             'inactiveProducts',
-            'infaqStats'
+            'lowStockProducts',
+            'outOfStockProducts',
+            'recentProducts',
+            'topVillages',
+            'categoryStats',
+            'totalOrders',
+            'pendingOrders',
+            'completedOrders',
+            'totalRevenue',
+            'productsByType'
         ));
     }
 }
