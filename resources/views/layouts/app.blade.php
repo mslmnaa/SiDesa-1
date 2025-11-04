@@ -69,7 +69,7 @@
                         </div>
                     </div>
                     <a href="{{ route('contact') }}"
-                        class="text-xs md:text-base text-white hover:text-gray-100 transition-colors">Kontak</a>
+                        class="text-xs md:text-base text-white hover:text-gray-100 transition-colors">Gabung Mitra</a>
                 </div>
 
                 <!-- Right Side -->
@@ -107,6 +107,8 @@
                                     @endif
                                     <a href="{{ route('profile') }}"
                                         class="block px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm text-secondary-700 hover:bg-cream">Profile</a>
+                                    <a href="{{ route('user.orders.index') }}"
+                                        class="block px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm text-secondary-700 hover:bg-cream">Riwayat Pesanan</a>
                                     <form method="POST" action="{{ route('logout') }}" class="block">
                                         @csrf
                                         <button type="submit"
@@ -150,7 +152,7 @@
                     </div>
                 </div>
                 <a href="{{ route('contact') }}"
-                    class="text-white/90 hover:text-white text-sm font-medium">Kontak</a>
+                    class="text-white/90 hover:text-white text-sm font-medium">Gabung Mitra</a>
             </div>
             <div class="pt-2 border-t border-white/10">
                 <div class="flex items-center justify-between py-3">
@@ -171,6 +173,7 @@
                                 class="block text-sm text-white/90 hover:text-white">Dashboard Admin</a>
                         @endif
                         <a href="{{ route('profile') }}" class="block text-sm text-white/90 hover:text-white">Profile</a>
+                        <a href="{{ route('user.orders.index') }}" class="block text-sm text-white/90 hover:text-white">Riwayat Pesanan</a>
                         <form method="POST" action="{{ route('logout') }}">@csrf <button type="submit"
                                 class="text-sm text-red-200 hover:text-white">Logout</button></form>
                     </div>
@@ -441,7 +444,7 @@
                         <li><a href="{{ route('home') }}" class="group flex items-center gap-2 text-green-100 hover:text-white transition"><span class="w-1.5 h-1.5 rounded-full bg-green-400 group-hover:scale-110 transition"></span>Beranda</a></li>
                         <li><a href="{{ route('villages.index') }}" class="group flex items-center gap-2 text-green-100 hover:text-white transition"><span class="w-1.5 h-1.5 rounded-full bg-green-400 group-hover:scale-110 transition"></span>Desa</a></li>
                         <li><a href="{{ route('products.index') }}" class="group flex items-center gap-2 text-green-100 hover:text-white transition"><span class="w-1.5 h-1.5 rounded-full bg-green-400 group-hover:scale-110 transition"></span>Produk</a></li>
-                        <li><a href="{{ route('contact') }}" class="group flex items-center gap-2 text-green-100 hover:text-white transition"><span class="w-1.5 h-1.5 rounded-full bg-green-400 group-hover:scale-110 transition"></span>Kontak</a></li>
+                        <li><a href="{{ route('contact') }}" class="group flex items-center gap-2 text-green-100 hover:text-white transition"><span class="w-1.5 h-1.5 rounded-full bg-green-400 group-hover:scale-110 transition"></span>Gabung Mitra</a></li>
                     </ul>
                 </div>
 
@@ -483,6 +486,9 @@
 
     <!-- Alpine.js -->
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
+    <!-- Additional Scripts -->
+    @stack('scripts')
 </body>
 
 </html>

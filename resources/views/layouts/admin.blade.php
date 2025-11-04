@@ -90,7 +90,24 @@
                         </svg>
                         Kelola Produk
                     </a>
+
+                    <!-- Admin Desa: Lokasi Pengiriman -->
+                    <a href="{{ route('admin.shipping-settings.index') }}" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white {{ request()->routeIs('admin.shipping-settings.*') ? 'bg-gray-700 text-white' : '' }}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        Lokasi Pengiriman
+                    </a>
                 @endif
+
+                <!-- Kelola Pesanan (All Admins) -->
+                <a href="{{ route('admin.orders.index') }}" class="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white {{ request()->routeIs('admin.orders.*') ? 'bg-gray-700 text-white' : '' }}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                    </svg>
+                    Kelola Pesanan
+                </a>
 
                 <hr class="my-4 border-gray-700">
 
