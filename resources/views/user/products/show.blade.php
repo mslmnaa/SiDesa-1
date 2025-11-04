@@ -123,25 +123,47 @@
                         <div class="space-y-4">
                             <!-- Add to Cart Button -->
                             @auth
+                                @if(!$product->village->origin_city_id)
+                                <!-- Warning: Shipping location not configured -->
+                                <div class="mb-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-lg">
+                                    <div class="flex items-start">
+                                        <svg class="w-5 h-5 text-yellow-400 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <div class="ml-3">
+                                            <h3 class="text-sm font-medium text-yellow-800">Produk Belum Dapat Dipesan</h3>
+                                            <p class="mt-1 text-xs text-yellow-700">
+                                                Desa penjual belum mengatur lokasi pengiriman. Produk ini belum dapat ditambahkan ke keranjang saat ini.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button disabled class="w-full bg-gray-300 text-gray-500 py-4 px-6 rounded-xl font-semibold cursor-not-allowed flex items-center justify-center gap-3 shadow-lg mb-3">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                    </svg>
+                                    Tidak Dapat Ditambahkan ke Keranjang
+                                </button>
+                                @else
                                 <form action="{{ route('user.cart.add') }}" method="POST" class="w-full">
                                     @csrf
                                     <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                    
+
                                     <!-- Quantity Selector -->
                                     <div class="mb-4">
                                         <label class="block text-sm font-semibold text-gray-700 mb-2">Jumlah:</label>
                                         <div class="flex items-center justify-center">
                                             <div class="flex items-center bg-white border border-gray-300 rounded-xl overflow-hidden">
-                                                <button type="button" onclick="decrementQuantity()" 
+                                                <button type="button" onclick="decrementQuantity()"
                                                         class="px-4 py-3 text-gray-600 hover:bg-gray-100 transition-colors focus:outline-none focus:bg-gray-100">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 12H6"/>
                                                     </svg>
                                                 </button>
-                                                <input type="number" id="quantity" name="quantity" value="1" min="1" max="999" 
+                                                <input type="number" id="quantity" name="quantity" value="1" min="1" max="999"
                                                        class="w-20 px-3 py-3 text-center border-0 focus:outline-none text-lg font-semibold"
                                                        onchange="updateTotal()">
-                                                <button type="button" onclick="incrementQuantity()" 
+                                                <button type="button" onclick="incrementQuantity()"
                                                         class="px-4 py-3 text-gray-600 hover:bg-gray-100 transition-colors focus:outline-none focus:bg-gray-100">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
@@ -150,7 +172,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <button type="submit" class="w-full bg-orange-500 text-white py-4 px-6 rounded-xl font-semibold hover:bg-orange-600 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all duration-200 flex items-center justify-center gap-3 shadow-lg mb-3">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
@@ -158,6 +180,7 @@
                                         Tambah ke Keranjang
                                     </button>
                                 </form>
+                                @endif
                             @else
                                 <a href="{{ route('login') }}" class="block w-full bg-orange-500 text-white py-4 px-6 rounded-xl font-semibold hover:bg-orange-600 transition-all duration-200 text-center mb-3">
                                     Login untuk Tambah ke Keranjang

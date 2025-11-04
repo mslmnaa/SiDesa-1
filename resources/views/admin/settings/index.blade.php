@@ -5,8 +5,8 @@
 @section('content')
 <div class="flex items-center justify-between mb-8">
     <div>
-        <h1 class="text-3xl font-bold text-gray-900">Pengaturan Desa</h1>
-        <p class="text-gray-600 mt-2">Kelola informasi desa dan kontak kepala desa</p>
+        <h1 class="text-3xl font-bold text-gray-900">Pengaturan Sistem</h1>
+        <p class="text-gray-600 mt-2">Kelola konfigurasi sistem dan informasi kontak admin</p>
     </div>
 </div>
 
@@ -30,23 +30,40 @@
     <form action="{{ route('admin.settings.update') }}" method="POST" class="space-y-6 p-8">
         @csrf
         
-        <!-- Email Settings -->
+        <!-- Contact Settings -->
         <div class="border-b border-gray-200 pb-6">
-            <h2 class="text-xl font-semibold text-gray-900 mb-4">Pengaturan Email Kontak</h2>
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Pengaturan Kontak</h2>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- Village Head Email -->
                 <div>
                     <label for="village_head_email" class="block text-sm font-medium text-gray-700 mb-2">
-                        Email Kepala Desa *
+                        Email Admin *
                     </label>
-                    <input type="email" id="village_head_email" name="village_head_email" 
+                    <input type="email" id="village_head_email" name="village_head_email"
                            value="{{ old('village_head_email', $settings['village_head_email']) }}" required
                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('village_head_email') border-red-500 @enderror">
                     @error('village_head_email')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                     <p class="mt-1 text-xs text-gray-500">
-                        Email ini akan menerima pesan dari form kontak website
+                        Email untuk menerima notifikasi sistem
+                    </p>
+                </div>
+
+                <!-- Partner WhatsApp -->
+                <div>
+                    <label for="partner_whatsapp" class="block text-sm font-medium text-gray-700 mb-2">
+                        WhatsApp Admin *
+                    </label>
+                    <input type="text" id="partner_whatsapp" name="partner_whatsapp"
+                           value="{{ old('partner_whatsapp', $settings['partner_whatsapp'] ?? '') }}" required
+                           placeholder="081234567890"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('partner_whatsapp') border-red-500 @enderror">
+                    @error('partner_whatsapp')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                    <p class="mt-1 text-xs text-gray-500">
+                        Nomor WhatsApp untuk calon mitra menghubungi admin
                     </p>
                 </div>
             </div>
@@ -181,65 +198,6 @@
             </div>
         </div>
 
-        <!-- Village Information -->
-        <div class="border-b border-gray-200 pb-6">
-            <h2 class="text-xl font-semibold text-gray-900 mb-4">Informasi Desa</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Village Name -->
-                <div>
-                    <label for="village_name" class="block text-sm font-medium text-gray-700 mb-2">
-                        Nama Desa *
-                    </label>
-                    <input type="text" id="village_name" name="village_name" 
-                           value="{{ old('village_name', $settings['village_name']) }}" required
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('village_name') border-red-500 @enderror">
-                    @error('village_name')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <!-- Village Head Name -->
-                <div>
-                    <label for="village_head_name" class="block text-sm font-medium text-gray-700 mb-2">
-                        Nama Kepala Desa *
-                    </label>
-                    <input type="text" id="village_head_name" name="village_head_name" 
-                           value="{{ old('village_head_name', $settings['village_head_name']) }}" required
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('village_head_name') border-red-500 @enderror">
-                    @error('village_head_name')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <!-- Village Phone -->
-                <div>
-                    <label for="village_phone" class="block text-sm font-medium text-gray-700 mb-2">
-                        Telepon Desa
-                    </label>
-                    <input type="text" id="village_phone" name="village_phone" 
-                           value="{{ old('village_phone', $settings['village_phone']) }}"
-                           placeholder="Contoh: (021) 1234567"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('village_phone') border-red-500 @enderror">
-                    @error('village_phone')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-            </div>
-
-            <!-- Village Address -->
-            <div class="mt-6">
-                <label for="village_address" class="block text-sm font-medium text-gray-700 mb-2">
-                    Alamat Desa
-                </label>
-                <textarea id="village_address" name="village_address" rows="3"
-                          placeholder="Alamat lengkap kantor desa..."
-                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('village_address') border-red-500 @enderror">{{ old('village_address', $settings['village_address']) }}</textarea>
-                @error('village_address')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
-        </div>
-
         <!-- Information Box -->
         <div class="bg-blue-50 border border-blue-200 rounded-md p-4">
             <div class="flex">
@@ -252,9 +210,9 @@
                     <h3 class="text-sm font-medium text-blue-800">Informasi Penting</h3>
                     <div class="mt-1 text-sm text-blue-700">
                         <ul class="list-disc list-inside space-y-1">
-                            <li>Email kepala desa akan menerima semua pesan dari form kontak website</li>
-                            <li>Pastikan email yang dimasukkan adalah email aktif yang sering dicek</li>
-                            <li>Informasi desa akan ditampilkan di bagian kontak dan footer website</li>
+                            <li>Email admin akan menerima notifikasi penting dari sistem</li>
+                            <li>Nomor WhatsApp akan ditampilkan di halaman "Gabung Mitra" untuk calon mitra menghubungi Anda</li>
+                            <li>Pastikan nomor WhatsApp aktif dan sering dicek untuk merespon calon mitra</li>
                         </ul>
                     </div>
                 </div>

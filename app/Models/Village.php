@@ -23,6 +23,11 @@ class Village extends Model
         'email',
         'whatsapp',
         'status',
+        'origin_province_id',
+        'origin_province_name',
+        'origin_city_id',
+        'origin_city_name',
+        'origin_postal_code',
     ];
 
     public function products()
