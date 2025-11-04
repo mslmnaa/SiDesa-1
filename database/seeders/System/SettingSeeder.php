@@ -20,24 +20,9 @@ class SettingSeeder extends Seeder
                 'description' => 'Email Kepala Desa untuk menerima pesan kontak'
             ],
             [
-                'key' => 'village_name',
-                'value' => 'Desa Maju Makmur',
-                'description' => 'Nama Desa'
-            ],
-            [
-                'key' => 'village_head_name',
-                'value' => 'Bapak Kepala Desa',
-                'description' => 'Nama Kepala Desa'
-            ],
-            [
-                'key' => 'village_phone',
-                'value' => '(021) 1234567',
-                'description' => 'Telepon Kantor Desa'
-            ],
-            [
-                'key' => 'village_address',
-                'value' => 'Jl. Raya Desa No. 1, Kecamatan, Kabupaten, Provinsi',
-                'description' => 'Alamat Kantor Desa'
+                'key' => 'partner_whatsapp',
+                'value' => '081234567890',
+                'description' => 'Nomor WhatsApp Admin untuk pendaftaran mitra'
             ],
             // SMTP Email Configuration
             [

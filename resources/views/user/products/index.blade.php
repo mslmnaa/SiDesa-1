@@ -13,7 +13,7 @@
 
         <!-- Search & Filter -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 mb-6 sm:mb-8">
-            <form method="GET" action="{{ route('products.index') }}" class="space-y-5">
+            <form method="GET" action="{{ route('products.index') }}" class="space-y-5" id="searchForm">
                 <!-- Search Bar - Full Width -->
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -21,9 +21,10 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
                     </div>
-                    <input type="text" name="search" value="{{ request('search') }}" 
+                    <input type="text" name="search" value="{{ request('search') }}"
                            placeholder="Cari produk, kategori, atau deskripsi..."
-                           class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 text-sm sm:text-base">
+                           class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 text-sm sm:text-base"
+                           id="searchInput">
                 </div>
 
                 <!-- Filters Row -->
@@ -32,7 +33,7 @@
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Kategori</label>
                         <div class="relative">
-                            <select name="category_id" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-sm appearance-none">
+                            <select name="category_id" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-sm appearance-none filter-select">
                                 <option value="">🏷️ Semua Kategori</option>
                                 @foreach($categories as $category)
                                     <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
@@ -54,15 +55,15 @@
                         <div class="grid grid-cols-2 gap-2">
                             <div class="relative">
                                 <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">Rp</span>
-                                <input type="number" name="min_price" value="{{ request('min_price') }}" 
+                                <input type="number" name="min_price" value="{{ request('min_price') }}"
                                        placeholder="Min"
-                                       class="w-full pl-8 pr-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm">
+                                       class="w-full pl-8 pr-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm filter-input">
                             </div>
                             <div class="relative">
                                 <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">Rp</span>
-                                <input type="number" name="max_price" value="{{ request('max_price') }}" 
+                                <input type="number" name="max_price" value="{{ request('max_price') }}"
                                        placeholder="Max"
-                                       class="w-full pl-8 pr-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm">
+                                       class="w-full pl-8 pr-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-sm filter-input">
                             </div>
                         </div>
                     </div>
@@ -71,7 +72,7 @@
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Urutkan</label>
                         <div class="relative">
-                            <select name="sort" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-sm appearance-none">
+                            <select name="sort" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-sm appearance-none filter-select">
                                 <option value="created_at" {{ request('sort') == 'created_at' ? 'selected' : '' }}>🆕 Produk Terbaru</option>
                                 <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>🔤 Nama A-Z</option>
                                 <option value="price" {{ request('sort') == 'price' ? 'selected' : '' }}>💰 Harga Terendah</option>
@@ -89,7 +90,7 @@
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Desa</label>
                         <div class="relative">
-                            <select name="village_id" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-sm appearance-none">
+                            <select name="village_id" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white text-sm appearance-none filter-select">
                                 <option value="">🏘️ Semua Desa</option>
                                 @foreach($villages as $village)
                                     <option value="{{ $village->id }}" {{ request('village_id') == $village->id ? 'selected' : '' }}>
@@ -107,14 +108,8 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pt-2 border-t border-gray-100">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pt-2 border-gray-100">
                     <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                        <button type="submit" class="w-full sm:w-auto bg-green-600 text-white px-6 py-3 rounded-xl hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 text-sm font-semibold flex items-center justify-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"/>
-                            </svg>
-                            Terapkan Filter
-                        </button>
                         <a href="{{ route('products.index') }}" class="w-full sm:w-auto bg-gray-100 text-gray-700 px-6 py-3 rounded-xl hover:bg-gray-200 transition-all duration-200 text-center text-sm font-semibold flex items-center justify-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
@@ -135,8 +130,20 @@
         </div>
 
         <!-- Products Grid -->
-        @if($products->count() > 0)
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 mb-8">
+        <div class="relative">
+            <!-- Loading Overlay for Products Area -->
+            <div id="productsLoadingOverlay" class="absolute inset-0 bg-white bg-opacity-80 backdrop-blur-sm z-10 hidden items-center justify-center rounded-lg">
+                <div class="flex flex-col items-center space-y-3">
+                    <svg class="animate-spin h-10 w-10 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <p class="text-gray-700 font-medium">Mencari produk...</p>
+                </div>
+            </div>
+
+            @if($products->count() > 0)
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 mb-8" id="productsGrid">
                 @foreach($products as $product)
                     <a href="{{ route('products.show', $product) }}" 
                        class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md hover:border-green-300 transition-all duration-200 group block">
@@ -195,7 +202,7 @@
             <div class="flex justify-center">
                 {{ $products->appends(request()->query())->links() }}
             </div>
-        @else
+            @else
             <div class="text-center py-12">
                 <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2M4 13h2m13-8V4a1 1 0 00-1-1H7a1 1 0 00-1 1v1m8 0V4m0 0H8m4 0h4"></path>
@@ -206,8 +213,91 @@
                     Lihat Semua Produk
                 </a>
             </div>
-        @endif
+            @endif
+        </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchForm = document.getElementById('searchForm');
+    const searchInput = document.getElementById('searchInput');
+    const filterSelects = document.querySelectorAll('.filter-select');
+    const filterInputs = document.querySelectorAll('.filter-input');
+    const loadingOverlay = document.getElementById('productsLoadingOverlay');
+
+    let searchTimeout;
+    let isSubmitting = false;
+
+    // Function to show loading
+    function showLoading() {
+        if (loadingOverlay) {
+            loadingOverlay.classList.remove('hidden');
+            loadingOverlay.classList.add('flex');
+        }
+    }
+
+    // Function to hide loading
+    function hideLoading() {
+        if (loadingOverlay) {
+            loadingOverlay.classList.add('hidden');
+            loadingOverlay.classList.remove('flex');
+        }
+    }
+
+    // Debounce function for search input
+    searchInput.addEventListener('input', function() {
+        // Show loading immediately when user types
+        showLoading();
+
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(function() {
+            if (!isSubmitting) {
+                isSubmitting = true;
+                searchForm.submit();
+            }
+        }, 500); // 500ms delay after user stops typing
+    });
+
+    // Instant submit for select filters
+    filterSelects.forEach(function(select) {
+        select.addEventListener('change', function() {
+            showLoading();
+            if (!isSubmitting) {
+                isSubmitting = true;
+                setTimeout(function() {
+                    searchForm.submit();
+                }, 100);
+            }
+        });
+    });
+
+    // Debounce function for price inputs
+    filterInputs.forEach(function(input) {
+        let inputTimeout;
+        input.addEventListener('input', function() {
+            // Show loading immediately when user types
+            showLoading();
+
+            clearTimeout(inputTimeout);
+            inputTimeout = setTimeout(function() {
+                if (!isSubmitting) {
+                    isSubmitting = true;
+                    searchForm.submit();
+                }
+            }, 800); // 800ms delay for price inputs
+        });
+    });
+
+    // Hide loading when page is fully loaded (back button case)
+    window.addEventListener('pageshow', function() {
+        hideLoading();
+        isSubmitting = false;
+    });
+
+    // Hide loading on page load
+    hideLoading();
+});
+</script>
 
 @endsection

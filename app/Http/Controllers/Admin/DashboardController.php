@@ -18,6 +18,13 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
 
+        // Check if admin village has set shipping origin location
+        $needsShippingSetup = false;
+        if ($user->isAdmin() && $user->village_id) {
+            $village = Village::find($user->village_id);
+            $needsShippingSetup = !$village || empty($village->origin_city_id);
+        }
+
         // Basic Statistics
         $totalUsers = User::where('role', 'user')->count();
         $totalVillages = Village::where('status', 'active')->count();
@@ -101,7 +108,8 @@ class DashboardController extends Controller
             'pendingOrders',
             'completedOrders',
             'totalRevenue',
-            'productsByType'
+            'productsByType',
+            'needsShippingSetup'
         ));
     }
 }

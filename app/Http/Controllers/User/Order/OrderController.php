@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Order\Cart;
+use App\Models\ShippingAddress;
+use App\Services\MidtransService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -44,19 +46,53 @@ class OrderController extends Controller
      */
     public function checkout()
     {
+        // Hanya ambil item yang selected
         $cartItems = Cart::where('user_id', auth()->id())
+            ->where('is_selected', true)
             ->with(['product.village'])
             ->get();
 
         if ($cartItems->isEmpty()) {
             return redirect()->route('user.cart.index')
-                ->with('error', 'Keranjang Anda kosong');
+                ->with('error', 'Tidak ada produk yang dipilih untuk checkout. Silakan pilih produk terlebih dahulu.');
+        }
+
+        // Check if any selected product's village hasn't configured shipping location
+        $unConfiguredVillages = $cartItems->filter(function ($item) {
+            return !$item->product->village->origin_city_id;
+        });
+
+        if ($unConfiguredVillages->isNotEmpty()) {
+            $villageNames = $unConfiguredVillages->pluck('product.village.name')->unique()->implode(', ');
+            return redirect()->route('user.cart.index')
+                ->with('error', 'Tidak dapat checkout. Desa berikut belum mengatur lokasi pengiriman: ' . $villageNames . '. Silakan hapus produk dari desa tersebut atau tunggu hingga desa mengatur lokasi pengiriman.');
         }
 
         // Group cart items by village
         $groupedByVillage = $cartItems->groupBy('product.village_id');
 
-        return view('user.orders.checkout', compact('cartItems', 'groupedByVillage'));
+        // Prepare villages origin data for shipping calculation
+        $villagesOrigin = $groupedByVillage->map(function ($items, $villageId) {
+            $village = $items->first()->product->village;
+
+            // Skip if village not found
+            if (!$village) {
+                return null;
+            }
+
+            return [
+                'village_id' => $villageId,
+                'village_name' => $village->name,
+                'origin_city_id' => $village->origin_city_id,
+                'origin_city_name' => $village->origin_city_name,
+                'total_weight' => $items->sum(function ($item) {
+                    return $item->quantity * ($item->product->weight ?? 1000); // default 1kg if no weight
+                }),
+                'has_origin' => !empty($village->origin_city_id) // Check if origin is set
+            ];
+        })->filter()->values(); // Filter out null values
+
+        return view('user.orders.checkout', compact('cartItems', 'groupedByVillage', 'villagesOrigin'));
     }
 
     /**
@@ -67,30 +103,78 @@ class OrderController extends Controller
         $validated = $request->validate([
             'payment_method' => 'required|string',
             'customer_notes' => 'nullable|string',
+            // Shipping address validation
+            'recipient_name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'province_id' => 'required|string',
+            'province_name' => 'required|string',
+            'city_id' => 'required|string',
+            'city_name' => 'required|string',
+            'district' => 'nullable|string|max:255',
+            'postal_code' => 'required|string|max:10',
+            'full_address' => 'required|string',
+            // Shipping service validation
+            'shipping_cost' => 'required|integer|min:0',
+            'shipping_service' => 'required|string',
+            'shipping_etd' => 'nullable|string',
         ]);
 
+        // Hanya ambil item yang selected
         $cartItems = Cart::where('user_id', auth()->id())
-            ->with('product')
+            ->where('is_selected', true)
+            ->with(['product.village'])
             ->get();
 
         if ($cartItems->isEmpty()) {
             return redirect()->route('user.cart.index')
-                ->with('error', 'Keranjang Anda kosong');
+                ->with('error', 'Tidak ada produk yang dipilih untuk checkout');
+        }
+
+        // Validate shipping location is configured for all villages
+        $unConfiguredVillages = $cartItems->filter(function ($item) {
+            return !$item->product->village->origin_city_id;
+        });
+
+        if ($unConfiguredVillages->isNotEmpty()) {
+            $villageNames = $unConfiguredVillages->pluck('product.village.name')->unique()->implode(', ');
+            return redirect()->route('user.cart.index')
+                ->with('error', 'Tidak dapat melakukan checkout. Desa berikut belum mengatur lokasi pengiriman: ' . $villageNames);
         }
 
         DB::beginTransaction();
 
         try {
-            // Calculate total
-            $totalAmount = $cartItems->sum(function ($item) {
+            // Create shipping address
+            $shippingAddress = ShippingAddress::create([
+                'user_id' => auth()->id(),
+                'label' => 'Order Address',
+                'recipient_name' => $validated['recipient_name'],
+                'phone' => $validated['phone'],
+                'province_id' => $validated['province_id'],
+                'province_name' => $validated['province_name'],
+                'city_id' => $validated['city_id'],
+                'city_name' => $validated['city_name'],
+                'district' => $validated['district'],
+                'postal_code' => $validated['postal_code'],
+                'full_address' => $validated['full_address'],
+                'is_default' => false,
+            ]);
+
+            // Calculate total (products + shipping)
+            $productTotal = $cartItems->sum(function ($item) {
                 return $item->quantity * $item->product->price;
             });
+            $totalAmount = $productTotal + $validated['shipping_cost'];
 
             // Create order
             $order = Order::create([
                 'order_number' => $this->generateOrderNumber(),
                 'user_id' => auth()->id(),
+                'shipping_address_id' => $shippingAddress->id,
                 'total_amount' => $totalAmount,
+                'shipping_cost' => $validated['shipping_cost'],
+                'shipping_service' => $validated['shipping_service'],
+                'shipping_etd' => $validated['shipping_etd'],
                 'status' => 'pending',
                 'payment_status' => 'unpaid',
                 'payment_method' => $validated['payment_method'],
@@ -113,10 +197,34 @@ class OrderController extends Controller
                 $cartItem->product->decrement('stock', $cartItem->quantity);
             }
 
-            // Clear cart
-            Cart::where('user_id', auth()->id())->delete();
+            // Clear hanya cart items yang selected (yang sudah di-checkout)
+            Cart::where('user_id', auth()->id())
+                ->where('is_selected', true)
+                ->delete();
+
+            // Generate Midtrans Snap Token if payment method is midtrans
+            if ($validated['payment_method'] === 'midtrans') {
+                try {
+                    $midtransService = new MidtransService();
+                    $snapToken = $midtransService->createTransaction($order);
+
+                    $order->update([
+                        'midtrans_snap_token' => $snapToken,
+                        'midtrans_order_id' => $order->order_number,
+                    ]);
+                } catch (\Exception $e) {
+                    DB::rollBack();
+                    return redirect()->back()
+                        ->with('error', 'Gagal membuat pembayaran: ' . $e->getMessage());
+                }
+            }
 
             DB::commit();
+
+            // Redirect to payment page if using Midtrans
+            if ($validated['payment_method'] === 'midtrans') {
+                return redirect()->route('user.payment.show', $order);
+            }
 
             return redirect()->route('user.orders.show', $order)
                 ->with('success', 'Order berhasil dibuat');
@@ -129,34 +237,6 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Upload payment proof
-     */
-    public function uploadPaymentProof(Request $request, Order $order)
-    {
-        // Pastikan order milik user yang login
-        if ($order->user_id !== auth()->id()) {
-            abort(403);
-        }
-
-        $request->validate([
-            'payment_proof' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
-
-        if ($request->hasFile('payment_proof')) {
-            $image = $request->file('payment_proof');
-            $compressedImage = \App\Models\Product\Product::compressImage($image);
-
-            $order->update([
-                'payment_proof' => $compressedImage,
-                'payment_status' => 'paid',
-                'paid_at' => now(),
-            ]);
-        }
-
-        return redirect()->back()
-            ->with('success', 'Bukti pembayaran berhasil diupload');
-    }
 
     /**
      * Generate unique order number

@@ -12,16 +12,51 @@ use App\Http\Controllers\Admin\Product\CategoryController as AdminCategoryContro
 use App\Http\Controllers\Admin\AdminManagementController;
 use App\Http\Controllers\SuperAdmin\User\UserController as AdminUserController;
 use App\Http\Controllers\Admin\Village\VillageController;
+use App\Http\Controllers\Admin\Village\ShippingSettingsController;
 use App\Http\Controllers\User\Village\VillageController as UserVillageController;
 use App\Http\Controllers\User\Contact\ContactController;
 use App\Http\Controllers\User\Order\OrderController as UserOrderController;
+use App\Http\Controllers\User\PaymentController;
 use App\Http\Controllers\SuperAdmin\System\SettingController;
+use App\Http\Controllers\Api\RajaOngkirController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
 */
+
+// Test Collaborator Komerce API
+Route::get('/test-rajaongkir', function() {
+    $service = new \App\Services\RajaOngkirService();
+
+    // Test 1: Get Provinces
+    $provinces = $service->getProvinces();
+
+    // Test 2: Search Destination
+    $searchResult = $service->searchDestination('jakarta');
+
+    return response()->json([
+        'status' => 'success',
+        'test_1_provinces' => [
+            'count' => count($provinces),
+            'sample' => array_slice($provinces, 0, 3)
+        ],
+        'test_2_search' => [
+            'keyword' => 'jakarta',
+            'count' => count($searchResult),
+            'sample' => array_slice($searchResult, 0, 3)
+        ]
+    ]);
+});
+
+// API Routes for RajaOngkir (AJAX)
+Route::prefix('api')->name('api.')->group(function () {
+    Route::get('/rajaongkir/provinces', [RajaOngkirController::class, 'getProvinces'])->name('rajaongkir.provinces');
+    Route::get('/rajaongkir/cities', [RajaOngkirController::class, 'getCities'])->name('rajaongkir.cities');
+    Route::post('/rajaongkir/calculate-cost', [RajaOngkirController::class, 'calculateCost'])->name('rajaongkir.calculate-cost');
+});
 
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -38,7 +73,6 @@ Route::get('/products/category/{category}', [ProductController::class, 'category
 Route::post('/products/{product}/whatsapp-inquiry', [ProductController::class, 'whatsappInquiry'])->name('products.whatsapp-inquiry');
 
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
-Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -57,14 +91,23 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/cart/add', [CartController::class, 'add'])->name('user.cart.add');
     Route::put('/cart/{cart}', [CartController::class, 'update'])->name('user.cart.update');
     Route::delete('/cart/{cart}', [CartController::class, 'remove'])->name('user.cart.remove');
+    Route::post('/cart/{cart}/toggle-selection', [CartController::class, 'toggleSelection'])->name('user.cart.toggle-selection');
+    Route::post('/cart/select-all', [CartController::class, 'selectAll'])->name('user.cart.select-all');
 
     // Order Routes
     Route::get('/orders', [UserOrderController::class, 'index'])->name('user.orders.index');
     Route::get('/orders/{order}', [UserOrderController::class, 'show'])->name('user.orders.show');
     Route::get('/checkout', [UserOrderController::class, 'checkout'])->name('user.orders.checkout');
     Route::post('/checkout', [UserOrderController::class, 'store'])->name('user.orders.store');
-    Route::post('/orders/{order}/payment-proof', [UserOrderController::class, 'uploadPaymentProof'])->name('user.orders.payment-proof');
+
+    // Payment Routes (Midtrans)
+    Route::get('/payment/{order}', [PaymentController::class, 'show'])->name('user.payment.show');
+    Route::get('/payment/finish', [PaymentController::class, 'finish'])->name('user.payment.finish');
+    Route::get('/payment/{order}/status', [PaymentController::class, 'checkStatus'])->name('user.payment.status');
 });
+
+// Midtrans Webhook (No Auth Required)
+Route::post('/payment/notification', [PaymentController::class, 'notification'])->name('user.payment.notification');
 
 // Admin Routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -76,6 +119,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     
     // Category Management
     Route::resource('categories', AdminCategoryController::class);
+
+    // Order Management
+    Route::get('orders', [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::get('orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
+    Route::put('orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
+    Route::put('orders/{order}/payment-status', [AdminOrderController::class, 'updatePaymentStatus'])->name('orders.update-payment-status');
+    Route::put('orders/{order}/shipping', [AdminOrderController::class, 'updateShipping'])->name('orders.update-shipping');
 
     // Admin Management (SuperAdmin Only)
     Route::resource('admins', AdminManagementController::class);
@@ -92,4 +142,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Village Management (SuperAdmin Only)
     Route::resource('villages', VillageController::class);
     Route::post('villages/{village}/toggle-status', [VillageController::class, 'toggleStatus'])->name('villages.toggle-status');
+
+    // Shipping Settings (Village Admin Only)
+    Route::get('shipping-settings', [ShippingSettingsController::class, 'index'])->name('shipping-settings.index');
+    Route::put('shipping-settings', [ShippingSettingsController::class, 'update'])->name('shipping-settings.update');
+    Route::post('shipping-settings/clear-cache', [ShippingSettingsController::class, 'clearCache'])->name('shipping-settings.clear-cache');
 });
