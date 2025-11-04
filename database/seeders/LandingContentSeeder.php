@@ -11,7 +11,7 @@ class LandingContentSeeder extends Seeder
 {
     public function run(): void
     {
-        // Clear existing data
+        // Clear existing dat
         // LandingContent::truncate();
         
         // Create storage directory if not exists
