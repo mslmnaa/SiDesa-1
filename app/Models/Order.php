@@ -12,7 +12,12 @@ class Order extends Model
     protected $fillable = [
         'order_number',
         'user_id',
+        'shipping_address_id',
         'total_amount',
+        'shipping_cost',
+        'shipping_service',
+        'shipping_etd',
+        'shipping_tracking_number',
         'status',
         'payment_status',
         'payment_method',
@@ -21,6 +26,10 @@ class Order extends Model
         'admin_notes',
         'paid_at',
         'completed_at',
+        'midtrans_order_id',
+        'midtrans_transaction_id',
+        'midtrans_transaction_status',
+        'midtrans_snap_token',
     ];
 
     protected $casts = [
@@ -37,6 +46,11 @@ class Order extends Model
     public function items()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function shippingAddress()
+    {
+        return $this->belongsTo(ShippingAddress::class);
     }
 
     public function scopePending($query)
