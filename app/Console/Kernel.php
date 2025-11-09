@@ -12,7 +12,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Auto-update shipping tracking every 2 hours
+        $schedule->command('tracking:update')
+            ->everyTwoHours()
+            ->withoutOverlapping()
+            ->runInBackground()
+            ->appendOutputTo(storage_path('logs/tracking-updates.log'));
     }
 
     /**
