@@ -121,11 +121,11 @@
                             </div>
                         </div>
 
-                        <!-- Tracking Info with Binderbyte -->
+                        <!-- Tracking Info (Auto-Update dari Biteship) -->
                         @if($order->hasTracking())
                             <div class="bg-green-50 border border-green-200 rounded-lg p-4">
                                 <div class="flex items-center justify-between mb-3">
-                                    <div class="flex items-center">
+                                    <div class="flex items-center flex-1">
                                         <svg class="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"></path>
@@ -135,22 +135,72 @@
                                             <span class="ml-2 text-green-900 font-mono">{{ $order->shipping_resi }}</span>
                                         </div>
                                     </div>
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold {{ $order->getShippingStatusColor() }}">
-                                        {{ $order->shipping_status ? ucfirst(str_replace('_', ' ', $order->shipping_status)) : 'Pending' }}
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
+                                        @if($order->shipping_status === 'delivered') bg-green-100 text-green-800
+                                        @elseif($order->shipping_status === 'in_transit') bg-blue-100 text-blue-800
+                                        @elseif($order->shipping_status === 'on_process') bg-yellow-100 text-yellow-800
+                                        @elseif($order->shipping_status === 'failed') bg-red-100 text-red-800
+                                        @else bg-gray-100 text-gray-800
+                                        @endif">
+                                        @if($order->shipping_status === 'delivered') ✓ Terkirim
+                                        @elseif($order->shipping_status === 'in_transit') 🚚 Dalam Perjalanan
+                                        @elseif($order->shipping_status === 'on_process') 📦 Sedang Diproses
+                                        @elseif($order->shipping_status === 'failed') ❌ Gagal
+                                        @else ⏳ Pending
+                                        @endif
                                     </span>
                                 </div>
-                                <div class="text-sm text-green-700">
+                                <div class="text-sm text-green-700 mb-2">
                                     <span class="font-medium">Kurir:</span> {{ strtoupper($order->shipping_courier) }}
                                     @if($order->shipped_at)
-                                        <span class="ml-4"><span class="font-medium">Dikirim:</span> {{ $order->shipped_at->format('d M Y, H:i') }}</span>
+                                        <span class="ml-4"><span class="font-medium">Dikirim:</span> {{ $order->shipped_at->format('d M Y, H:i') }} WIB</span>
+                                    @endif
+                                    @if($order->delivered_at)
+                                        <span class="ml-4"><span class="font-medium">Diterima:</span> {{ $order->delivered_at->format('d M Y, H:i') }} WIB</span>
                                     @endif
                                 </div>
-                                @if($order->tracking_updated_at)
-                                    <div class="text-xs text-green-600 mt-2">
-                                        <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+
+                                <!-- Auto-Update Info -->
+                                <div class="bg-white bg-opacity-70 rounded p-3 border border-green-300">
+                                    <div class="flex items-start">
+                                        <svg class="w-4 h-4 text-blue-600 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                                         </svg>
-                                        Terakhir diupdate: {{ $order->tracking_updated_at->diffForHumans() }}
+                                        <div class="text-xs text-gray-700">
+                                            <p class="font-medium text-blue-700 mb-1">🔄 Auto-Update dari Biteship</p>
+                                            <p class="text-gray-600">
+                                                Status tracking diupdate otomatis setiap 2 jam dari sistem ekspedisi.
+                                                @if($order->tracking_updated_at)
+                                                    <span class="block mt-1 text-blue-600">
+                                                        <svg class="inline w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                        </svg>
+                                                        Terakhir diupdate: {{ $order->tracking_updated_at->format('d M Y, H:i') }} WIB ({{ $order->tracking_updated_at->diffForHumans() }})
+                                                    </span>
+                                                @endif
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Link to Tracking Page -->
+                                @if($order->getTrackingUrl())
+                                    <div class="mt-3 flex gap-2">
+                                        <a href="{{ route('user.orders.tracking', $order) }}" target="_blank"
+                                           class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-colors">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                            </svg>
+                                            Lihat Detail Tracking
+                                        </a>
+                                        <a href="{{ $order->getTrackingUrl() }}" target="_blank"
+                                           class="inline-flex items-center px-3 py-1.5 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded-lg transition-colors">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                            </svg>
+                                            Lacak di {{ strtoupper($order->shipping_courier) }}
+                                        </a>
                                     </div>
                                 @endif
                             </div>
@@ -162,53 +212,21 @@
                                         <svg class="w-5 h-5 text-yellow-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
                                         </svg>
-                                        <span class="text-yellow-800 font-medium">Belum ada nomor resi</span>
+                                        <div>
+                                            <span class="text-yellow-800 font-medium">Order siap untuk dikirim</span>
+                                            <p class="text-xs text-yellow-700 mt-0.5">Silakan proses pengiriman untuk order ini</p>
+                                        </div>
                                     </div>
                                     <a href="{{ route('admin.shipping.create', $order) }}"
                                        class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium text-sm">
                                         <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                                         </svg>
-                                        Input Nomor Resi
+                                        Proses Pengiriman
                                     </a>
                                 </div>
-                                <p class="text-xs text-yellow-700 mt-2 ml-7">Silakan input nomor resi untuk mengaktifkan tracking pengiriman</p>
                             </div>
                         @endif
-
-                        <!-- Update Shipping Form -->
-                        <div class="border-t pt-4 mt-4">
-                            <button @click="showShippingForm = !showShippingForm" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                                <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                </svg>
-                                Update Informasi Pengiriman
-                            </button>
-                            <div x-show="showShippingForm" x-cloak class="mt-4 bg-gray-50 p-4 rounded-lg">
-                                <form action="{{ route('admin.orders.update-shipping', $order) }}" method="POST">
-                                    @csrf
-                                    @method('PUT')
-                                    <div class="mb-4">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Nomor Resi / Tracking Number</label>
-                                        <input type="text" name="shipping_tracking_number" value="{{ old('shipping_tracking_number', $order->shipping_tracking_number) }}"
-                                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                               placeholder="Masukkan nomor resi pengiriman">
-                                    </div>
-                                    <div class="mb-4">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Catatan Pengiriman</label>
-                                        <textarea name="shipping_notes" rows="2"
-                                                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                                  placeholder="Catatan tambahan mengenai pengiriman"></textarea>
-                                    </div>
-                                    <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
-                                        <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
-                                        </svg>
-                                        Simpan Perubahan
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
                     @else
                         <p class="text-gray-500">Belum ada informasi pengiriman</p>
                     @endif
