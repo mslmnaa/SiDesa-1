@@ -22,6 +22,8 @@ class ShippingAddress extends Model
         'postal_code',
         'full_address',
         'is_default',
+        'latitude',
+        'longitude',
     ];
 
     protected $casts = [

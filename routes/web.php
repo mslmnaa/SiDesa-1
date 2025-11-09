@@ -17,9 +17,10 @@ use App\Http\Controllers\User\Village\VillageController as UserVillageController
 use App\Http\Controllers\User\Contact\ContactController;
 use App\Http\Controllers\User\Order\OrderController as UserOrderController;
 use App\Http\Controllers\User\PaymentController;
-use App\Http\Controllers\SuperAdmin\System\SettingController;
 use App\Http\Controllers\Api\RajaOngkirController;
+use App\Http\Controllers\Api\BiteshipController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\ShippingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,6 +57,11 @@ Route::prefix('api')->name('api.')->group(function () {
     Route::get('/rajaongkir/provinces', [RajaOngkirController::class, 'getProvinces'])->name('rajaongkir.provinces');
     Route::get('/rajaongkir/cities', [RajaOngkirController::class, 'getCities'])->name('rajaongkir.cities');
     Route::post('/rajaongkir/calculate-cost', [RajaOngkirController::class, 'calculateCost'])->name('rajaongkir.calculate-cost');
+
+    // Biteship API Routes
+    Route::post('/biteship/rates', [BiteshipController::class, 'getRates'])->name('biteship.rates');
+    Route::get('/biteship/postal-code/search', [BiteshipController::class, 'searchPostalCode'])->name('biteship.postal-code.search');
+    Route::get('/biteship/tracking/{trackingId}', [BiteshipController::class, 'getTracking'])->name('biteship.tracking');
 });
 
 // Public Routes
@@ -97,6 +103,7 @@ Route::middleware(['auth'])->group(function () {
     // Order Routes
     Route::get('/orders', [UserOrderController::class, 'index'])->name('user.orders.index');
     Route::get('/orders/{order}', [UserOrderController::class, 'show'])->name('user.orders.show');
+    Route::get('/orders/{order}/tracking', [ShippingController::class, 'show'])->name('user.orders.tracking');
     Route::get('/checkout', [UserOrderController::class, 'checkout'])->name('user.orders.checkout');
     Route::post('/checkout', [UserOrderController::class, 'store'])->name('user.orders.store');
 
@@ -127,17 +134,17 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('orders/{order}/payment-status', [AdminOrderController::class, 'updatePaymentStatus'])->name('orders.update-payment-status');
     Route::put('orders/{order}/shipping', [AdminOrderController::class, 'updateShipping'])->name('orders.update-shipping');
 
+    // Shipping Management (Input Resi)
+    Route::get('orders/{order}/shipping/create', [ShippingController::class, 'create'])->name('shipping.create');
+    Route::post('orders/{order}/shipping', [ShippingController::class, 'store'])->name('shipping.store');
+    Route::post('orders/{order}/shipping/create-shipment', [ShippingController::class, 'createShipment'])->name('shipping.create-shipment');
+    Route::post('orders/{order}/shipping/update-tracking', [ShippingController::class, 'updateTracking'])->name('shipping.update-tracking');
+
     // Admin Management (SuperAdmin Only)
     Route::resource('admins', AdminManagementController::class);
 
-    // User Management (Super Admin Only)
+    // User Management (Super Admin Only) - Hanya untuk user biasa, bukan admin
     Route::resource('users', AdminUserController::class);
-    Route::post('users/{user}/toggle-role', [AdminUserController::class, 'toggleRole'])->name('users.toggle-role');
-    
-    // Settings Management (Super Admin Only)
-    Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
-    Route::post('settings', [SettingController::class, 'update'])->name('settings.update');
-    Route::get('settings/test-email', [SettingController::class, 'testEmail'])->name('settings.test-email');
 
     // Village Management (SuperAdmin Only)
     Route::resource('villages', VillageController::class);

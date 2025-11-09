@@ -121,16 +121,58 @@
                             </div>
                         </div>
 
-                        @if($order->shipping_tracking_number)
+                        <!-- Tracking Info with Binderbyte -->
+                        @if($order->hasTracking())
                             <div class="bg-green-50 border border-green-200 rounded-lg p-4">
-                                <div class="flex items-center">
-                                    <svg class="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"></path>
-                                    </svg>
-                                    <span class="font-medium text-green-800">Nomor Resi:</span>
-                                    <span class="ml-2 text-green-900">{{ $order->shipping_tracking_number }}</span>
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center">
+                                        <svg class="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"></path>
+                                        </svg>
+                                        <div>
+                                            <span class="font-medium text-green-800">Nomor Resi:</span>
+                                            <span class="ml-2 text-green-900 font-mono">{{ $order->shipping_resi }}</span>
+                                        </div>
+                                    </div>
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold {{ $order->getShippingStatusColor() }}">
+                                        {{ $order->shipping_status ? ucfirst(str_replace('_', ' ', $order->shipping_status)) : 'Pending' }}
+                                    </span>
                                 </div>
+                                <div class="text-sm text-green-700">
+                                    <span class="font-medium">Kurir:</span> {{ strtoupper($order->shipping_courier) }}
+                                    @if($order->shipped_at)
+                                        <span class="ml-4"><span class="font-medium">Dikirim:</span> {{ $order->shipped_at->format('d M Y, H:i') }}</span>
+                                    @endif
+                                </div>
+                                @if($order->tracking_updated_at)
+                                    <div class="text-xs text-green-600 mt-2">
+                                        <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                        </svg>
+                                        Terakhir diupdate: {{ $order->tracking_updated_at->diffForHumans() }}
+                                    </div>
+                                @endif
+                            </div>
+                        @elseif($order->payment_status === 'paid' && in_array($order->status, ['pending', 'processing']))
+                            <!-- Show Input Resi button if paid but not shipped -->
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <svg class="w-5 h-5 text-yellow-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                        </svg>
+                                        <span class="text-yellow-800 font-medium">Belum ada nomor resi</span>
+                                    </div>
+                                    <a href="{{ route('admin.shipping.create', $order) }}"
+                                       class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium text-sm">
+                                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                        </svg>
+                                        Input Nomor Resi
+                                    </a>
+                                </div>
+                                <p class="text-xs text-yellow-700 mt-2 ml-7">Silakan input nomor resi untuk mengaktifkan tracking pengiriman</p>
                             </div>
                         @endif
 

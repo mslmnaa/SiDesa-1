@@ -28,6 +28,8 @@ class Village extends Model
         'origin_city_id',
         'origin_city_name',
         'origin_postal_code',
+        'latitude',
+        'longitude',
     ];
 
     public function products()

@@ -36,6 +36,62 @@ class OrderController extends Controller
             abort(403, 'Anda tidak memiliki akses ke order ini');
         }
 
+        // Auto-check payment status jika menggunakan Midtrans dan statusnya belum paid
+        if ($order->payment_method === 'midtrans' &&
+            $order->payment_status !== 'paid' &&
+            $order->midtrans_order_id) {
+
+            try {
+                $midtransService = new MidtransService();
+                $status = $midtransService->getTransactionStatus($order->order_number);
+
+                $transactionStatus = $status->transaction_status;
+                $fraudStatus = $status->fraud_status ?? null;
+                $paymentStatus = 'pending';
+
+                // Handle payment status
+                if ($transactionStatus == 'capture') {
+                    if ($fraudStatus == 'accept' || $fraudStatus == null) {
+                        $paymentStatus = 'paid';
+                    } elseif ($fraudStatus == 'challenge') {
+                        $paymentStatus = 'pending';
+                    }
+                } elseif ($transactionStatus == 'settlement') {
+                    $paymentStatus = 'paid';
+                } elseif ($transactionStatus == 'pending') {
+                    $paymentStatus = 'pending';
+                } elseif (in_array($transactionStatus, ['deny', 'expire', 'cancel'])) {
+                    $paymentStatus = 'failed';
+                }
+
+                // Update order jika ada perubahan status
+                if ($order->payment_status !== $paymentStatus) {
+                    $order->update([
+                        'midtrans_transaction_id' => $status->transaction_id ?? null,
+                        'midtrans_transaction_status' => $transactionStatus,
+                        'payment_status' => $paymentStatus,
+                        'paid_at' => $paymentStatus === 'paid' ? now() : null,
+                    ]);
+
+                    // Update order status
+                    if ($paymentStatus === 'paid' && $order->status === 'pending') {
+                        $order->update(['status' => 'processing']);
+                    } elseif (in_array($paymentStatus, ['failed', 'expired', 'cancelled']) && $order->status === 'pending') {
+                        $order->update(['status' => 'cancelled']);
+                    }
+
+                    // Refresh order untuk mendapatkan data terbaru
+                    $order->refresh();
+                }
+            } catch (\Exception $e) {
+                // Log error tapi tetap lanjutkan menampilkan halaman
+                \Log::error('Error auto-checking payment status', [
+                    'order_id' => $order->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
         $order->load(['items.product', 'items.village']);
 
         return view('user.orders.show', compact('order'));
@@ -57,15 +113,15 @@ class OrderController extends Controller
                 ->with('error', 'Tidak ada produk yang dipilih untuk checkout. Silakan pilih produk terlebih dahulu.');
         }
 
-        // Check if any selected product's village hasn't configured shipping location
+        // Check if any selected product's village hasn't configured shipping location (coordinates for Biteship)
         $unConfiguredVillages = $cartItems->filter(function ($item) {
-            return !$item->product->village->origin_city_id;
+            return !$item->product->village->latitude || !$item->product->village->longitude;
         });
 
         if ($unConfiguredVillages->isNotEmpty()) {
             $villageNames = $unConfiguredVillages->pluck('product.village.name')->unique()->implode(', ');
             return redirect()->route('user.cart.index')
-                ->with('error', 'Tidak dapat checkout. Desa berikut belum mengatur lokasi pengiriman: ' . $villageNames . '. Silakan hapus produk dari desa tersebut atau tunggu hingga desa mengatur lokasi pengiriman.');
+                ->with('error', 'Tidak dapat checkout. Desa berikut belum mengatur koordinat lokasi pengiriman: ' . $villageNames . '. Silakan hapus produk dari desa tersebut atau tunggu hingga desa mengatur lokasi pengiriman.');
         }
 
         // Group cart items by village
@@ -85,10 +141,13 @@ class OrderController extends Controller
                 'village_name' => $village->name,
                 'origin_city_id' => $village->origin_city_id,
                 'origin_city_name' => $village->origin_city_name,
+                'latitude' => $village->latitude,
+                'longitude' => $village->longitude,
+                'postal_code' => $village->origin_postal_code,
                 'total_weight' => $items->sum(function ($item) {
                     return $item->quantity * ($item->product->weight ?? 1000); // default 1kg if no weight
                 }),
-                'has_origin' => !empty($village->origin_city_id) // Check if origin is set
+                'has_origin' => !empty($village->latitude) && !empty($village->longitude) // Check if coordinates are set
             ];
         })->filter()->values(); // Filter out null values
 

@@ -94,15 +94,78 @@
                     @enderror
                 </div>
 
+                <!-- Coordinates (Biteship Required) -->
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
+                    <div class="flex items-start">
+                        <svg class="w-5 h-5 text-yellow-400 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                        </svg>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-yellow-800">Koordinat Lokasi (Wajib untuk Biteship)</h3>
+                            <div class="mt-2 text-sm text-yellow-700">
+                                <p>Koordinat diperlukan untuk menghitung ongkir yang akurat dengan Biteship.</p>
+                                <button type="button" id="autoFillCoords" class="mt-2 text-sm bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-1 rounded transition-colors">
+                                    Auto-isi dari Lokasi Kota
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Latitude -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Latitude <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" name="latitude" id="latitude"
+                               value="{{ old('latitude', $village->latitude) }}"
+                               placeholder="-6.175110"
+                               required
+                               step="any"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                        <p class="mt-1 text-xs text-gray-500">Contoh: -6.175110</p>
+                        @error('latitude')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Longitude -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Longitude <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" name="longitude" id="longitude"
+                               value="{{ old('longitude', $village->longitude) }}"
+                               placeholder="106.865036"
+                               required
+                               step="any"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                        <p class="mt-1 text-xs text-gray-500">Contoh: 106.865036</p>
+                        @error('longitude')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
                 <!-- Current Settings Display -->
-                @if($village->origin_city_id)
+                @if($village->origin_city_id || $village->latitude)
                 <div class="bg-green-50 border border-green-200 rounded-lg p-4">
                     <h3 class="text-sm font-semibold text-green-800 mb-2">✅ Lokasi Pengiriman Saat Ini:</h3>
                     <div class="text-sm text-green-700 space-y-1">
+                        @if($village->origin_province_name)
                         <p><span class="font-medium">Provinsi:</span> {{ $village->origin_province_name }}</p>
+                        @endif
+                        @if($village->origin_city_name)
                         <p><span class="font-medium">Kota:</span> {{ $village->origin_city_name }}</p>
+                        @endif
                         @if($village->origin_postal_code)
                         <p><span class="font-medium">Kode Pos:</span> {{ $village->origin_postal_code }}</p>
+                        @endif
+                        @if($village->latitude && $village->longitude)
+                        <p><span class="font-medium">Koordinat:</span> {{ $village->latitude }}, {{ $village->longitude }}</p>
+                        @else
+                        <p class="text-red-600"><span class="font-medium">⚠️ Koordinat:</span> Belum diatur (wajib untuk Biteship)</p>
                         @endif
                     </div>
                 </div>
@@ -233,6 +296,56 @@ document.getElementById('city_id').addEventListener('change', function() {
     // Auto-fill postal code if available
     if (postalCode) {
         document.getElementById('postal_code').value = postalCode;
+    }
+});
+
+// Auto-fill coordinates from Biteship
+document.getElementById('autoFillCoords').addEventListener('click', async function() {
+    const btn = this;
+    const cityName = document.getElementById('city_name').value;
+
+    if (!cityName) {
+        alert('Silakan pilih Kota/Kabupaten terlebih dahulu');
+        return;
+    }
+
+    try {
+        btn.disabled = true;
+        btn.textContent = 'Mencari koordinat...';
+        btn.classList.add('opacity-50', 'cursor-not-allowed');
+
+        const response = await fetch(`/api/biteship/postal-code/search?q=${encodeURIComponent(cityName)}`);
+        const data = await response.json();
+
+        if (data.success && data.data.length > 0) {
+            const area = data.data[0];
+            document.getElementById('latitude').value = area.latitude;
+            document.getElementById('longitude').value = area.longitude;
+
+            if (area.postal_code && !document.getElementById('postal_code').value) {
+                document.getElementById('postal_code').value = area.postal_code;
+            }
+
+            btn.textContent = '✓ Berhasil!';
+            btn.classList.remove('bg-yellow-600', 'hover:bg-yellow-700');
+            btn.classList.add('bg-green-600');
+
+            setTimeout(() => {
+                btn.textContent = 'Auto-isi dari Lokasi Kota';
+                btn.classList.remove('bg-green-600');
+                btn.classList.add('bg-yellow-600', 'hover:bg-yellow-700');
+            }, 2000);
+        } else {
+            alert('Koordinat tidak ditemukan. Silakan isi manual atau pilih kota yang lebih spesifik.');
+            btn.textContent = 'Auto-isi dari Lokasi Kota';
+        }
+    } catch (error) {
+        console.error('Error getting coordinates:', error);
+        alert('Gagal mendapatkan koordinat. Silakan coba lagi atau isi manual.');
+        btn.textContent = 'Auto-isi dari Lokasi Kota';
+    } finally {
+        btn.disabled = false;
+        btn.classList.remove('opacity-50', 'cursor-not-allowed');
     }
 });
 

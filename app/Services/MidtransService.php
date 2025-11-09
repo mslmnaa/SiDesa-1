@@ -112,8 +112,12 @@ class MidtransService
             $paymentStatus = 'pending';
 
             if ($transactionStatus == 'capture') {
-                if ($fraudStatus == 'accept') {
+                // For credit card, check fraud status
+                // If fraud_status is null or 'accept', consider it as paid
+                if ($fraudStatus == 'accept' || $fraudStatus == null) {
                     $paymentStatus = 'paid';
+                } elseif ($fraudStatus == 'challenge') {
+                    $paymentStatus = 'pending';
                 }
             } elseif ($transactionStatus == 'settlement') {
                 $paymentStatus = 'paid';
