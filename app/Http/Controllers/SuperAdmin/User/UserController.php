@@ -16,9 +16,10 @@ class UserController extends Controller
         if (!auth()->user()->isSuperAdmin()) {
             abort(403, 'Unauthorized');
         }
-        
-        $query = User::query();
-        
+
+        // HANYA tampilkan user biasa (role='user'), bukan admin/superadmin
+        $query = User::where('role', 'user');
+
         // Search functionality
         if ($request->filled('search')) {
             $search = $request->search;
@@ -28,26 +29,15 @@ class UserController extends Controller
                   ->orWhere('phone', 'like', '%' . $search . '%');
             });
         }
-        
-        // Role filter
-        if ($request->filled('role')) {
-            $query->where('role', $request->role);
-        }
-        
+
         $users = $query->latest()->paginate(10);
-        
-        // Get statistics
-        $totalUsers = User::count();
-        $regularUsers = User::where('role', 'user')->count();
-        $admins = User::where('role', 'admin')->count();
-        $superAdmins = User::where('role', 'superadmin')->count();
-        
+
+        // Get statistics - HANYA user biasa
+        $totalUsers = User::where('role', 'user')->count();
+
         return view('admin.users.index', compact(
             'users',
-            'totalUsers',
-            'regularUsers', 
-            'admins',
-            'superAdmins'
+            'totalUsers'
         ));
     }
     
@@ -67,26 +57,27 @@ class UserController extends Controller
         if (!auth()->user()->isSuperAdmin()) {
             abort(403, 'Unauthorized');
         }
-        
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8',
             'phone' => 'nullable|string|max:20',
-            'address' => 'nullable|string',
-            'role' => 'required|in:user,admin,superadmin'
+            'address' => 'nullable|string'
         ]);
-        
+
+        // Selalu buat sebagai user biasa (role='user')
+        // Untuk buat admin, gunakan menu "Kelola Admin"
         User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'phone' => $request->phone,
             'address' => $request->address,
-            'role' => $request->role,
+            'role' => 'user', // Hard-coded ke 'user'
             'email_verified_at' => now()
         ]);
-        
+
         return redirect()->route('admin.users.index')
                         ->with('success', 'User berhasil ditambahkan.');
     }
@@ -107,13 +98,19 @@ class UserController extends Controller
         if (!auth()->user()->isSuperAdmin()) {
             abort(403, 'Unauthorized');
         }
-        
+
+        // Prevent editing admin/superadmin (harus di menu "Kelola Admin")
+        if (in_array($user->role, ['admin', 'superadmin'])) {
+            return redirect()->route('admin.users.index')
+                            ->with('error', 'Admin tidak dapat diedit di sini. Gunakan menu "Kelola Admin".');
+        }
+
         // Prevent editing own account through this interface
         if ($user->id === auth()->id()) {
             return redirect()->route('admin.users.show', $user)
                             ->with('error', 'Gunakan halaman profile untuk mengedit akun Anda sendiri.');
         }
-        
+
         return view('admin.users.edit', compact('user'));
     }
     
@@ -123,37 +120,42 @@ class UserController extends Controller
         if (!auth()->user()->isSuperAdmin()) {
             abort(403, 'Unauthorized');
         }
-        
+
+        // Prevent editing admin/superadmin (harus di menu "Kelola Admin")
+        if (in_array($user->role, ['admin', 'superadmin'])) {
+            return redirect()->route('admin.users.index')
+                            ->with('error', 'Admin tidak dapat diedit di sini. Gunakan menu "Kelola Admin".');
+        }
+
         // Prevent editing own account through this interface
         if ($user->id === auth()->id()) {
             return redirect()->route('admin.users.show', $user)
                             ->with('error', 'Gunakan halaman profile untuk mengedit akun Anda sendiri.');
         }
-        
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($user->id)],
             'password' => 'nullable|string|min:8',
             'phone' => 'nullable|string|max:20',
-            'address' => 'nullable|string',
-            'role' => 'required|in:user,admin,superadmin'
+            'address' => 'nullable|string'
         ]);
-        
+
         $updateData = [
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
             'address' => $request->address,
-            'role' => $request->role
+            'role' => 'user' // Paksa tetap 'user'
         ];
-        
+
         // Only update password if provided
         if ($request->filled('password')) {
             $updateData['password'] = Hash::make($request->password);
         }
-        
+
         $user->update($updateData);
-        
+
         return redirect()->route('admin.users.index')
                         ->with('success', 'User berhasil diperbarui.');
     }
@@ -164,45 +166,22 @@ class UserController extends Controller
         if (!auth()->user()->isSuperAdmin()) {
             abort(403, 'Unauthorized');
         }
-        
+
+        // Prevent deleting admin/superadmin (harus di menu "Kelola Admin")
+        if (in_array($user->role, ['admin', 'superadmin'])) {
+            return redirect()->route('admin.users.index')
+                            ->with('error', 'Admin tidak dapat dihapus di sini. Gunakan menu "Kelola Admin".');
+        }
+
         // Prevent deleting own account
         if ($user->id === auth()->id()) {
             return redirect()->route('admin.users.index')
                             ->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
         }
-        
-        
+
         $user->delete();
-        
+
         return redirect()->route('admin.users.index')
                         ->with('success', 'User berhasil dihapus.');
-    }
-    
-    public function toggleRole(Request $request, User $user)
-    {
-        // Only superadmin can access this
-        if (!auth()->user()->isSuperAdmin()) {
-            abort(403, 'Unauthorized');
-        }
-        
-        // Prevent changing own role
-        if ($user->id === auth()->id()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Anda tidak dapat mengubah role akun Anda sendiri.'
-            ], 400);
-        }
-        
-        $request->validate([
-            'role' => 'required|in:user,admin,superadmin'
-        ]);
-        
-        $user->update(['role' => $request->role]);
-        
-        return response()->json([
-            'success' => true,
-            'message' => 'Role user berhasil diperbarui.',
-            'role' => $user->role
-        ]);
     }
 }

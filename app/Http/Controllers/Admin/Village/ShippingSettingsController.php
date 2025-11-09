@@ -42,6 +42,8 @@ class ShippingSettingsController extends Controller
             'origin_city_id' => 'required|string',
             'origin_city_name' => 'required|string',
             'origin_postal_code' => 'nullable|string|max:10',
+            'latitude' => 'required|numeric|between:-90,90',
+            'longitude' => 'required|numeric|between:-180,180',
         ]);
 
         $village = Village::findOrFail($user->village_id);

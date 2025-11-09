@@ -275,6 +275,23 @@
                             </p>
                         </div>
                     @endif
+
+                    <!-- Tracking Button -->
+                    @if($order->hasTracking())
+                        <div class="mb-4">
+                            <a href="{{ route('user.orders.tracking', $order) }}"
+                               class="w-full flex items-center justify-center bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-md">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                                Lacak Pengiriman
+                            </a>
+                            <p class="text-xs text-gray-500 text-center mt-2">
+                                <span class="font-mono font-semibold">{{ $order->shipping_resi }}</span>
+                            </p>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

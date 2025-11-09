@@ -11,7 +11,7 @@
             <p class="text-gray-600 mt-2 text-sm sm:text-base">Review pesanan Anda dan selesaikan pembayaran</p>
         </div>
 
-        <!-- Warning if any village hasn't set shipping origin -->
+        <!-- Warning if any village hasn't set coordinates -->
         @if($villagesOrigin->where('has_origin', false)->count() > 0)
             <div class="mb-6 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg">
                 <div class="flex items-start">
@@ -23,7 +23,7 @@
                     <div class="ml-3">
                         <h3 class="text-sm font-medium text-yellow-800">Ongkos Kirim Belum Tersedia</h3>
                         <div class="mt-2 text-sm text-yellow-700">
-                            <p>Beberapa desa penjual belum mengatur lokasi pengiriman. Ongkos kirim tidak dapat dihitung untuk produk dari desa:</p>
+                            <p>Beberapa desa penjual belum mengatur koordinat lokasi pengiriman. Ongkos kirim tidak dapat dihitung untuk produk dari desa:</p>
                             <ul class="list-disc list-inside mt-1">
                                 @foreach($villagesOrigin->where('has_origin', false) as $village)
                                     <li>{{ $village['village_name'] }}</li>
@@ -36,7 +36,7 @@
             </div>
         @endif
 
-        <form action="{{ route('user.orders.store') }}" method="POST">
+        <form action="{{ route('user.orders.store') }}" method="POST" id="checkout-form">
             @csrf
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
@@ -142,36 +142,47 @@
                                 @enderror
                             </div>
 
-                            <!-- Provinsi -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Provinsi *</label>
-                                <select name="province_id" id="province_id" required
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
-                                    <option value="">Pilih Provinsi</option>
-                                </select>
-                                <input type="hidden" name="province_name" id="province_name">
-                                @error('province_id')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
+                            <!-- Search Lokasi (Biteship) -->
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Cari Lokasi *</label>
+                                <div class="relative">
+                                    <input type="text" id="location_search"
+                                           placeholder="Ketik nama kota/kecamatan (contoh: Jakarta Selatan)"
+                                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                                    <div id="search_results" class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg hidden max-h-60 overflow-y-auto"></div>
+                                </div>
+                                <p class="mt-1 text-xs text-gray-500">Ketik untuk mencari lokasi Anda</p>
                             </div>
 
-                            <!-- Kota/Kabupaten -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Kota/Kabupaten *</label>
-                                <select name="city_id" id="city_id" required
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
-                                    <option value="">Pilih Kota</option>
-                                </select>
-                                <input type="hidden" name="city_name" id="city_name">
-                                @error('city_id')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
+                            <!-- Hidden fields for coordinates and location -->
+                            <input type="hidden" name="latitude" id="destination_latitude">
+                            <input type="hidden" name="longitude" id="destination_longitude">
+                            <input type="hidden" name="province_id" id="province_id">
+                            <input type="hidden" name="province_name" id="province_name">
+                            <input type="hidden" name="city_id" id="city_id">
+                            <input type="hidden" name="city_name" id="city_name">
+
+                            <!-- Selected Location Display -->
+                            <div id="selected_location" class="md:col-span-2 hidden">
+                                <div class="p-3 bg-green-50 border border-green-200 rounded-lg">
+                                    <div class="flex items-start justify-between">
+                                        <div>
+                                            <p class="text-sm font-semibold text-green-900">Lokasi Terpilih:</p>
+                                            <p class="text-sm text-green-700" id="selected_location_text"></p>
+                                        </div>
+                                        <button type="button" onclick="clearLocation()" class="text-red-600 hover:text-red-800">
+                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Kecamatan -->
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Kecamatan</label>
-                                <input type="text" name="district" value="{{ old('district') }}"
+                                <input type="text" name="district" id="district" value="{{ old('district') }}"
                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
                             </div>
 
@@ -190,12 +201,27 @@
 
                     <!-- Pilihan Kurir & Ongkir -->
                     <div class="bg-white rounded-lg shadow-lg p-6" id="shipping-options-section" style="display:none;">
-                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Pilih Kurir & Layanan</h2>
-                        <div id="shipping-loading" class="text-center py-4">
-                            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
-                            <p class="text-sm text-gray-600 mt-2">Menghitung ongkir...</p>
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">
+                            <span class="inline-flex items-center gap-2">
+                                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"/>
+                                </svg>
+                                Pilih Kurir & Layanan
+                            </span>
+                        </h2>
+                        <div id="shipping-loading" class="text-center py-8">
+                            <div class="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-green-600"></div>
+                            <p class="text-sm text-gray-600 mt-3">Menghitung ongkir dengan Biteship...</p>
                         </div>
                         <div id="shipping-options" class="space-y-3"></div>
+                        <div id="shipping-error" class="hidden">
+                            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                                <p class="text-sm text-red-700" id="shipping-error-message"></p>
+                                <button type="button" onclick="retryShippingCalculation()" class="mt-2 text-sm text-red-600 hover:text-red-800 font-medium">
+                                    Coba Lagi
+                                </button>
+                            </div>
+                        </div>
                         <input type="hidden" name="shipping_service" id="shipping_service" required>
                         <input type="hidden" name="shipping_cost" id="shipping_cost" value="0">
                         <input type="hidden" name="shipping_etd" id="shipping_etd">
@@ -327,13 +353,21 @@
 
                         <!-- Info -->
                         <div class="mt-6 p-4 bg-green-50 rounded-lg">
-                            <h3 class="font-semibold text-green-900 mb-2 text-sm">📋 Cara Pembayaran:</h3>
+                            <h3 class="font-semibold text-green-900 mb-2 text-sm flex items-center gap-1">
+                                📋 Cara Pembayaran:
+                            </h3>
                             <ul class="text-xs text-green-800 space-y-1">
                                 <li>• Klik tombol "Lanjut ke Pembayaran"</li>
                                 <li>• Pilih metode pembayaran yang Anda inginkan</li>
                                 <li>• Selesaikan pembayaran sesuai instruksi</li>
                                 <li>• Order otomatis diproses setelah pembayaran berhasil</li>
                             </ul>
+                        </div>
+
+                        <!-- Biteship Powered -->
+                        <div class="mt-4 text-center">
+                            <p class="text-xs text-gray-500">Powered by</p>
+                            <p class="text-sm font-semibold text-gray-700">Biteship</p>
                         </div>
                     </div>
                 </div>
@@ -343,252 +377,369 @@
 </div>
 
 <script>
-// Data produk dan villages untuk perhitungan ongkir
+// ========================================
+// BITESHIP CHECKOUT INTEGRATION
+// ========================================
+
+// Data dari backend
 const subtotalProduct = {{ $cartItems->sum(function($item) { return $item->quantity * $item->product->price; }) }};
 const villagesOrigin = @json($villagesOrigin);
+const cartItemsData = {!! json_encode($cartItems->map(function($item) {
+    return [
+        'village_id' => $item->product->village_id,
+        'name' => $item->product->name,
+        'price' => $item->product->price,
+        'weight' => $item->product->weight ?? 1000,
+        'length' => $item->product->length ?? 10,
+        'width' => $item->product->width ?? 10,
+        'height' => $item->product->height ?? 10,
+        'quantity' => $item->quantity
+    ];
+})) !!};
 
 let selectedShippingCost = 0;
+let destinationCoordinates = null;
+let searchTimeout = null;
 
-// Load provinces on page load
-document.addEventListener('DOMContentLoaded', function() {
-    loadProvinces();
+// ========================================
+// LOCATION SEARCH WITH BITESHIP
+// ========================================
+
+document.getElementById('location_search').addEventListener('input', function(e) {
+    const query = e.target.value.trim();
+
+    clearTimeout(searchTimeout);
+
+    if (query.length < 3) {
+        document.getElementById('search_results').classList.add('hidden');
+        return;
+    }
+
+    searchTimeout = setTimeout(() => {
+        searchLocation(query);
+    }, 500);
 });
 
-// Load provinces
-async function loadProvinces() {
+async function searchLocation(query) {
     try {
-        const response = await fetch('/api/rajaongkir/provinces');
+        // Use Nominatim OpenStreetMap for free geocoding
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)},Indonesia&format=json&addressdetails=1&limit=10`, {
+            headers: {
+                'User-Agent': 'SiDesa-Marketplace'
+            }
+        });
         const data = await response.json();
 
-        if (data.success) {
-            const select = document.getElementById('province_id');
-            select.innerHTML = '<option value="">Pilih Provinsi</option>';
+        console.log('Nominatim response:', data);
 
-            data.data.forEach(province => {
-                const option = document.createElement('option');
-                option.value = province.province_id;
-                option.textContent = province.province;
-                option.dataset.name = province.province;
-                select.appendChild(option);
-            });
+        if (data && data.length > 0) {
+            displaySearchResults(data);
+        } else {
+            document.getElementById('search_results').innerHTML = '<div class="p-3 text-sm text-gray-500">Lokasi tidak ditemukan. Coba dengan nama yang lebih spesifik (contoh: "Kota Jakarta Selatan")</div>';
+            document.getElementById('search_results').classList.remove('hidden');
         }
     } catch (error) {
-        console.error('Error loading provinces:', error);
-        alert('Gagal memuat data provinsi');
+        console.error('Error searching location:', error);
+        document.getElementById('search_results').innerHTML = '<div class="p-3 text-sm text-red-500">Gagal mencari lokasi. Silakan coba lagi.</div>';
+        document.getElementById('search_results').classList.remove('hidden');
     }
 }
 
-// When province changes, load cities
-document.getElementById('province_id').addEventListener('change', function() {
-    const provinceId = this.value;
-    const provinceName = this.options[this.selectedIndex]?.dataset.name || '';
-    document.getElementById('province_name').value = provinceName;
+function displaySearchResults(areas) {
+    const resultsDiv = document.getElementById('search_results');
+    resultsDiv.innerHTML = '';
 
-    // Hide shipping options when province changes
+    areas.slice(0, 10).forEach(area => {
+        const div = document.createElement('div');
+        div.className = 'p-3 hover:bg-gray-50 cursor-pointer border-b last:border-b-0';
+
+        // Extract address details from Nominatim
+        const address = area.address || {};
+        const displayName = area.display_name || area.name;
+        const city = address.city || address.county || address.state_district || '';
+        const state = address.state || '';
+        const postcode = address.postcode || '';
+
+        div.innerHTML = `
+            <p class="text-sm font-medium text-gray-900">${displayName}</p>
+            <p class="text-xs text-gray-500">${city}${city && state ? ', ' : ''}${state}</p>
+            ${postcode ? `<p class="text-xs text-gray-400">Kode Pos: ${postcode}</p>` : ''}
+        `;
+
+        div.addEventListener('click', () => selectLocation(area));
+        resultsDiv.appendChild(div);
+    });
+
+    resultsDiv.classList.remove('hidden');
+}
+
+function selectLocation(area) {
+    // Extract address from Nominatim
+    const address = area.address || {};
+
+    // Set coordinates
+    destinationCoordinates = {
+        latitude: parseFloat(area.lat),
+        longitude: parseFloat(area.lon),
+        postal_code: address.postcode || ''
+    };
+
+    // Fill form fields
+    document.getElementById('destination_latitude').value = destinationCoordinates.latitude;
+    document.getElementById('destination_longitude').value = destinationCoordinates.longitude;
+    document.getElementById('postal_code').value = address.postcode || '';
+    document.getElementById('province_name').value = address.state || '';
+    document.getElementById('city_name').value = address.city || address.county || address.state_district || '';
+    document.getElementById('district').value = address.suburb || address.village || '';
+
+    // Set hidden IDs (use names as proxy since we don't have IDs)
+    document.getElementById('province_id').value = address.state || '';
+    document.getElementById('city_id').value = address.city || address.county || '';
+
+    // Display selected location
+    const locationText = area.display_name;
+    document.getElementById('selected_location_text').textContent = locationText;
+    document.getElementById('selected_location').classList.remove('hidden');
+
+    // Hide search results
+    document.getElementById('search_results').classList.add('hidden');
+    document.getElementById('location_search').value = locationText;
+
+    // Calculate shipping
+    calculateShippingBiteship();
+
+    // Validate form
+    validateForm();
+}
+
+function clearLocation() {
+    destinationCoordinates = null;
+    document.getElementById('selected_location').classList.add('hidden');
+    document.getElementById('location_search').value = '';
+    document.getElementById('destination_latitude').value = '';
+    document.getElementById('destination_longitude').value = '';
     document.getElementById('shipping-options-section').style.display = 'none';
-    document.getElementById('shipping-options').innerHTML = '';
     selectedShippingCost = 0;
     updateTotal();
-
-    if (provinceId) {
-        loadCities(provinceId);
-    } else {
-        const citySelect = document.getElementById('city_id');
-        citySelect.innerHTML = '<option value="">Pilih Kota</option>';
-        document.getElementById('city_name').value = '';
-    }
-});
-
-// Load cities
-async function loadCities(provinceId) {
-    try {
-        const response = await fetch(`/api/rajaongkir/cities?province_id=${provinceId}`);
-        const data = await response.json();
-
-        if (data.success) {
-            const select = document.getElementById('city_id');
-            select.innerHTML = '<option value="">Pilih Kota</option>';
-
-            data.data.forEach(city => {
-                const option = document.createElement('option');
-                option.value = city.city_id;
-                option.textContent = `${city.type} ${city.city_name}`;
-                option.dataset.name = `${city.type} ${city.city_name}`;
-                option.dataset.postalCode = city.postal_code || '';
-                select.appendChild(option);
-            });
-        }
-    } catch (error) {
-        console.error('Error loading cities:', error);
-        alert('Gagal memuat data kota');
-    }
+    validateForm();
 }
 
-// When city changes, auto-fill postal code and calculate shipping
-document.getElementById('city_id').addEventListener('change', async function() {
-    const cityId = this.value;
-    const cityName = this.options[this.selectedIndex]?.dataset.name || '';
-    const postalCode = this.options[this.selectedIndex]?.dataset.postalCode || '';
+// ========================================
+// CALCULATE SHIPPING WITH BITESHIP
+// ========================================
 
-    document.getElementById('city_name').value = cityName;
-
-    // Auto-fill postal code if available
-    const postalCodeInput = document.getElementById('postal_code');
-    if (postalCode && !postalCodeInput.value) {
-        postalCodeInput.value = postalCode;
+async function calculateShippingBiteship() {
+    if (!destinationCoordinates) {
+        console.log('No destination coordinates');
+        return;
     }
 
-    if (cityId) {
-        await calculateAllShipping(cityId);
-    } else {
-        document.getElementById('shipping-options-section').style.display = 'none';
-        selectedShippingCost = 0;
-        updateTotal();
-    }
-});
-
-// Calculate shipping for all villages
-async function calculateAllShipping(destinationCityId) {
     const shippingSection = document.getElementById('shipping-options-section');
     const shippingLoading = document.getElementById('shipping-loading');
     const shippingOptions = document.getElementById('shipping-options');
+    const shippingError = document.getElementById('shipping-error');
 
     shippingSection.style.display = 'block';
     shippingLoading.style.display = 'block';
     shippingOptions.innerHTML = '';
+    shippingError.classList.add('hidden');
 
-    let allShippingServices = [];
+    let allRates = [];
 
     try {
-        // Calculate shipping for each village
         for (const village of villagesOrigin) {
-            if (!village.origin_city_id) {
-                continue; // Skip villages without origin city
+            if (!village.latitude || !village.longitude) {
+                console.warn(`Village ${village.village_name} doesn't have coordinates`);
+                continue;
             }
 
-            const response = await fetch('/api/rajaongkir/calculate-cost', {
+            // Get items for this village
+            const villageItems = cartItemsData
+                .filter(item => item.village_id === village.village_id)
+                .map(item => ({
+                    name: item.name,
+                    description: item.name,
+                    value: item.price * item.quantity,
+                    weight: item.weight * item.quantity,
+                    length: item.length || 10,
+                    width: item.width || 10,
+                    height: item.height || 10,
+                    quantity: item.quantity
+                }));
+
+            const requestPayload = {
+                origin_latitude: parseFloat(village.latitude),
+                origin_longitude: parseFloat(village.longitude),
+                origin_postal_code: village.postal_code,
+                destination_latitude: destinationCoordinates.latitude,
+                destination_longitude: destinationCoordinates.longitude,
+                destination_postal_code: destinationCoordinates.postal_code,
+                couriers: 'jne,jnt,sicepat,tiki,anteraja,ninja,lion,idexpress',
+                items: villageItems
+            };
+
+            console.log('Biteship Request for village:', village.village_name, requestPayload);
+
+            const response = await fetch('/api/biteship/rates', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                 },
-                body: JSON.stringify({
-                    origin: village.origin_city_id,
-                    destination: destinationCityId,
-                    weight: village.total_weight,
-                    couriers: ['jne', 'pos', 'tiki']
-                })
+                body: JSON.stringify(requestPayload)
             });
 
             const data = await response.json();
+            console.log('Biteship Response for village:', village.village_name, data);
 
-            if (data.success && data.data.length > 0) {
-                // Add village info to each service
-                data.data.forEach(service => {
-                    service.village_name = village.village_name;
-                    service.village_id = village.village_id;
-                    allShippingServices.push(service);
+            if (data.success && data.data && data.data.length > 0) {
+                console.log('Adding rates:', data.data);
+                data.data.forEach(rate => {
+                    allRates.push({
+                        ...rate,
+                        village_id: village.village_id,
+                        village_name: village.village_name
+                    });
                 });
+            } else {
+                console.warn('No rates returned for village:', village.village_name, data);
             }
         }
 
         shippingLoading.style.display = 'none';
 
-        if (allShippingServices.length > 0) {
-            displayShippingOptions(allShippingServices);
+        console.log('Total rates collected:', allRates.length, allRates);
+
+        if (allRates.length > 0) {
+            displayBiteshipRates(allRates);
         } else {
-            shippingOptions.innerHTML = '<p class="text-sm text-red-600">Tidak ada layanan pengiriman tersedia atau desa penjual belum setting lokasi pengiriman.</p>';
+            shippingError.classList.remove('hidden');
+            document.getElementById('shipping-error-message').textContent = 'Tidak ada layanan pengiriman tersedia untuk lokasi ini. Pastikan desa penjual sudah mengatur koordinat lokasi.';
         }
     } catch (error) {
         console.error('Error calculating shipping:', error);
         shippingLoading.style.display = 'none';
-        shippingOptions.innerHTML = '<p class="text-sm text-red-600">Gagal menghitung ongkir. Silakan coba lagi.</p>';
+        shippingError.classList.remove('hidden');
+        document.getElementById('shipping-error-message').textContent = 'Gagal menghitung ongkir. Silakan coba lagi atau pilih lokasi lain.';
     }
 }
 
-// Display shipping options
-function displayShippingOptions(services) {
+function retryShippingCalculation() {
+    calculateShippingBiteship();
+}
+
+// ========================================
+// DISPLAY BITESHIP RATES
+// ========================================
+
+function displayBiteshipRates(rates) {
     const container = document.getElementById('shipping-options');
     container.innerHTML = '';
 
     // Group by village
-    const groupedByVillage = services.reduce((acc, service) => {
-        if (!acc[service.village_id]) {
-            acc[service.village_id] = {
-                village_name: service.village_name,
-                services: []
+    const grouped = rates.reduce((acc, rate) => {
+        if (!acc[rate.village_id]) {
+            acc[rate.village_id] = {
+                village_name: rate.village_name,
+                rates: []
             };
         }
-        acc[service.village_id].services.push(service);
+        acc[rate.village_id].rates.push(rate);
         return acc;
     }, {});
 
-    // Display services grouped by village
-    Object.values(groupedByVillage).forEach(village => {
+    Object.values(grouped).forEach(village => {
         const villageDiv = document.createElement('div');
-        villageDiv.className = 'mb-4';
-        villageDiv.innerHTML = `<h3 class="text-sm font-semibold text-gray-900 mb-2">📍 ${village.village_name}</h3>`;
+        villageDiv.className = 'mb-6';
+        villageDiv.innerHTML = `
+            <h3 class="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                ${village.village_name}
+            </h3>
+        `;
 
-        village.services.forEach(service => {
-            const serviceDiv = document.createElement('label');
-            serviceDiv.className = 'flex items-center p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors mb-2';
-            serviceDiv.innerHTML = `
-                <input type="radio" name="shipping_option" value="${service.cost}"
-                       data-service="${service.courier} - ${service.service}"
-                       data-etd="${service.etd}"
-                       class="w-4 h-4 text-green-600"
-                       onchange="selectShipping(${service.cost}, '${service.courier} - ${service.service}', '${service.etd}')">
+        const ratesContainer = document.createElement('div');
+        ratesContainer.className = 'space-y-2';
+
+        village.rates.forEach(rate => {
+            const rateDiv = document.createElement('label');
+            rateDiv.className = 'flex items-center p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 hover:border-green-300 transition-all';
+
+            const serviceCode = `${rate.courier_code}-${rate.courier_service_code}`;
+
+            rateDiv.innerHTML = `
+                <input type="radio" name="shipping_option" value="${rate.price}"
+                       data-service="${serviceCode}"
+                       data-etd="${rate.duration || ''}"
+                       class="w-4 h-4 text-green-600 focus:ring-green-500"
+                       onchange="selectShipping(${rate.price}, '${serviceCode}', '${rate.duration || ''}')">
                 <div class="ml-3 flex-1">
-                    <div class="flex justify-between">
-                        <span class="font-medium text-gray-900">${service.display_name}</span>
-                        <span class="font-bold text-green-600">${service.display_cost}</span>
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="font-medium text-gray-900">${rate.courier_name}</p>
+                            <p class="text-xs text-gray-500">${rate.courier_service_name}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-green-600">Rp ${rate.price.toLocaleString('id-ID')}</p>
+                            <p class="text-xs text-gray-500">${rate.duration || 'N/A'}</p>
+                        </div>
                     </div>
-                    <p class="text-xs text-gray-500">Estimasi: ${service.display_etd}</p>
+                    ${rate.description ? `<p class="text-xs text-gray-400 mt-1">${rate.description}</p>` : ''}
                 </div>
             `;
-            villageDiv.appendChild(serviceDiv);
+
+            ratesContainer.appendChild(rateDiv);
         });
 
+        villageDiv.appendChild(ratesContainer);
         container.appendChild(villageDiv);
     });
 }
 
-// Select shipping
+// ========================================
+// SELECT SHIPPING
+// ========================================
+
 function selectShipping(cost, service, etd) {
     selectedShippingCost = cost;
     document.getElementById('shipping_cost').value = cost;
     document.getElementById('shipping_service').value = service;
     document.getElementById('shipping_etd').value = etd;
     updateTotal();
-
-    // Validate form after shipping selection
     validateForm();
 }
 
-// Update total display
+// ========================================
+// UPDATE TOTAL
+// ========================================
+
 function updateTotal() {
     const total = subtotalProduct + selectedShippingCost;
     document.getElementById('shipping-cost-display').textContent = 'Rp ' + selectedShippingCost.toLocaleString('id-ID');
     document.getElementById('total-display').textContent = 'Rp ' + total.toLocaleString('id-ID');
 }
 
-// Validation state
+// ========================================
+// FORM VALIDATION
+// ========================================
+
 let validationState = {
     address: false,
     shipping: false
 };
 
-// Validate form and update button state
 function validateForm() {
     // Check address fields
     const recipientName = document.querySelector('input[name="recipient_name"]').value.trim();
     const phone = document.querySelector('input[name="phone"]').value.trim();
-    const provinceId = document.getElementById('province_id').value;
-    const cityId = document.getElementById('city_id').value;
     const postalCode = document.querySelector('input[name="postal_code"]').value.trim();
     const fullAddress = document.querySelector('textarea[name="full_address"]').value.trim();
+    const hasCoordinates = destinationCoordinates !== null;
 
-    validationState.address = recipientName && phone && provinceId && cityId && postalCode && fullAddress;
+    validationState.address = recipientName && phone && postalCode && fullAddress && hasCoordinates;
 
     // Check shipping service
     const shippingService = document.getElementById('shipping_service').value;
@@ -616,7 +767,6 @@ function validateForm() {
     }
 }
 
-// Update status indicator
 function updateStatusIndicator(elementId, isValid, validText, invalidText) {
     const element = document.getElementById(elementId);
     if (isValid) {
@@ -632,7 +782,6 @@ function updateStatusIndicator(elementId, isValid, validText, invalidText) {
 
 // Setup event listeners for real-time validation
 function setupValidationListeners() {
-    // Address fields
     const addressFields = [
         'input[name="recipient_name"]',
         'input[name="phone"]',
@@ -648,19 +797,22 @@ function setupValidationListeners() {
         }
     });
 
-    // Province and City
-    document.getElementById('province_id').addEventListener('change', validateForm);
-    document.getElementById('city_id').addEventListener('change', validateForm);
-
     // Initial validation
     validateForm();
 }
 
-// Initialize validation on DOM ready
+// Initialize on DOM ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', setupValidationListeners);
 } else {
     setupValidationListeners();
 }
+
+// Close search results when clicking outside
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('#location_search') && !e.target.closest('#search_results')) {
+        document.getElementById('search_results').classList.add('hidden');
+    }
+});
 </script>
 @endsection
