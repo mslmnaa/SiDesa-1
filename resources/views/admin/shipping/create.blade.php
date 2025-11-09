@@ -324,7 +324,6 @@
     </div>
 </div>
 
-@push('scripts')
 <script>
 function showManualForm() {
     // Toggle forms
@@ -350,8 +349,9 @@ function showBiteshipForm() {
     document.getElementById('btn-manual').classList.remove('border-green-600');
 }
 
-// Default show manual form
-showManualForm();
+// Default show manual form on page load
+document.addEventListener('DOMContentLoaded', function() {
+    showManualForm();
+});
 </script>
-@endpush
 @endsection
