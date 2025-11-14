@@ -16,6 +16,14 @@ export default {
                     "BlinkMacSystemFont",
                     "sans-serif",
                 ],
+                heading: [
+                    "Quicksand",
+                    "ui-sans-serif",
+                    "system-ui",
+                    "-apple-system",
+                    "BlinkMacSystemFont",
+                    "sans-serif",
+                ],
             },
             colors: {
                 primary: {
