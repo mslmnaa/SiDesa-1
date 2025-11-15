@@ -115,7 +115,7 @@ class OrderController extends Controller
 
         // Check if any selected product's village hasn't configured shipping location (coordinates for Biteship)
         $unConfiguredVillages = $cartItems->filter(function ($item) {
-            return !$item->product->village->latitude || !$item->product->village->longitude;
+            return !$item->product->village || !$item->product->village->latitude || !$item->product->village->longitude;
         });
 
         if ($unConfiguredVillages->isNotEmpty()) {
@@ -138,12 +138,12 @@ class OrderController extends Controller
 
             return [
                 'village_id' => $villageId,
-                'village_name' => $village->name,
-                'origin_city_id' => $village->origin_city_id,
-                'origin_city_name' => $village->origin_city_name,
-                'latitude' => $village->latitude,
-                'longitude' => $village->longitude,
-                'postal_code' => $village->origin_postal_code,
+                'village_name' => $village->name ?? '',
+                'origin_city_id' => $village->origin_city_id ?? null,
+                'origin_city_name' => $village->origin_city_name ?? '',
+                'latitude' => $village->latitude ?? null,
+                'longitude' => $village->longitude ?? null,
+                'postal_code' => $village->origin_postal_code ?? '',
                 'total_weight' => $items->sum(function ($item) {
                     return $item->quantity * ($item->product->weight ?? 1000); // default 1kg if no weight
                 }),
@@ -191,7 +191,7 @@ class OrderController extends Controller
 
         // Validate shipping location is configured for all villages
         $unConfiguredVillages = $cartItems->filter(function ($item) {
-            return !$item->product->village->origin_city_id;
+            return !$item->product->village || !$item->product->village->origin_city_id;
         });
 
         if ($unConfiguredVillages->isNotEmpty()) {

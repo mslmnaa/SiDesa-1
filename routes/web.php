@@ -107,6 +107,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/checkout', [UserOrderController::class, 'checkout'])->name('user.orders.checkout');
     Route::post('/checkout', [UserOrderController::class, 'store'])->name('user.orders.store');
 
+    // Favorite Routes
+    Route::get('/favorites', [\App\Http\Controllers\User\FavoriteController::class, 'index'])->name('user.favorites.index');
+    Route::post('/favorites/{product}/toggle', [\App\Http\Controllers\User\FavoriteController::class, 'toggle'])->name('user.favorites.toggle');
+    Route::delete('/favorites/{favorite}', [\App\Http\Controllers\User\FavoriteController::class, 'destroy'])->name('user.favorites.destroy');
+
     // Payment Routes (Midtrans)
     Route::get('/payment/{order}', [PaymentController::class, 'show'])->name('user.payment.show');
     Route::get('/payment/finish', [PaymentController::class, 'finish'])->name('user.payment.finish');

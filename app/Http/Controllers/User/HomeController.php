@@ -19,10 +19,18 @@ class HomeController extends Controller
             ->take(6)
             ->get();
 
-        $categories = Category::has('products')->take(6)->get();
+        $categories = Category::with(['products' => function($query) {
+            $query->active()
+                ->inStock()
+                ->withCount(['approvedReviews as reviews_count'])
+                ->withAvg(['approvedReviews as average_rating'], 'rating')
+                ->latest();
+        }])->has('products')->get();
 
-        // Featured Products with village info
+        // Featured Products with village info and review stats
         $featuredProducts = Product::with(['category', 'village'])
+            ->withCount(['approvedReviews as reviews_count'])
+            ->withAvg(['approvedReviews as average_rating'], 'rating')
             ->active()
             ->inStock()
             ->latest()
