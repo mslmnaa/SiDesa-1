@@ -46,6 +46,16 @@ class Product extends Model
         return $this->belongsTo(Village::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(ProductReview::class);
+    }
+
+    public function approvedReviews()
+    {
+        return $this->hasMany(ProductReview::class)->where('status', 'approved');
+    }
+
     public function scopeActive($query)
     {
         return $query->where('status', 'active');
@@ -54,6 +64,47 @@ class Product extends Model
     public function scopeInStock($query)
     {
         return $query->where('stock', '>', 0);
+    }
+
+    /**
+     * Get average rating for this product
+     */
+    public function getAverageRatingAttribute()
+    {
+        $average = $this->approvedReviews()->avg('rating');
+        return $average ? round($average, 1) : 0;
+    }
+
+    /**
+     * Get total reviews count
+     */
+    public function getReviewsCountAttribute()
+    {
+        return $this->approvedReviews()->count();
+    }
+
+    /**
+     * Get rating breakdown (count per star)
+     */
+    public function getRatingBreakdown()
+    {
+        return [
+            5 => $this->approvedReviews()->where('rating', 5)->count(),
+            4 => $this->approvedReviews()->where('rating', 4)->count(),
+            3 => $this->approvedReviews()->where('rating', 3)->count(),
+            2 => $this->approvedReviews()->where('rating', 2)->count(),
+            1 => $this->approvedReviews()->where('rating', 1)->count(),
+        ];
+    }
+
+    public function favorites()
+    {
+        return $this->hasMany(\App\Models\Favorite::class);
+    }
+
+    public function favoritedByUsers()
+    {
+        return $this->belongsToMany(\App\Models\User::class, 'favorites')->withTimestamps();
     }
     
     /**

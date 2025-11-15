@@ -123,7 +123,7 @@
                         <div class="space-y-4">
                             <!-- Add to Cart Button -->
                             @auth
-                                @if(!$product->village->origin_city_id)
+                                @if(!$product->village || !$product->village->origin_city_id)
                                 <!-- Warning: Shipping location not configured -->
                                 <div class="mb-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-lg">
                                     <div class="flex items-start">
@@ -133,7 +133,11 @@
                                         <div class="ml-3">
                                             <h3 class="text-sm font-medium text-yellow-800">Produk Belum Dapat Dipesan</h3>
                                             <p class="mt-1 text-xs text-yellow-700">
-                                                Desa penjual belum mengatur lokasi pengiriman. Produk ini belum dapat ditambahkan ke keranjang saat ini.
+                                                @if(!$product->village)
+                                                    Desa penjual tidak ditemukan. Produk ini belum dapat ditambahkan ke keranjang saat ini.
+                                                @else
+                                                    Desa penjual belum mengatur lokasi pengiriman. Produk ini belum dapat ditambahkan ke keranjang saat ini.
+                                                @endif
                                             </p>
                                         </div>
                                     </div>
