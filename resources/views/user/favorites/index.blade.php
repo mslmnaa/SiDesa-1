@@ -51,13 +51,8 @@
                         <a href="{{ route('products.show', $favorite->product) }}" class="block">
                             <!-- Product Image -->
                             <div class="relative aspect-square overflow-hidden bg-gray-100">
-                                @php
-                                    $images = $favorite->product->getImagesAttribute();
-                                    $mainImage = !empty($images) ? $images[0] : null;
-                                @endphp
-
-                                @if ($mainImage)
-                                    <img src="{{ $mainImage }}" alt="{{ $favorite->product->name }}"
+                                @if ($favorite->product->images && count($favorite->product->images) > 0)
+                                    <img src="{{ $favorite->product->getImageDataUri(0) }}" alt="{{ $favorite->product->name }}"
                                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center">
