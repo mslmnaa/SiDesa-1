@@ -140,27 +140,44 @@
                     </div>
                 </div>
 
-                <!-- Categories Grid with Products -->
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
+                <!-- Categories Grid with Products - Limited to 2 rows -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 mb-8">
                     @php
-                        $allProducts = collect();
+                        // Prepare products for all categories
+                        $categoryProductsMap = [];
+                        $allProductsForDisplay = collect();
+
                         foreach ($categories as $category) {
-                            foreach ($category->products->take(2) as $product) {
+                            // Get products for each category (10 products per category for 2 rows)
+                            $categoryProducts = $category
+                                ->products()
+                                ->where('status', 'active')
+                                ->where('stock', '>', 0)
+                                ->limit(10)
+                                ->get();
+
+                            foreach ($categoryProducts as $product) {
                                 $product->category_id_for_filter = $category->id;
                                 $product->category_name_for_display = $category->name;
-                                $allProducts->push($product);
                             }
+
+                            $categoryProductsMap[$category->id] = $categoryProducts;
+
+                            // For "all" tab, take 2 products from each category
+                            $allProductsForDisplay = $allProductsForDisplay->merge($categoryProducts->take(2));
                         }
-                        // Limit to 10 products total (2 rows x 5 columns)
-                        $allProducts = $allProducts->take(10);
+
+                        // Limit "all" tab to 10 products (2 rows x 5 columns)
+                        $allProductsForDisplay = $allProductsForDisplay->take(10);
                     @endphp
 
-                    @foreach ($allProducts as $product)
-                        <div x-show="activeCategory === 'all' || activeCategory === '{{ $product->category_id_for_filter }}'"
-                            x-transition:enter="transition ease-out duration-400" x-transition:enter-start="opacity-0"
-                            x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
-                            x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-                            class="bg-white rounded-2xl p-5 hover:shadow-xl hover:border-[#3BB77E] transition-all duration-300 group cursor-pointer border border-gray-200 hover:-translate-y-1">
+                    {{-- Display products for "all" tab --}}
+                    @foreach ($allProductsForDisplay as $product)
+                        <div x-show="activeCategory === 'all'" x-transition:enter="transition ease-out duration-400"
+                            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                            x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100"
+                            x-transition:leave-end="opacity-0"
+                            class="bg-white rounded-2xl p-5 hover:shadow-xl hover:border-[#3BB77E] transition-all duration-300 group cursor-pointer border border-gray-200 hover:-translate-y-1 flex flex-col">
                             <!-- Discount Badge & Wishlist -->
                             <div class="flex justify-between items-start mb-3">
                                 @if ($loop->index < 3)
@@ -296,9 +313,20 @@
 
                             <!-- Progress Bar -->
                             @php
-                                $sold = rand(60, 100);
-                                $total = rand(100, 150);
-                                $percentage = ($sold / $total) * 100;
+                                // Calculate actual sold quantity from orders
+                                $sold = DB::table('order_items')
+                                    ->join('orders', 'order_items.order_id', '=', 'orders.id')
+                                    ->where('order_items.product_id', $product->id)
+                                    ->whereIn('orders.status', ['completed', 'processing', 'shipped'])
+                                    ->where('orders.payment_status', 'paid')
+                                    ->sum('order_items.quantity');
+
+                                // Stock from database + sold items = initial stock (approximate total produced)
+                                $currentStock = $product->stock;
+                                $total = $currentStock + $sold;
+
+                                // Calculate percentage - prevent division by zero
+                                $percentage = $total > 0 ? ($sold / $total) * 100 : 0;
                             @endphp
                             <div class="mb-3">
                                 <div class="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
@@ -306,13 +334,14 @@
                                         style="width: {{ $percentage }}%"></div>
                                 </div>
                                 <div class="flex items-center justify-between text-[11px] mt-1">
-                                    <span class="text-gray-500">Terjual: {{ $sold }}/{{ $total }}</span>
+                                    <span class="text-gray-500">Terjual: {{ $sold }} | Stok:
+                                        {{ $currentStock }}</span>
                                 </div>
                             </div>
 
                             <!-- Add to Cart Button -->
                             <a href="{{ route('products.show', $product) }}"
-                                class="flex items-center justify-center gap-2 bg-[#DEF9EC] hover:bg-[#3BB77E] text-[#3BB77E] hover:text-white font-semibold py-2 px-3 rounded-md transition-all duration-300 text-[13px] transform hover:scale-105 hover:shadow-md">
+                                class="mt-auto flex items-center justify-center gap-2 bg-[#DEF9EC] hover:bg-[#3BB77E] text-[#3BB77E] hover:text-white font-semibold py-2 px-3 rounded-md transition-all duration-300 text-[13px] transform hover:scale-105 hover:shadow-md">
                                 <svg class="w-4 h-4 transition-transform duration-300 group-hover:rotate-12"
                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -323,6 +352,209 @@
                             </a>
                         </div>
                     @endforeach
+
+                    {{-- Display products for each category tab --}}
+                    @foreach ($categoryProductsMap as $catId => $products)
+                        @foreach ($products as $product)
+                            <div x-show="activeCategory === '{{ $catId }}'"
+                                x-transition:enter="transition ease-out duration-400" x-transition:enter-start="opacity-0"
+                                x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
+                                x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                                class="bg-white rounded-2xl p-5 hover:shadow-xl hover:border-[#3BB77E] transition-all duration-300 group cursor-pointer border border-gray-200 hover:-translate-y-1 flex flex-col">
+                                <!-- Discount Badge & Wishlist -->
+                                <div class="flex justify-between items-start mb-3">
+                                    @if ($loop->parent->index == 0 && $loop->index < 3)
+                                        <span
+                                            class="bg-pink-500 text-white text-[11px] font-bold px-2 py-1 rounded-sm animate-pulse">{{ ['Hot', 'Sale', 'Best Sale'][$loop->index] }}</span>
+                                    @else
+                                        <span></span>
+                                    @endif
+
+                                    <!-- Favorite Button -->
+                                    @auth
+                                        @php
+                                            $isFavorited = auth()
+                                                ->user()
+                                                ->favorites()
+                                                ->where('product_id', $product->id)
+                                                ->exists();
+                                        @endphp
+                                        <form action="{{ route('user.favorites.toggle', $product) }}" method="POST"
+                                            class="inline">
+                                            @csrf
+                                            <button type="submit"
+                                                class="transition-all duration-300 transform hover:scale-110">
+                                                @if ($isFavorited)
+                                                    <svg class="w-5 h-5 text-[#FF6B6B]" fill="currentColor"
+                                                        viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd"
+                                                            d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                @else
+                                                    <svg class="w-5 h-5 text-gray-400 hover:text-[#FF6B6B]" fill="none"
+                                                        stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+                                                        </path>
+                                                    </svg>
+                                                @endif
+                                            </button>
+                                        </form>
+                                    @else
+                                        <a href="{{ route('login') }}"
+                                            class="text-gray-400 hover:text-[#FF6B6B] transition-all duration-300 transform hover:scale-110">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+                                                </path>
+                                            </svg>
+                                        </a>
+                                    @endauth
+                                </div>
+
+                                <!-- Product Image -->
+                                <div class="relative mb-3 overflow-hidden rounded-lg">
+                                    @if ($product->images && count($product->images) > 0)
+                                        <img src="{{ $product->getImageDataUri(0) }}" alt="{{ $product->name }}"
+                                            class="w-full h-32 object-contain group-hover:scale-110 transition-transform duration-500 ease-out">
+                                    @else
+                                        <div class="w-full h-32 bg-gray-50 rounded flex items-center justify-center">
+                                            <svg class="w-16 h-16 text-gray-300 group-hover:scale-110 transition-transform duration-300"
+                                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                    @endif
+                                </div>
+
+                                <!-- Category Name -->
+                                <div
+                                    class="text-[12px] text-gray-500 mb-1 transition-colors duration-300 group-hover:text-[#3BB77E]">
+                                    {{ $product->category_name_for_display }}</div>
+                                <h3
+                                    class="font-bold text-[#253D4E] text-[14px] mb-2 line-clamp-2 group-hover:text-[#3BB77E] transition-all duration-300 leading-tight">
+                                    {{ $product->name }}
+                                </h3>
+
+                                <!-- Rating -->
+                                <div class="flex items-center gap-1 mb-2">
+                                    @php
+                                        $avgRating = $product->average_rating ?? 0;
+                                        $reviewsCount = $product->reviews_count ?? 0;
+                                        $fullStars = floor($avgRating);
+                                        $hasHalfStar = $avgRating - $fullStars >= 0.5;
+                                    @endphp
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        @if ($i <= $fullStars)
+                                            <svg class="w-3 h-3 text-[#FDC040]" fill="currentColor" viewBox="0 0 20 20">
+                                                <path
+                                                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
+                                                </path>
+                                            </svg>
+                                        @elseif($i == $fullStars + 1 && $hasHalfStar)
+                                            <svg class="w-3 h-3" viewBox="0 0 20 20">
+                                                <defs>
+                                                    <linearGradient
+                                                        id="half-cat2-{{ $product->id }}-{{ $i }}">
+                                                        <stop offset="50%" stop-color="#FDC040" />
+                                                        <stop offset="50%" stop-color="#D1D5DB" stop-opacity="1" />
+                                                    </linearGradient>
+                                                </defs>
+                                                <path fill="url(#half-cat2-{{ $product->id }}-{{ $i }})"
+                                                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
+                                                </path>
+                                            </svg>
+                                        @else
+                                            <svg class="w-3 h-3 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                                                <path
+                                                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
+                                                </path>
+                                            </svg>
+                                        @endif
+                                    @endfor
+                                    <span
+                                        class="text-[12px] text-gray-500 ml-1">({{ number_format($avgRating, 1) }})</span>
+                                </div>
+
+                                <!-- Price & Vendor -->
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center gap-2">
+                                        <span
+                                            class="text-[18px] font-bold text-[#3BB77E]">Rp{{ number_format($product->price, 0, ',', '.') }}</span>
+                                        <span
+                                            class="text-[14px] text-gray-400 line-through">Rp{{ number_format($product->price * 1.4, 0, ',', '.') }}</span>
+                                    </div>
+                                </div>
+
+                                <!-- Vendor -->
+                                @if ($product->village)
+                                    <div class="text-[12px] text-gray-500 mb-3">By <span
+                                            class="text-[#3BB77E]">{{ Str::limit($product->village->name, 15) }}</span>
+                                    </div>
+                                @else
+                                    <div class="text-[12px] text-gray-500 mb-3">By <span
+                                            class="text-[#3BB77E]">Desa</span>
+                                    </div>
+                                @endif
+
+                                <!-- Progress Bar -->
+                                @php
+                                    // Calculate actual sold quantity from orders
+                                    $sold = DB::table('order_items')
+                                        ->join('orders', 'order_items.order_id', '=', 'orders.id')
+                                        ->where('order_items.product_id', $product->id)
+                                        ->whereIn('orders.status', ['completed', 'processing', 'shipped'])
+                                        ->where('orders.payment_status', 'paid')
+                                        ->sum('order_items.quantity');
+
+                                    // Stock from database + sold items = initial stock (approximate total produced)
+                                    $currentStock = $product->stock;
+                                    $total = $currentStock + $sold;
+
+                                    // Calculate percentage - prevent division by zero
+                                    $percentage = $total > 0 ? ($sold / $total) * 100 : 0;
+                                @endphp
+                                <div class="mb-3">
+                                    <div class="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                                        <div class="bg-[#3BB77E] h-1.5 rounded-full transition-all duration-500 ease-out"
+                                            style="width: {{ $percentage }}%"></div>
+                                    </div>
+                                    <div class="flex items-center justify-between text-[11px] mt-1">
+                                        <span class="text-gray-500">Terjual: {{ $sold }} | Stok:
+                                            {{ $currentStock }}</span>
+                                    </div>
+                                </div>
+
+                                <!-- Add to Cart Button -->
+                                <a href="{{ route('products.show', $product) }}"
+                                    class="mt-auto flex items-center justify-center gap-2 bg-[#DEF9EC] hover:bg-[#3BB77E] text-[#3BB77E] hover:text-white font-semibold py-2 px-3 rounded-md transition-all duration-300 text-[13px] transform hover:scale-105 hover:shadow-md">
+                                    <svg class="w-4 h-4 transition-transform duration-300 group-hover:rotate-12"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+                                        </path>
+                                    </svg>
+                                    <span>Add</span>
+                                </a>
+                            </div>
+                        @endforeach
+                    @endforeach
+                </div>
+
+                <!-- View All Button -->
+                <div class="text-center mt-8">
+                    <a href="{{ route('products.index') }}"
+                        class="inline-flex items-center gap-2 bg-[#3BB77E] hover:bg-[#2a9d66] text-white font-bold px-8 py-4 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg text-sm group">
+                        <span>Lihat Semua Produk</span>
+                        <svg class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </a>
                 </div>
             </div>
         </section>
@@ -416,7 +648,7 @@
                             x-transition:enter="transition ease-out duration-400" x-transition:enter-start="opacity-0"
                             x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
                             x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-                            class="bg-white rounded-2xl p-5 hover:shadow-xl hover:border-[#3BB77E] transition-all duration-300 group cursor-pointer border border-gray-200 hover:-translate-y-1">
+                            class="bg-white rounded-2xl p-5 hover:shadow-xl hover:border-[#3BB77E] transition-all duration-300 group cursor-pointer border border-gray-200 hover:-translate-y-1 flex flex-col">
                             <!-- Discount Badge & Wishlist -->
                             <div class="flex justify-between items-start mb-3">
                                 @if ($loop->index == 0)
@@ -558,9 +790,20 @@
 
                             <!-- Progress Bar -->
                             @php
-                                $sold = rand(60, 100);
-                                $total = rand(100, 150);
-                                $percentage = ($sold / $total) * 100;
+                                // Calculate actual sold quantity from orders
+                                $sold = DB::table('order_items')
+                                    ->join('orders', 'order_items.order_id', '=', 'orders.id')
+                                    ->where('order_items.product_id', $product->id)
+                                    ->whereIn('orders.status', ['completed', 'processing', 'shipped'])
+                                    ->where('orders.payment_status', 'paid')
+                                    ->sum('order_items.quantity');
+
+                                // Stock from database + sold items = initial stock (approximate total produced)
+                                $currentStock = $product->stock;
+                                $total = $currentStock + $sold;
+
+                                // Calculate percentage - prevent division by zero
+                                $percentage = $total > 0 ? ($sold / $total) * 100 : 0;
                             @endphp
                             <div class="mb-3">
                                 <div class="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
@@ -568,13 +811,14 @@
                                         style="width: {{ $percentage }}%"></div>
                                 </div>
                                 <div class="flex items-center justify-between text-[11px] mt-1">
-                                    <span class="text-gray-500">Terjual: {{ $sold }}/{{ $total }}</span>
+                                    <span class="text-gray-500">Terjual: {{ $sold }} | Stok:
+                                        {{ $currentStock }}</span>
                                 </div>
                             </div>
 
                             <!-- Add to Cart Button -->
                             <a href="{{ route('products.show', $product) }}"
-                                class="flex items-center justify-center gap-2 bg-[#DEF9EC] hover:bg-[#3BB77E] text-[#3BB77E] hover:text-white font-semibold py-2 px-3 rounded-md transition-all duration-300 text-[13px] transform hover:scale-105 hover:shadow-md">
+                                class="mt-auto flex items-center justify-center gap-2 bg-[#DEF9EC] hover:bg-[#3BB77E] text-[#3BB77E] hover:text-white font-semibold py-2 px-3 rounded-md transition-all duration-300 text-[13px] transform hover:scale-105 hover:shadow-md">
                                 <svg class="w-4 h-4 transition-transform duration-300 group-hover:rotate-12"
                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -631,7 +875,8 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     @foreach ($featuredProducts->take(4) as $product)
-                        <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl hover:border-[#3BB77E] transition-all duration-300 group hover:-translate-y-1">
+                        <div
+                            class="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl hover:border-[#3BB77E] transition-all duration-300 group hover:-translate-y-1">
                             <!-- Product Image Container -->
                             <a href="{{ route('products.show', $product) }}" class="block relative overflow-hidden">
                                 @if ($product->images && count($product->images) > 0)
@@ -648,13 +893,25 @@
                                     </div>
                                 @endif
 
-                                <!-- Discount Badge -->
+                                <!-- Badge for Stock Status -->
                                 <div class="absolute top-4 left-4">
-                                    <span class="bg-red-500 text-white text-[12px] font-bold px-3 py-1 rounded animate-pulse shadow-lg">-{{ rand(15, 40) }}%</span>
+                                    @if ($product->stock > 50)
+                                        <span
+                                            class="bg-green-500 text-white text-[12px] font-bold px-3 py-1 rounded shadow-lg">Stok
+                                            Banyak</span>
+                                    @elseif ($product->stock > 10)
+                                        <span
+                                            class="bg-blue-500 text-white text-[12px] font-bold px-3 py-1 rounded shadow-lg">Tersedia</span>
+                                    @else
+                                        <span
+                                            class="bg-orange-500 text-white text-[12px] font-bold px-3 py-1 rounded animate-pulse shadow-lg">Stok
+                                            Terbatas</span>
+                                    @endif
                                 </div>
 
                                 <!-- Favorite Button -->
-                                <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <div
+                                    class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                     @auth
                                         @php
                                             $isFavorited = auth()
@@ -663,7 +920,9 @@
                                                 ->where('product_id', $product->id)
                                                 ->exists();
                                         @endphp
-                                        <form action="{{ route('user.favorites.toggle', $product) }}" method="POST" class="inline" onclick="event.preventDefault(); event.stopPropagation(); this.submit();">
+                                        <form action="{{ route('user.favorites.toggle', $product) }}" method="POST"
+                                            class="inline"
+                                            onclick="event.preventDefault(); event.stopPropagation(); this.submit();">
                                             @csrf
                                             <button type="submit"
                                                 class="bg-white hover:bg-[#FF6B6B] text-gray-600 hover:text-white rounded-full p-2 shadow-lg transition-all duration-300 transform hover:scale-110 {{ $isFavorited ? 'bg-[#FF6B6B] text-white' : '' }}">
@@ -691,13 +950,16 @@
                             <!-- Product Details -->
                             <div class="p-5">
                                 <a href="{{ route('products.show', $product) }}" class="block">
-                                    <h3 class="font-bold text-[#253D4E] text-[15px] mb-2 group-hover:text-[#3BB77E] transition-colors duration-300 line-clamp-2 leading-snug min-h-[42px]">
+                                    <h3
+                                        class="font-bold text-[#253D4E] text-[15px] mb-2 group-hover:text-[#3BB77E] transition-colors duration-300 line-clamp-2 leading-snug min-h-[42px]">
                                         {{ $product->name }}
                                     </h3>
                                 </a>
 
                                 @if ($product->village)
-                                    <p class="text-[12px] text-gray-500 mb-3">By <span class="text-[#3BB77E] font-medium">{{ Str::limit($product->village->name, 20) }}</span></p>
+                                    <p class="text-[12px] text-gray-500 mb-3">By <span
+                                            class="text-[#3BB77E] font-medium">{{ Str::limit($product->village->name, 20) }}</span>
+                                    </p>
                                 @endif
 
                                 <!-- Rating -->
@@ -711,37 +973,46 @@
                                     @for ($i = 1; $i <= 5; $i++)
                                         @if ($i <= $fullStars)
                                             <svg class="w-3 h-3 text-[#FDC040]" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                                <path
+                                                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
+                                                </path>
                                             </svg>
                                         @elseif($i == $fullStars + 1 && $hasHalfStar)
                                             <svg class="w-3 h-3" viewBox="0 0 20 20">
                                                 <defs>
-                                                    <linearGradient id="half-deal-{{ $product->id }}-{{ $i }}">
+                                                    <linearGradient
+                                                        id="half-deal-{{ $product->id }}-{{ $i }}">
                                                         <stop offset="50%" stop-color="#FDC040" />
                                                         <stop offset="50%" stop-color="#D1D5DB" stop-opacity="1" />
                                                     </linearGradient>
                                                 </defs>
                                                 <path fill="url(#half-deal-{{ $product->id }}-{{ $i }})"
-                                                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
+                                                </path>
                                             </svg>
                                         @else
                                             <svg class="w-3 h-3 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                                <path
+                                                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
+                                                </path>
                                             </svg>
                                         @endif
                                     @endfor
-                                    <span class="text-[12px] text-gray-500 ml-1">({{ number_format($avgRating, 1) }})</span>
+                                    <span
+                                        class="text-[12px] text-gray-500 ml-1">({{ number_format($avgRating, 1) }})</span>
                                 </div>
 
                                 <!-- Price -->
                                 <div class="flex items-center gap-2 mb-4">
-                                    <span class="text-[18px] font-bold text-[#3BB77E]">Rp{{ number_format($product->price, 0, ',', '.') }}</span>
-                                    <span class="text-[13px] text-gray-400 line-through">Rp{{ number_format($product->price * 1.4, 0, ',', '.') }}</span>
+                                    <span
+                                        class="text-[18px] font-bold text-[#3BB77E]">Rp{{ number_format($product->price, 0, ',', '.') }}</span>
+                                    <span
+                                        class="text-[13px] text-gray-400 line-through">Rp{{ number_format($product->price * 1.4, 0, ',', '.') }}</span>
                                 </div>
 
                                 <!-- Add to Cart Button -->
                                 <a href="{{ route('products.show', $product) }}"
-                                    class="flex items-center justify-center gap-2 bg-[#DEF9EC] hover:bg-[#3BB77E] text-[#3BB77E] hover:text-white font-semibold py-2.5 px-4 rounded-lg transition-all duration-300 text-[13px] transform hover:scale-105 hover:shadow-md w-full">
+                                    class="mt-auto flex items-center justify-center gap-2 bg-[#DEF9EC] hover:bg-[#3BB77E] text-[#3BB77E] hover:text-white font-semibold py-2.5 px-4 rounded-lg transition-all duration-300 text-[13px] transform hover:scale-105 hover:shadow-md w-full">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
@@ -809,9 +1080,9 @@
 
                 <!-- Products Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    @foreach ($featuredProducts->take(8) as $product)
+                    @foreach ($featuredProducts as $product)
                         <a href="{{ route('products.show', $product) }}"
-                            x-show="activeProductTab === 'all' || activeProductTab === '{{ $product->type }}' || (activeProductTab === 'terbaru' && {{ $loop->index < 4 ? 'true' : 'false' }})"
+                            x-show="activeProductTab === 'all' || activeProductTab === '{{ $product->type }}' || activeProductTab === 'terbaru'"
                             x-transition:enter="transition ease-out duration-400" x-transition:enter-start="opacity-0"
                             x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
                             x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
@@ -879,34 +1150,18 @@
                         </a>
                     @endforeach
 
-                    <!-- Empty State Placeholders (4 cards) - shown when no products match filter -->
-                    @for ($i = 0; $i < 4; $i++)
-                        <div x-show="(() => {
-                        let visibleCount = 0;
-                        @foreach ($featuredProducts->take(8) as $product)
-if (activeProductTab === 'all' || activeProductTab === '{{ $product->type }}' || (activeProductTab === 'terbaru' && {{ $loop->index < 4 ? 'true' : 'false' }})) {
-                                visibleCount++;
-                            }
-@endforeach
-                        return visibleCount === 0;
-                    })()"
-                            x-transition:enter="transition ease-out duration-400" x-transition:enter-start="opacity-0"
-                            x-transition:enter-end="opacity-100"
-                            class="flex items-center gap-4 bg-white p-4 rounded-xl border border-gray-200">
-                            <!-- Skeleton placeholder -->
-                            <div class="w-20 h-20 bg-gray-100 rounded-lg flex-shrink-0"></div>
-                            <div class="flex-1 min-w-0 space-y-2">
-                                <div class="h-4 bg-gray-200 rounded w-full"></div>
-                                <div class="h-4 bg-gray-200 rounded w-3/4"></div>
-                                <div class="flex items-center gap-1">
-                                    @for ($j = 0; $j < 5; $j++)
-                                        <div class="w-3 h-3 bg-gray-200 rounded"></div>
-                                    @endfor
-                                </div>
-                                <div class="h-5 bg-gray-200 rounded w-24"></div>
-                            </div>
-                        </div>
-                    @endfor
+                </div>
+
+                <!-- View All Button -->
+                <div class="text-center mt-8">
+                    <a href="{{ route('products.index') }}"
+                        class="text-[#3BB77E] font-bold inline-flex items-center gap-2 text-[14px] hover:gap-3 transition-all">
+                        Lihat Semua
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7">
+                            </path>
+                        </svg>
+                    </a>
                 </div>
             </div>
         </section>

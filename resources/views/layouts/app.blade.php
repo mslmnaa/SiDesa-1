@@ -275,7 +275,7 @@
                             d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C10.82 21 3 13.18 3 4V5z" />
                     </svg>
                     <div>
-                        <p class="text-[20px] font-bold text-[#3BB77E]">0812-3456-7890</p>
+                        <p class="text-[20px] font-bold text-[#3BB77E]">+62 896-7436-6444</p>
                         <p class="text-[12px] text-gray-500">Hubungi Kami</p>
                     </div>
                 </div>
@@ -509,7 +509,7 @@
                         Desa</p>
                     <div class="flex items-center gap-2">
                         <span>Hubungi Kami:</span>
-                        <span class="text-[#253D4E] font-bold">0812-3456-7890</span>
+                        <span class="text-[#253D4E] font-bold">+62 896-7436-6444</span>
                     </div>
                 </div>
             </div>
