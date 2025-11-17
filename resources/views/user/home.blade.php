@@ -182,7 +182,7 @@
                             <div class="flex justify-between items-start mb-3">
                                 @if ($loop->index < 3)
                                     <span
-                                        class="bg-pink-500 text-white text-[11px] font-bold px-2 py-1 rounded-sm animate-pulse">{{ ['Hot', 'Sale', 'Best Sale'][$loop->index] }}</span>
+                                        class="bg-pink-500 text-white text-[11px] font-bold px-2 py-1 rounded-sm animate-pulse">{{ ['Populer', 'Diskon', 'Terlaris'][$loop->index] }}</span>
                                 @else
                                     <span></span>
                                 @endif
@@ -304,10 +304,10 @@
 
                             <!-- Vendor -->
                             @if ($product->village)
-                                <div class="text-[12px] text-gray-500 mb-3">By <span
+                                <div class="text-[12px] text-gray-500 mb-3">Oleh <span
                                         class="text-[#3BB77E]">{{ Str::limit($product->village->name, 15) }}</span></div>
                             @else
-                                <div class="text-[12px] text-gray-500 mb-3">By <span class="text-[#3BB77E]">Desa</span>
+                                <div class="text-[12px] text-gray-500 mb-3">Oleh <span class="text-[#3BB77E]">Desa</span>
                                 </div>
                             @endif
 
@@ -348,7 +348,7 @@
                                         d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
                                     </path>
                                 </svg>
-                                <span>Add</span>
+                                <span>Tambah</span>
                             </a>
                         </div>
                     @endforeach
@@ -365,7 +365,7 @@
                                 <div class="flex justify-between items-start mb-3">
                                     @if ($loop->parent->index == 0 && $loop->index < 3)
                                         <span
-                                            class="bg-pink-500 text-white text-[11px] font-bold px-2 py-1 rounded-sm animate-pulse">{{ ['Hot', 'Sale', 'Best Sale'][$loop->index] }}</span>
+                                            class="bg-pink-500 text-white text-[11px] font-bold px-2 py-1 rounded-sm animate-pulse">{{ ['Populer', 'Diskon', 'Terlaris'][$loop->index] }}</span>
                                     @else
                                         <span></span>
                                     @endif
@@ -491,11 +491,11 @@
 
                                 <!-- Vendor -->
                                 @if ($product->village)
-                                    <div class="text-[12px] text-gray-500 mb-3">By <span
+                                    <div class="text-[12px] text-gray-500 mb-3">Oleh <span
                                             class="text-[#3BB77E]">{{ Str::limit($product->village->name, 15) }}</span>
                                     </div>
                                 @else
-                                    <div class="text-[12px] text-gray-500 mb-3">By <span
+                                    <div class="text-[12px] text-gray-500 mb-3">Oleh <span
                                             class="text-[#3BB77E]">Desa</span>
                                     </div>
                                 @endif
@@ -537,7 +537,7 @@
                                             d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
                                         </path>
                                     </svg>
-                                    <span>Add</span>
+                                    <span>Tambah</span>
                                 </a>
                             </div>
                         @endforeach
@@ -653,14 +653,13 @@
                             <div class="flex justify-between items-start mb-3">
                                 @if ($loop->index == 0)
                                     <span
-                                        class="bg-green-500 text-white text-[11px] font-bold px-2 py-1 rounded-sm animate-pulse">Sale</span>
+                                        class="bg-green-500 text-white text-[11px] font-bold px-2 py-1 rounded-sm animate-pulse">Diskon</span>
                                 @elseif($loop->index == 1)
                                     <span
-                                        class="bg-blue-500 text-white text-[11px] font-bold px-2 py-1 rounded-sm animate-pulse">Best
-                                        Sale</span>
+                                        class="bg-blue-500 text-white text-[11px] font-bold px-2 py-1 rounded-sm animate-pulse">Terlaris</span>
                                 @else
                                     <span
-                                        class="bg-orange-500 text-white text-[11px] font-bold px-2 py-1 rounded-sm animate-pulse">Hot</span>
+                                        class="bg-orange-500 text-white text-[11px] font-bold px-2 py-1 rounded-sm animate-pulse">Populer</span>
                                 @endif
 
                                 <!-- Favorite Button -->
@@ -784,7 +783,7 @@
 
                             <!-- Vendor -->
                             @if ($product->village)
-                                <div class="text-[12px] text-gray-500 mb-3">By <span
+                                <div class="text-[12px] text-gray-500 mb-3">Oleh <span
                                         class="text-[#3BB77E]">{{ Str::limit($product->village->name, 15) }}</span></div>
                             @endif
 
@@ -825,7 +824,7 @@
                                         d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
                                     </path>
                                 </svg>
-                                <span>Add</span>
+                                <span>Tambah</span>
                             </a>
                         </div>
                     @endforeach
@@ -957,7 +956,7 @@
                                 </a>
 
                                 @if ($product->village)
-                                    <p class="text-[12px] text-gray-500 mb-3">By <span
+                                    <p class="text-[12px] text-gray-500 mb-3">Oleh <span
                                             class="text-[#3BB77E] font-medium">{{ Str::limit($product->village->name, 20) }}</span>
                                     </p>
                                 @endif
@@ -1204,7 +1203,7 @@
                                 class="font-bold text-[#253D4E] text-[14px] group-hover:text-[#3BB77E] transition-colors duration-300 mb-1">
                                 {{ $category->name }}</h3>
                             <p class="text-[12px] text-gray-500 group-hover:text-[#3BB77E] transition-colors duration-300">
-                                {{ $category->products_count ?? $category->products->count() }} items</p>
+                                {{ $category->products_count ?? $category->products->count() }} produk</p>
                         </a>
                     @endforeach
                 </div>
@@ -1233,99 +1232,4 @@
             </div>
         </section>
     @endif
-
-    <!-- Newsletter Section - Nest Style -->
-    <section class="py-16 bg-gradient-to-r from-[#BCE3C9] to-[#7FB88D]">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col lg:flex-row items-center justify-between gap-8">
-                <div class="flex-1 text-center lg:text-left">
-                    <h2 class="text-[36px] font-bold text-white mb-4 leading-tight"
-                        style="font-family: 'Quicksand', sans-serif;">
-                        Tetap di rumah & dapatkan<br class="hidden lg:block">produk desa berkualitas
-                    </h2>
-                    <p class="text-white text-[16px] mb-6">Mulai belanja dan dukung UMKM lokal Indonesia</p>
-                    <form class="flex gap-0 bg-white rounded-full overflow-hidden shadow-lg max-w-lg mx-auto lg:mx-0">
-                        <div class="flex items-center pl-6 pr-3">
-                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-                                </path>
-                            </svg>
-                        </div>
-                        <input type="email" placeholder="Alamat email Anda"
-                            class="flex-1 py-4 border-0 focus:outline-none text-sm">
-                        <button type="submit"
-                            class="bg-[#3BB77E] hover:bg-[#2a9d66] text-white font-semibold px-8 py-4 transition-colors text-sm">
-                            Berlangganan
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Section - Nest Style -->
-    <section class="py-12 bg-white border-t border-gray-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-8">
-                <div class="flex flex-col items-center text-center group">
-                    <div class="bg-[#F4F6FA] rounded-lg p-5 mb-4 group-hover:bg-[#DEF9EC] transition-colors">
-                        <svg class="w-10 h-10 text-[#3BB77E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                            </path>
-                        </svg>
-                    </div>
-                    <h3 class="font-bold text-[#253D4E] mb-1 text-[14px]">Harga Terjangkau</h3>
-                    <p class="text-[12px] text-gray-500">Langsung dari petani</p>
-                </div>
-
-                <div class="flex flex-col items-center text-center group">
-                    <div class="bg-[#F4F6FA] rounded-lg p-5 mb-4 group-hover:bg-[#DEF9EC] transition-colors">
-                        <svg class="w-10 h-10 text-[#3BB77E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4">
-                            </path>
-                        </svg>
-                    </div>
-                    <h3 class="font-bold text-[#253D4E] mb-1 text-[14px]">Gratis Ongkir</h3>
-                    <p class="text-[12px] text-gray-500">Pembelian minimal</p>
-                </div>
-
-                <div class="flex flex-col items-center text-center group">
-                    <div class="bg-[#F4F6FA] rounded-lg p-5 mb-4 group-hover:bg-[#DEF9EC] transition-colors">
-                        <svg class="w-10 h-10 text-[#3BB77E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="font-bold text-[#253D4E] mb-1 text-[14px]">Kualitas Terjamin</h3>
-                    <p class="text-[12px] text-gray-500">Produk pilihan</p>
-                </div>
-
-                <div class="flex flex-col items-center text-center group">
-                    <div class="bg-[#F4F6FA] rounded-lg p-5 mb-4 group-hover:bg-[#DEF9EC] transition-colors">
-                        <svg class="w-10 h-10 text-[#3BB77E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
-                            </path>
-                        </svg>
-                    </div>
-                    <h3 class="font-bold text-[#253D4E] mb-1 text-[14px]">Dukung UMKM</h3>
-                    <p class="text-[12px] text-gray-500">Produk lokal desa</p>
-                </div>
-
-                <div class="flex flex-col items-center text-center group">
-                    <div class="bg-[#F4F6FA] rounded-lg p-5 mb-4 group-hover:bg-[#DEF9EC] transition-colors">
-                        <svg class="w-10 h-10 text-[#3BB77E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
-                        </svg>
-                    </div>
-                    <h3 class="font-bold text-[#253D4E] mb-1 text-[14px]">Mudah Dikembalikan</h3>
-                    <p class="text-[12px] text-gray-500">Dalam 30 hari</p>
-                </div>
-            </div>
-        </div>
-    </section>
 @endsection
