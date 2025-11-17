@@ -177,7 +177,7 @@
                             x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
                             x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100"
                             x-transition:leave-end="opacity-0"
-                            class="bg-white rounded-2xl p-5 hover:shadow-xl hover:border-[#3BB77E] transition-all duration-300 group cursor-pointer border border-gray-200 hover:-translate-y-1 flex flex-col">
+                            class="bg-white rounded-2xl p-5 hover:shadow-xl hover:border-[#3BB77E] transition-all duration-300 group border border-gray-200 hover:-translate-y-1 flex flex-col">
                             <!-- Discount Badge & Wishlist -->
                             <div class="flex justify-between items-start mb-3">
                                 @if ($loop->index < 3)
@@ -197,7 +197,7 @@
                                             ->exists();
                                     @endphp
                                     <form action="{{ route('user.favorites.toggle', $product) }}" method="POST"
-                                        class="inline">
+                                        class="inline" onclick="event.stopPropagation()">
                                         @csrf
                                         <button type="submit" class="transition-all duration-300 transform hover:scale-110">
                                             @if ($isFavorited)
@@ -217,7 +217,7 @@
                                         </button>
                                     </form>
                                 @else
-                                    <a href="{{ route('login') }}"
+                                    <a href="{{ route('login') }}" onclick="event.stopPropagation()"
                                         class="text-gray-400 hover:text-[#FF6B6B] transition-all duration-300 transform hover:scale-110">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -227,6 +227,9 @@
                                     </a>
                                 @endauth
                             </div>
+
+                            <!-- Clickable Card Content -->
+                            <a href="{{ route('products.show', $product) }}" class="flex flex-col flex-1 cursor-pointer">
 
                             <!-- Product Image -->
                             <div class="relative mb-3 overflow-hidden rounded-lg">
@@ -338,18 +341,36 @@
                                         {{ $currentStock }}</span>
                                 </div>
                             </div>
+                            </a>
 
                             <!-- Add to Cart Button -->
-                            <a href="{{ route('products.show', $product) }}"
-                                class="mt-auto flex items-center justify-center gap-2 bg-[#DEF9EC] hover:bg-[#3BB77E] text-[#3BB77E] hover:text-white font-semibold py-2 px-3 rounded-md transition-all duration-300 text-[13px] transform hover:scale-105 hover:shadow-md">
-                                <svg class="w-4 h-4 transition-transform duration-300 group-hover:rotate-12"
-                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
-                                    </path>
-                                </svg>
-                                <span>Tambah</span>
-                            </a>
+                            @auth
+                                <form action="{{ route('user.cart.add') }}" method="POST" class="mt-auto" onclick="event.stopPropagation()">
+                                    @csrf
+                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                    <button type="submit"
+                                        class="w-full flex items-center justify-center gap-2 bg-[#DEF9EC] hover:bg-[#3BB77E] text-[#3BB77E] hover:text-white font-semibold py-2 px-3 rounded-md transition-all duration-300 text-[13px] transform hover:scale-105 hover:shadow-md">
+                                        <svg class="w-4 h-4 transition-transform duration-300 group-hover:rotate-12"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+                                            </path>
+                                        </svg>
+                                        <span>Tambah</span>
+                                    </button>
+                                </form>
+                            @else
+                                <a href="{{ route('login') }}" onclick="event.stopPropagation()"
+                                    class="mt-auto flex items-center justify-center gap-2 bg-[#DEF9EC] hover:bg-[#3BB77E] text-[#3BB77E] hover:text-white font-semibold py-2 px-3 rounded-md transition-all duration-300 text-[13px] transform hover:scale-105 hover:shadow-md">
+                                    <svg class="w-4 h-4 transition-transform duration-300 group-hover:rotate-12"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+                                        </path>
+                                    </svg>
+                                    <span>Tambah</span>
+                                </a>
+                            @endauth
                         </div>
                     @endforeach
 
@@ -360,7 +381,7 @@
                                 x-transition:enter="transition ease-out duration-400" x-transition:enter-start="opacity-0"
                                 x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
                                 x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-                                class="bg-white rounded-2xl p-5 hover:shadow-xl hover:border-[#3BB77E] transition-all duration-300 group cursor-pointer border border-gray-200 hover:-translate-y-1 flex flex-col">
+                                class="bg-white rounded-2xl p-5 hover:shadow-xl hover:border-[#3BB77E] transition-all duration-300 group border border-gray-200 hover:-translate-y-1 flex flex-col">
                                 <!-- Discount Badge & Wishlist -->
                                 <div class="flex justify-between items-start mb-3">
                                     @if ($loop->parent->index == 0 && $loop->index < 3)
@@ -380,7 +401,7 @@
                                                 ->exists();
                                         @endphp
                                         <form action="{{ route('user.favorites.toggle', $product) }}" method="POST"
-                                            class="inline">
+                                            class="inline" onclick="event.stopPropagation()">
                                             @csrf
                                             <button type="submit"
                                                 class="transition-all duration-300 transform hover:scale-110">
@@ -402,7 +423,7 @@
                                             </button>
                                         </form>
                                     @else
-                                        <a href="{{ route('login') }}"
+                                        <a href="{{ route('login') }}" onclick="event.stopPropagation()"
                                             class="text-gray-400 hover:text-[#FF6B6B] transition-all duration-300 transform hover:scale-110">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -412,6 +433,9 @@
                                         </a>
                                     @endauth
                                 </div>
+
+                                <!-- Clickable Card Content -->
+                                <a href="{{ route('products.show', $product) }}" class="flex flex-col flex-1 cursor-pointer">
 
                                 <!-- Product Image -->
                                 <div class="relative mb-3 overflow-hidden rounded-lg">
@@ -527,18 +551,36 @@
                                             {{ $currentStock }}</span>
                                     </div>
                                 </div>
+                                </a>
 
                                 <!-- Add to Cart Button -->
-                                <a href="{{ route('products.show', $product) }}"
-                                    class="mt-auto flex items-center justify-center gap-2 bg-[#DEF9EC] hover:bg-[#3BB77E] text-[#3BB77E] hover:text-white font-semibold py-2 px-3 rounded-md transition-all duration-300 text-[13px] transform hover:scale-105 hover:shadow-md">
-                                    <svg class="w-4 h-4 transition-transform duration-300 group-hover:rotate-12"
-                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
-                                        </path>
-                                    </svg>
-                                    <span>Tambah</span>
-                                </a>
+                                @auth
+                                    <form action="{{ route('user.cart.add') }}" method="POST" class="mt-auto" onclick="event.stopPropagation()">
+                                        @csrf
+                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                        <button type="submit"
+                                            class="w-full flex items-center justify-center gap-2 bg-[#DEF9EC] hover:bg-[#3BB77E] text-[#3BB77E] hover:text-white font-semibold py-2 px-3 rounded-md transition-all duration-300 text-[13px] transform hover:scale-105 hover:shadow-md">
+                                            <svg class="w-4 h-4 transition-transform duration-300 group-hover:rotate-12"
+                                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+                                                </path>
+                                            </svg>
+                                            <span>Tambah</span>
+                                        </button>
+                                    </form>
+                                @else
+                                    <a href="{{ route('login') }}" onclick="event.stopPropagation()"
+                                        class="mt-auto flex items-center justify-center gap-2 bg-[#DEF9EC] hover:bg-[#3BB77E] text-[#3BB77E] hover:text-white font-semibold py-2 px-3 rounded-md transition-all duration-300 text-[13px] transform hover:scale-105 hover:shadow-md">
+                                        <svg class="w-4 h-4 transition-transform duration-300 group-hover:rotate-12"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+                                            </path>
+                                        </svg>
+                                        <span>Tambah</span>
+                                    </a>
+                                @endauth
                             </div>
                         @endforeach
                     @endforeach
