@@ -49,7 +49,7 @@
                             class="flex-1 px-2 py-2 text-[14px] border-0 focus:outline-none focus:ring-0">
                         <button type="submit"
                             class="bg-[#3BB77E] hover:bg-[#2a9d66] text-white font-bold px-8 py-3 rounded-full transition-colors text-[14px]">
-                            Search
+                            Cari
                         </button>
                     </form>
                 </div>
@@ -93,7 +93,8 @@
                                 class="absolute -top-1 -right-2 bg-[#3BB77E] text-white rounded-full w-5 h-5 flex items-center justify-center text-[11px] font-bold">{{ auth()->check() ? auth()->user()->carts->sum('quantity') : 0 }}</span>
                         </div>
                         <div class="text-left">
-                            <p class="text-[11px] text-gray-500 group-hover:text-[#3BB77E] transition-colors">Cart</p>
+                            <p class="text-[11px] text-gray-500 group-hover:text-[#3BB77E] transition-colors">Keranjang
+                            </p>
                         </div>
                     </a>
 
@@ -109,7 +110,7 @@
                                     </svg>
                                 </div>
                                 <div class="text-left">
-                                    <p class="text-[11px] text-gray-500">Account</p>
+                                    <p class="text-[11px] text-gray-500">Akun</p>
                                 </div>
                             </button>
                             <div x-show="open" @click.away="open = false" x-transition x-cloak
@@ -201,7 +202,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
-                        <span>Browse All Categories</span>
+                        <span>Jelajahi Semua Kategori</span>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             :class="{ 'rotate-180': open }">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
@@ -321,11 +322,11 @@
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit"
-                                class="w-full text-left text-lg text-red-600 hover:text-red-700 py-2">Logout</button>
+                                class="w-full text-left text-lg text-red-600 hover:text-red-700 py-2">Keluar</button>
                         </form>
                     @else
                         <a href="{{ route('login') }}"
-                            class="block text-lg text-gray-700 hover:text-primary-500 py-2">Login</a>
+                            class="block text-lg text-gray-700 hover:text-primary-500 py-2">Masuk</a>
                         <a href="{{ route('register') }}"
                             class="block text-lg text-gray-700 hover:text-primary-500 py-2">Daftar</a>
                     @endauth
@@ -353,6 +354,116 @@
     <main>
         @yield('content')
     </main>
+
+    <!-- Newsletter Section - Nest Style -->
+    <section class="relative bg-gradient-to-r from-[#BCE3C9] to-[#7FB88D] overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-8 relative z-10">
+                <div class="flex-1 text-center lg:text-left">
+                    <h2 class="text-[36px] font-bold text-[#253D4E] mb-4 leading-tight"
+                        style="font-family: 'Quicksand', sans-serif;">
+                        Dukung Ekonomi Desa & Dapatkan Produk Lokal Berkualitas
+                    </h2>
+                    <p class="text-[#7E7E7E] text-[16px] mb-6">Berlangganan newsletter untuk info produk terbaru dari
+                        BUMDes seluruh Indonesia</p>
+                    <form class="flex gap-0 bg-white rounded-full overflow-hidden shadow-lg max-w-lg mx-auto lg:mx-0">
+                        <div class="flex items-center pl-6 pr-3">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                        </div>
+                        <input type="email" placeholder="Alamat email Anda"
+                            class="flex-1 py-4 border-0 focus:outline-none text-sm">
+                        <button type="submit"
+                            class="bg-[#3BB77E] hover:bg-[#2a9d66] text-white font-semibold px-8 py-4 transition-colors text-sm">
+                            Berlangganan
+                        </button>
+                    </form>
+                </div>
+
+                <div class="flex-1 hidden lg:block"></div>
+            </div>
+        </div>
+
+        <!-- Newsletter Image - Full Height -->
+        <div class="absolute right-0 top-0 bottom-0 w-1/2 hidden lg:flex items-end justify-end pointer-events-none">
+            <img src="{{ asset('images/newsletter-banner.png') }}" alt="Petani"
+                class="h-full w-auto object-contain object-bottom" onerror="this.style.display='none'">
+        </div>
+    </section>
+
+    <!-- Features Section - Nest Style -->
+    <section class="py-12 bg-white border-t border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-8">
+                <div class="flex flex-col items-center text-center group">
+                    <div class="bg-[#F4F6FA] rounded-lg p-5 mb-4 group-hover:bg-[#DEF9EC] transition-colors">
+                        <svg class="w-10 h-10 text-[#3BB77E]" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-[#253D4E] mb-1 text-[14px]">Harga Terjangkau</h3>
+                    <p class="text-[12px] text-gray-500">Langsung dari petani</p>
+                </div>
+
+                <div class="flex flex-col items-center text-center group">
+                    <div class="bg-[#F4F6FA] rounded-lg p-5 mb-4 group-hover:bg-[#DEF9EC] transition-colors">
+                        <svg class="w-10 h-10 text-[#3BB77E]" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-[#253D4E] mb-1 text-[14px]">Gratis Ongkir</h3>
+                    <p class="text-[12px] text-gray-500">Pembelian minimal</p>
+                </div>
+
+                <div class="flex flex-col items-center text-center group">
+                    <div class="bg-[#F4F6FA] rounded-lg p-5 mb-4 group-hover:bg-[#DEF9EC] transition-colors">
+                        <svg class="w-10 h-10 text-[#3BB77E]" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-[#253D4E] mb-1 text-[14px]">Kualitas Terjamin</h3>
+                    <p class="text-[12px] text-gray-500">Produk pilihan</p>
+                </div>
+
+                <div class="flex flex-col items-center text-center group">
+                    <div class="bg-[#F4F6FA] rounded-lg p-5 mb-4 group-hover:bg-[#DEF9EC] transition-colors">
+                        <svg class="w-10 h-10 text-[#3BB77E]" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-[#253D4E] mb-1 text-[14px]">Dukung UMKM</h3>
+                    <p class="text-[12px] text-gray-500">Produk lokal desa</p>
+                </div>
+
+                <div class="flex flex-col items-center text-center group">
+                    <div class="bg-[#F4F6FA] rounded-lg p-5 mb-4 group-hover:bg-[#DEF9EC] transition-colors">
+                        <svg class="w-10 h-10 text-[#3BB77E]" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold text-[#253D4E] mb-1 text-[14px]">Mudah Dikembalikan</h3>
+                    <p class="text-[12px] text-gray-500">Dalam 30 hari</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Footer - Nest Style -->
     <footer class="mt-16 bg-white border-t border-gray-100">
@@ -387,8 +498,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C10.82 21 3 13.18 3 4V5z" />
                             </svg>
-                            <span class="text-[14px] text-gray-700"><strong>Telepon:</strong> (+62)
-                                812-3456-7890</span>
+                            <span class="text-[14px] text-gray-700"><strong>Telepon:</strong> +62 812-3456-7890</span>
                         </div>
                         <div class="flex items-center gap-3">
                             <svg class="w-5 h-5 text-[#3BB77E]" fill="none" stroke="currentColor"
@@ -396,7 +506,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
-                            <span class="text-[14px] text-gray-700"><strong>Email:</strong> info@bumdes.id</span>
+                            <span class="text-[14px] text-gray-700"><strong>Email:</strong> sidesaaa@gmail.com</span>
                         </div>
                     </div>
                 </div>
@@ -462,7 +572,7 @@
                     <div class="flex gap-3">
                         <!-- Facebook -->
                         <a href="#"
-                            class="w-10 h-10 rounded-full bg-[#3BB77E] hover:bg-[#2a9d66] flex items-center justify-center text-white transition-colors"
+                            class="w-12 h-12 flex-shrink-0 rounded-full bg-[#3BB77E] hover:bg-[#2a9d66] flex items-center justify-center text-white transition-colors"
                             title="Facebook">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                 <path
@@ -471,7 +581,7 @@
                         </a>
                         <!-- Twitter/X -->
                         <a href="#"
-                            class="w-10 h-10 rounded-full bg-[#3BB77E] hover:bg-[#2a9d66] flex items-center justify-center text-white transition-colors"
+                            class="w-12 h-12 flex-shrink-0 rounded-full bg-[#3BB77E] hover:bg-[#2a9d66] flex items-center justify-center text-white transition-colors"
                             title="Twitter">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                 <path
@@ -480,7 +590,7 @@
                         </a>
                         <!-- Instagram -->
                         <a href="#"
-                            class="w-10 h-10 rounded-full bg-[#3BB77E] hover:bg-[#2a9d66] flex items-center justify-center text-white transition-colors"
+                            class="w-12 h-12 flex-shrink-0 rounded-full bg-[#3BB77E] hover:bg-[#2a9d66] flex items-center justify-center text-white transition-colors"
                             title="Instagram">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                 <path
@@ -489,7 +599,7 @@
                         </a>
                         <!-- WhatsApp -->
                         <a href="#"
-                            class="w-10 h-10 rounded-full bg-[#3BB77E] hover:bg-[#2a9d66] flex items-center justify-center text-white transition-colors"
+                            class="w-12 h-12 flex-shrink-0 rounded-full bg-[#3BB77E] hover:bg-[#2a9d66] flex items-center justify-center text-white transition-colors"
                             title="WhatsApp">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                 <path
