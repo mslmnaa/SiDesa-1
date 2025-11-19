@@ -1,52 +1,129 @@
 @extends('layouts.app')
 
-@section('title', 'Pesanan #' . $order->order_number . ' - BUMDes Marketplace')
+@section('title', 'Detail Pesanan - BUMDes Marketplace')
 
 @section('content')
 <div class="bg-gray-50 min-h-screen py-8">
-    <div class="max-w-6xl mx-auto px-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
         <!-- Header -->
-        <div class="mb-8">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h1 class="text-3xl font-bold text-gray-900">Pesanan #{{ $order->order_number }}</h1>
-                    <p class="text-gray-600 mt-2">Dipesan pada {{ $order->created_at->format('d M Y, H:i') }}</p>
-                </div>
-                <div class="text-right">
-                    <div class="px-4 py-2 rounded-full text-lg font-semibold
-                        @if($order->status === 'pending') bg-yellow-100 text-yellow-800
-                        @elseif($order->status === 'processing') bg-blue-100 text-blue-800
-                        @elseif($order->status === 'shipped') bg-purple-100 text-purple-800
-                        @elseif($order->status === 'delivered') bg-green-100 text-green-800
-                        @else bg-red-100 text-red-800 @endif">
-                        @if($order->status === 'pending') Menunggu Konfirmasi
-                        @elseif($order->status === 'processing') Diproses
-                        @elseif($order->status === 'shipped') Dikirim
-                        @elseif($order->status === 'delivered') Selesai
-                        @else Dibatalkan @endif
+        <div class="mb-6 sm:mb-8">
+            <a href="{{ route('user.orders.index') }}" class="text-green-600 hover:text-green-700 mb-4 inline-flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                Kembali ke Riwayat Pesanan
+            </a>
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mt-4">Detail Pesanan</h1>
+            <p class="text-gray-600 mt-2 text-sm sm:text-base">Order #{{ $order->order_number }}</p>
+        </div>
+
+        <!-- Payment Success Alert -->
+        @if(request()->get('payment') === 'success' || $order->payment_status === 'paid')
+            <div class="mb-6 bg-green-50 border-l-4 border-green-500 p-4 rounded-lg shadow-sm">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <div class="ml-3 flex-1">
+                        <h3 class="text-sm font-semibold text-green-800">Pembayaran Berhasil!</h3>
+                        <p class="text-sm text-green-700 mt-1">Terima kasih! Pembayaran Anda telah berhasil diproses. Pesanan Anda sedang diproses dan akan segera dikirimkan.</p>
+                        @if($order->paid_at)
+                            <p class="text-xs text-green-600 mt-2">
+                                <strong>Dibayar pada:</strong> {{ $order->paid_at->format('d M Y, H:i') }} WIB
+                            </p>
+                        @endif
+                        @if($order->midtrans_transaction_id)
+                            <p class="text-xs text-green-600 mt-1">
+                                <strong>ID Transaksi:</strong> {{ $order->midtrans_transaction_id }}
+                            </p>
+                        @endif
                     </div>
                 </div>
             </div>
-        </div>
+        @endif
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        @if(request()->get('payment') === 'pending')
+            <div class="mb-6 bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-lg shadow-sm">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-semibold text-yellow-800">Pembayaran Pending</h3>
+                        <p class="text-sm text-yellow-700 mt-1">Pembayaran Anda sedang diproses. Harap selesaikan pembayaran sesuai instruksi yang diberikan.</p>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
             <!-- Order Details -->
             <div class="lg:col-span-2 space-y-6">
-                <!-- Order Items -->
-                <div class="bg-white rounded-lg shadow overflow-hidden">
-                    <div class="px-6 py-4 border-b">
-                        <h2 class="text-xl font-semibold text-gray-900">Produk yang Dipesan</h2>
+                <!-- Status Timeline -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Status Pesanan</h2>
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 text-center">
+                            <div class="w-10 h-10 mx-auto rounded-full flex items-center justify-center
+                                {{ in_array($order->status, ['pending', 'processing', 'shipped', 'completed']) ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500' }}">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <p class="text-xs mt-2 font-medium">Pending</p>
+                        </div>
+                        <div class="flex-1 h-1 {{ in_array($order->status, ['processing', 'shipped', 'completed']) ? 'bg-green-500' : 'bg-gray-200' }}"></div>
+                        <div class="flex-1 text-center">
+                            <div class="w-10 h-10 mx-auto rounded-full flex items-center justify-center
+                                {{ in_array($order->status, ['processing', 'shipped', 'completed']) ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500' }}">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                </svg>
+                            </div>
+                            <p class="text-xs mt-2 font-medium">Diproses</p>
+                        </div>
+                        <div class="flex-1 h-1 {{ in_array($order->status, ['shipped', 'completed']) ? 'bg-green-500' : 'bg-gray-200' }}"></div>
+                        <div class="flex-1 text-center">
+                            <div class="w-10 h-10 mx-auto rounded-full flex items-center justify-center
+                                {{ in_array($order->status, ['shipped', 'completed']) ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500' }}">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                                </svg>
+                            </div>
+                            <p class="text-xs mt-2 font-medium">Dikirim</p>
+                        </div>
+                        <div class="flex-1 h-1 {{ $order->status === 'completed' ? 'bg-green-500' : 'bg-gray-200' }}"></div>
+                        <div class="flex-1 text-center">
+                            <div class="w-10 h-10 mx-auto rounded-full flex items-center justify-center
+                                {{ $order->status === 'completed' ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500' }}">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <p class="text-xs mt-2 font-medium">Selesai</p>
+                        </div>
                     </div>
-                    
+                </div>
+
+                <!-- Order Items -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <div class="px-6 py-4 border-b bg-green-50">
+                        <h2 class="text-lg font-semibold text-gray-900">Produk yang Dipesan</h2>
+                    </div>
+
                     <div class="divide-y divide-gray-200">
-                        @foreach($order->orderItems as $item)
+                        @foreach($order->items as $item)
                             <div class="p-6">
-                                <div class="flex items-center space-x-4">
+                                <div class="flex items-start space-x-4">
                                     <!-- Product Image -->
                                     <div class="flex-shrink-0">
-                                        @if($item->product->images && count($item->product->images) > 0)
-                                            <img src="{{ $item->product->getImageDataUri(0) }}" 
-                                                 alt="{{ $item->product->name }}" 
+                                        @if($item->product && $item->product->images && count($item->product->images) > 0)
+                                            <img src="{{ $item->product->getImageDataUri(0) }}"
+                                                 alt="{{ $item->product_name }}"
                                                  class="w-20 h-20 object-cover rounded-lg">
                                         @else
                                             <div class="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
@@ -56,36 +133,32 @@
                                             </div>
                                         @endif
                                     </div>
-                                    
+
                                     <!-- Product Info -->
-                                    <div class="flex-1 min-w-0">
-                                        <h3 class="font-semibold text-gray-900 mb-1">{{ $item->product->name }}</h3>
-                                        <p class="text-sm text-gray-500 mb-2">{{ $item->product->category->name }}</p>
-                                        <div class="flex items-center space-x-4 text-sm text-gray-600">
-                                            <span>Qty: {{ $item->quantity }}</span>
-                                            <span>×</span>
-                                            <span>Rp {{ number_format($item->price, 0, ',', '.') }}</span>
+                                    <div class="flex-1">
+                                        <h3 class="font-semibold text-gray-900 mb-1">{{ $item->product_name }}</h3>
+                                        <p class="text-sm text-gray-500 mb-2">
+                                            <span class="inline-flex items-center gap-1">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                </svg>
+                                                {{ $item->village->name }}
+                                            </span>
+                                        </p>
+                                        <div class="flex items-center gap-4 text-sm">
+                                            <span class="text-gray-600">{{ $item->quantity }}x</span>
+                                            <span class="font-bold text-green-600">
+                                                Rp {{ number_format($item->price, 0, ',', '.') }}
+                                            </span>
                                         </div>
-                                        
-                                        <!-- WhatsApp Contact -->
-                                        @if($item->product->whatsapp_number)
-                                            <div class="mt-2">
-                                                <a href="https://wa.me/{{ $item->product->whatsapp_number }}?text=Halo, saya ingin bertanya tentang pesanan {{ $order->order_number }} untuk produk {{ $item->product->name }}" 
-                                                   target="_blank"
-                                                   class="inline-flex items-center text-green-600 hover:text-green-800 text-sm">
-                                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
-                                                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
-                                                    </svg>
-                                                    Chat Penjual
-                                                </a>
-                                            </div>
-                                        @endif
                                     </div>
-                                    
+
                                     <!-- Subtotal -->
                                     <div class="text-right">
-                                        <p class="text-lg font-bold text-gray-900">
-                                            Rp {{ number_format($item->quantity * $item->price, 0, ',', '.') }}
+                                        <p class="text-sm text-gray-500 mb-1">Subtotal</p>
+                                        <p class="font-bold text-gray-900">
+                                            Rp {{ number_format($item->subtotal, 0, ',', '.') }}
                                         </p>
                                     </div>
                                 </div>
@@ -94,158 +167,131 @@
                     </div>
                 </div>
 
-                <!-- Order Status Timeline -->
-                <div class="bg-white rounded-lg shadow p-6">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Status Pesanan</h2>
-                    
-                    <div class="relative">
-                        <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
-                        
-                        <div class="relative space-y-6">
-                            <!-- Pending -->
-                            <div class="flex items-center space-x-4">
-                                <div class="flex-shrink-0 w-8 h-8 rounded-full {{ $order->status !== 'cancelled' ? 'bg-green-500' : 'bg-gray-300' }} flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 class="font-medium text-gray-900">Pesanan Dibuat</h3>
-                                    <p class="text-sm text-gray-500">{{ $order->created_at->format('d M Y, H:i') }}</p>
-                                </div>
-                            </div>
-
-                            <!-- Processing -->
-                            <div class="flex items-center space-x-4">
-                                <div class="flex-shrink-0 w-8 h-8 rounded-full {{ in_array($order->status, ['processing', 'shipped', 'delivered']) ? 'bg-green-500' : 'bg-gray-300' }} flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 class="font-medium text-gray-900">Dikonfirmasi & Diproses</h3>
-                                    <p class="text-sm text-gray-500">
-                                        @if(in_array($order->status, ['processing', 'shipped', 'delivered']))
-                                            Pesanan sedang diproses oleh penjual
-                                        @else
-                                            Menunggu konfirmasi dari penjual
-                                        @endif
-                                    </p>
-                                </div>
-                            </div>
-
-                            <!-- Shipped -->
-                            <div class="flex items-center space-x-4">
-                                <div class="flex-shrink-0 w-8 h-8 rounded-full {{ in_array($order->status, ['shipped', 'delivered']) ? 'bg-green-500' : 'bg-gray-300' }} flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 class="font-medium text-gray-900">Dikirim</h3>
-                                    <p class="text-sm text-gray-500">
-                                        @if(in_array($order->status, ['shipped', 'delivered']))
-                                            Pesanan sedang dalam perjalanan
-                                        @else
-                                            Akan dikirim setelah diproses
-                                        @endif
-                                    </p>
-                                </div>
-                            </div>
-
-                            <!-- Delivered -->
-                            <div class="flex items-center space-x-4">
-                                <div class="flex-shrink-0 w-8 h-8 rounded-full {{ $order->status === 'delivered' ? 'bg-green-500' : 'bg-gray-300' }} flex items-center justify-center">
-                                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 class="font-medium text-gray-900">Selesai</h3>
-                                    <p class="text-sm text-gray-500">
-                                        @if($order->status === 'delivered')
-                                            Pesanan telah sampai di tujuan
-                                        @else
-                                            Pesanan akan selesai setelah dikirim
-                                        @endif
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                <!-- Customer Notes -->
+                @if($order->customer_notes)
+                    <div class="bg-white rounded-lg shadow-lg p-6">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4">Catatan</h2>
+                        <p class="text-gray-600">{{ $order->customer_notes }}</p>
                     </div>
-                </div>
+                @endif
             </div>
 
             <!-- Order Summary -->
-            <div class="lg:col-span-1 space-y-6">
-                <!-- Customer Info -->
-                <div class="bg-white rounded-lg shadow p-6">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Informasi Pembeli</h2>
-                    
-                    <div class="space-y-3">
-                        <div>
-                            <p class="text-sm font-medium text-gray-700">Nama</p>
-                            <p class="text-gray-900">{{ $order->customer_name }}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-700">Telepon</p>
-                            <p class="text-gray-900">{{ $order->customer_phone }}</p>
-                        </div>
-                    </div>
-                </div>
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow-lg p-6 lg:sticky lg:top-8">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Ringkasan Pesanan</h2>
 
-                <!-- Shipping Info -->
-                <div class="bg-white rounded-lg shadow p-6">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Alamat Pengiriman</h2>
-                    <p class="text-gray-700 leading-relaxed">{{ $order->shipping_address }}</p>
-                </div>
-
-                <!-- Payment Summary -->
-                <div class="bg-white rounded-lg shadow p-6">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Ringkasan Pembayaran</h2>
-                    
-                    <div class="space-y-3">
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Subtotal</span>
-                            <span class="font-medium">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</span>
+                    <div class="space-y-3 mb-6">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Status</span>
+                            <span class="px-2 py-1 text-xs font-medium rounded-full
+                                {{ $order->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
+                                {{ $order->status === 'processing' ? 'bg-blue-100 text-blue-800' : '' }}
+                                {{ $order->status === 'shipped' ? 'bg-purple-100 text-purple-800' : '' }}
+                                {{ $order->status === 'completed' ? 'bg-green-100 text-green-800' : '' }}
+                                {{ $order->status === 'cancelled' ? 'bg-red-100 text-red-800' : '' }}">
+                                {{ ucfirst($order->status) }}
+                            </span>
                         </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Ongkos Kirim</span>
-                            <span class="font-medium text-green-600">GRATIS</span>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Status Pembayaran</span>
+                            <span class="px-2 py-1 text-xs font-medium rounded-full
+                                {{ $order->payment_status === 'unpaid' ? 'bg-red-100 text-red-800' : '' }}
+                                {{ $order->payment_status === 'paid' ? 'bg-green-100 text-green-800' : '' }}
+                                {{ $order->payment_status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}">
+                                @if($order->payment_status === 'unpaid')
+                                    Belum Bayar
+                                @elseif($order->payment_status === 'paid')
+                                    ✓ Lunas
+                                @elseif($order->payment_status === 'pending')
+                                    Pending
+                                @else
+                                    {{ ucfirst($order->payment_status) }}
+                                @endif
+                            </span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Metode Pembayaran</span>
+                            <span class="font-semibold">{{ ucwords(str_replace('_', ' ', $order->payment_method)) }}</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Tanggal Order</span>
+                            <span class="font-semibold">{{ $order->created_at->format('d M Y') }}</span>
                         </div>
                         <hr>
                         <div class="flex justify-between text-lg font-bold">
-                            <span>Total</span>
-                            <span class="text-green-600">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</span>
+                            <span class="text-gray-900">Total Pembayaran</span>
+                            <span class="text-green-600">
+                                Rp {{ number_format($order->total_amount, 0, ',', '.') }}
+                            </span>
                         </div>
                     </div>
-                </div>
 
-                @if($order->notes)
-                    <!-- Order Notes -->
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Catatan Pesanan</h2>
-                        <p class="text-gray-700 italic">{{ $order->notes }}</p>
-                    </div>
-                @endif
-
-                <!-- Contact Info -->
-                <div class="bg-blue-50 rounded-lg p-6">
-                    <h3 class="font-semibold text-blue-900 mb-2">Butuh Bantuan?</h3>
-                    <p class="text-sm text-blue-800 mb-3">
-                        Hubungi penjual langsung untuk informasi lebih lanjut tentang pesanan Anda.
-                    </p>
-                    <div class="space-y-2">
-                        @foreach($order->orderItems->pluck('product')->unique('whatsapp_number') as $product)
-                            @if($product->whatsapp_number)
-                                <a href="https://wa.me/{{ $product->whatsapp_number }}?text=Halo, saya ingin bertanya tentang pesanan {{ $order->order_number }}" 
-                                   target="_blank"
-                                   class="block bg-green-500 text-white px-4 py-2 rounded text-center hover:bg-green-600 transition-colors">
-                                    Chat via WhatsApp
-                                </a>
+                    @if($order->payment_status === 'unpaid')
+                        <div class="mb-4">
+                            <a href="{{ route('user.payment.show', $order) }}"
+                               class="w-full block text-center bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors shadow-md">
+                                💳 Bayar Sekarang
+                            </a>
+                            <p class="text-xs text-gray-500 text-center mt-2">
+                                Pembayaran aman dengan Midtrans
+                            </p>
+                        </div>
+                    @elseif($order->payment_status === 'paid')
+                        <div class="p-4 bg-green-50 rounded-lg border-2 border-green-300 mb-4">
+                            <div class="flex items-center justify-center mb-2">
+                                <svg class="w-10 h-10 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                            <p class="text-base text-green-800 text-center font-bold mb-1">Pembayaran Lunas</p>
+                            <p class="text-xs text-green-700 text-center mb-2">
+                                Pesanan sedang diproses
+                            </p>
+                            @if($order->paid_at)
+                                <div class="pt-2 border-t border-green-200">
+                                    <p class="text-xs text-green-600 text-center">
+                                        <strong>Dibayar:</strong><br>
+                                        {{ $order->paid_at->format('d M Y, H:i') }} WIB
+                                    </p>
+                                </div>
                             @endif
-                        @endforeach
-                    </div>
+                            @if($order->midtrans_transaction_id)
+                                <p class="text-xs text-gray-500 text-center mt-2">
+                                    ID: {{ substr($order->midtrans_transaction_id, 0, 20) }}...
+                                </p>
+                            @endif
+                        </div>
+                    @elseif($order->payment_status === 'pending')
+                        <div class="p-4 bg-yellow-50 rounded-lg border-2 border-yellow-300 mb-4">
+                            <div class="flex items-center justify-center mb-2">
+                                <svg class="w-10 h-10 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                            <p class="text-base text-yellow-800 text-center font-bold mb-1">Menunggu Pembayaran</p>
+                            <p class="text-xs text-yellow-700 text-center">
+                                Selesaikan pembayaran sesuai instruksi
+                            </p>
+                        </div>
+                    @endif
+
+                    <!-- Tracking Button -->
+                    @if($order->hasTracking())
+                        <div class="mb-4">
+                            <a href="{{ route('user.orders.tracking', $order) }}"
+                               class="w-full flex items-center justify-center bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-md">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                                Lacak Pengiriman
+                            </a>
+                            <p class="text-xs text-gray-500 text-center mt-2">
+                                <span class="font-mono font-semibold">{{ $order->shipping_resi }}</span>
+                            </p>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

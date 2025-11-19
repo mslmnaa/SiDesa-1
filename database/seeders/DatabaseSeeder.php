@@ -6,7 +6,6 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Product\Category;
 use App\Models\Product\Product;
-use App\Models\Content\LandingContent;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -17,135 +16,77 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create Users
+        // Call Village seeder first (must be before users)
+        $this->call([
+            \Database\Seeders\System\SettingSeeder::class,
+            \Database\Seeders\Product\CategoryTypeSeeder::class,
+            VillageSeeder::class,
+        ]);
+
+        // Create SuperAdmin
         User::create([
             'name' => 'Super Admin',
             'email' => 'superadmin@bumdes.com',
             'password' => Hash::make('123'),
             'role' => 'superadmin',
             'phone' => '081234567890',
-            'address' => 'Jl. Admin No. 1, Desa Maju'
+            'address' => 'Jl. Admin Pusat No. 1',
+            'village_id' => null // SuperAdmin tidak terikat desa
         ]);
+
+        // Create Admin for Desa Sendangsari
+        $village = \App\Models\Village::first();
 
         User::create([
-            'name' => 'Admin BUMDes',
-            'email' => 'admin@bumdes.com', 
+            'name' => 'Admin Desa Sendangsari',
+            'email' => 'admin@sendangsari.desa.id',
             'password' => Hash::make('123'),
             'role' => 'admin',
-            'phone' => '081234567891',
-            'address' => 'Jl. BUMDes No. 2, Desa Sejahtera'
+            'phone' => '082136547891',
+            'address' => $village->address,
+            'village_id' => $village->id
         ]);
 
+        // Create regular users
         User::create([
             'name' => 'Budi Santoso',
             'email' => 'budi@example.com',
             'password' => Hash::make('123'),
             'role' => 'user',
-            'phone' => '081234567892',
-            'address' => 'Jl. Mawar No. 3, Desa Indah'
+            'phone' => '081234567899',
+            'address' => 'Jl. Mawar No. 3, Jakarta',
+            'village_id' => null
         ]);
 
-        // Create Categories
-        $categories = [
-            ['name' => 'Makanan & Minuman', 'type' => 'barang', 'description' => 'Produk makanan dan minuman lokal'],
-            ['name' => 'Kerajinan Tangan', 'type' => 'barang', 'description' => 'Hasil kerajinan tangan masyarakat desa'],
-            ['name' => 'Pertanian', 'type' => 'barang', 'description' => 'Produk hasil pertanian segar'],
-            ['name' => 'Peternakan', 'type' => 'barang', 'description' => 'Produk hasil peternakan'],
-            ['name' => 'Fashion', 'type' => 'barang', 'description' => 'Pakaian dan aksesoris buatan lokal'],
-            ['name' => 'Oleh-oleh', 'type' => 'barang', 'description' => 'Souvenir dan oleh-oleh khas desa'],
-            ['name' => 'Konsultasi', 'type' => 'jasa', 'description' => 'Layanan konsultasi dan bimbingan'],
-            ['name' => 'Perawatan', 'type' => 'jasa', 'description' => 'Layanan perawatan dan maintenance']
-        ];
-
-        foreach ($categories as $category) {
-            Category::create($category);
-        }
-
-        // Create Products
-        $products = [
-            [
-                'name' => 'Keripik Singkong Original',
-                'slug' => 'keripik-singkong-original',
-                'description' => 'Keripik singkong renyah dengan rasa original yang gurih. Dibuat dari singkong pilihan langsung dari kebun petani.',
-                'price' => 15000,
-                'stock' => 50,
-                'category_id' => 1,
-                'type' => 'barang',
-                'whatsapp_number' => '081234567890'
-            ],
-            [
-                'name' => 'Tas Anyaman Pandan',
-                'slug' => 'tas-anyaman-pandan',
-                'description' => 'Tas cantik hasil anyaman pandan berkualitas tinggi. Ramah lingkungan dan tahan lama.',
-                'price' => 75000,
-                'stock' => 20,
-                'category_id' => 2,
-                'type' => 'barang',
-                'whatsapp_number' => '081234567891'
-            ],
-            [
-                'name' => 'Beras Organik 5kg',
-                'slug' => 'beras-organik-5kg',
-                'description' => 'Beras organik berkualitas premium tanpa pestisida. Langsung dari sawah petani lokal.',
-                'price' => 85000,
-                'stock' => 100,
-                'category_id' => 3,
-                'type' => 'barang',
-                'whatsapp_number' => '081234567892'
-            ],
-            [
-                'name' => 'Telur Ayam Kampung',
-                'slug' => 'telur-ayam-kampung',
-                'description' => 'Telur ayam kampung segar, kaya nutrisi dan protein. Langsung dari peternakan lokal.',
-                'price' => 25000,
-                'stock' => 200,
-                'category_id' => 4,
-                'type' => 'barang',
-                'whatsapp_number' => '081234567893'
-            ],
-            [
-                'name' => 'Kaos Batik Handmade',
-                'slug' => 'kaos-batik-handmade',
-                'description' => 'Kaos dengan motif batik khas daerah, dibuat dengan teknik handmade berkualitas tinggi.',
-                'price' => 120000,
-                'stock' => 30,
-                'category_id' => 5,
-                'type' => 'barang',
-                'whatsapp_number' => '081234567894'
-            ],
-            [
-                'name' => 'Gula Aren Murni',
-                'slug' => 'gula-aren-murni',
-                'description' => 'Gula aren murni 100% tanpa campuran bahan kimia. Manis alami dari pohon aren.',
-                'price' => 35000,
-                'stock' => 80,
-                'category_id' => 6,
-                'type' => 'barang',
-                'whatsapp_number' => '081234567895'
-            ]
-        ];
-
-        foreach ($products as $product) {
-            Product::create($product);
-        }
-
-        // Create Landing Contents
-        LandingContent::create([
-            'key' => 'hero',
-            'title' => 'Selamat Datang di BUMDes Marketplace',
-            'content' => 'Platform jual beli produk lokal terpercaya yang menghubungkan konsumen dengan produk berkualitas dari desa-desa di Indonesia'
+        User::create([
+            'name' => 'Siti Nurhaliza',
+            'email' => 'siti@example.com',
+            'password' => Hash::make('123'),
+            'role' => 'user',
+            'phone' => '081234567898',
+            'address' => 'Jl. Melati No. 5, Bandung',
+            'village_id' => null
         ]);
 
-        LandingContent::create([
-            'key' => 'about-us',
-            'title' => 'Tentang BUMDes Marketplace',
-            'content' => 'Kami adalah platform digital yang berkomitmen untuk memajukan ekonomi desa melalui pemasaran produk lokal berkualitas. Bergabunglah dengan kami untuk mendukung UMKM dan produk desa Indonesia.'
-        ]);
+        // Products will be created by ProductSeeder
 
-        // Call additional seeders
+        // Call Product seeder last
         $this->call([
-            \Database\Seeders\System\SettingSeeder::class,
-            \Database\Seeders\Product\CategoryTypeSeeder::class,
+            ProductSeeder::class,
         ]);
+
+        $this->command->info('');
+        $this->command->info('🎉 Database seeding completed!');
+        $this->command->info('📊 Summary:');
+        $this->command->info('   - Users: ' . User::count());
+        $this->command->info('   - Villages: ' . \App\Models\Village::count());
+        $this->command->info('   - Categories: ' . Category::count());
+        $this->command->info('   - Products: ' . Product::count());
+        $this->command->info('');
+        $this->command->info('🔐 Login credentials:');
+        $this->command->info('   SuperAdmin: superadmin@bumdes.com / 123');
+        $this->command->info('   Admin Desa: admin@sendangsari.desa.id / 123 (Desa Sendangsari)');
+        $this->command->info('   User: budi@example.com / 123');
+        $this->command->info('   User: siti@example.com / 123');
     }
 }

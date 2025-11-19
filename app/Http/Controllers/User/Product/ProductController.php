@@ -5,15 +5,16 @@ namespace App\Http\Controllers\User\Product;
 use App\Http\Controllers\Controller;
 use App\Models\Product\Product;
 use App\Models\Product\Category;
+use App\Models\Village;
+use App\Helpers\WhatsappHelper;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::with('category')->active()->inStock();
+        $query = Product::with(['category', 'village'])->active();
         
-        // Search functionality
         if ($request->has('search') && $request->search) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -21,33 +22,36 @@ class ProductController extends Controller
                   ->orWhere('description', 'like', "%{$search}%");
             });
         }
-        
-        // Category filter
+
         if ($request->has('category_id') && $request->category_id) {
             $query->where('category_id', $request->category_id);
         }
-        
-        // Price filter
+
+        // Filter by village
+        if ($request->has('village_id') && $request->village_id) {
+            $query->where('village_id', $request->village_id);
+        }
+
         if ($request->has('min_price') && $request->min_price) {
             $query->where('price', '>=', $request->min_price);
         }
-        
+
         if ($request->has('max_price') && $request->max_price) {
             $query->where('price', '<=', $request->max_price);
         }
-        
-        // Sorting
+
         $sortBy = $request->get('sort', 'created_at');
         $sortOrder = $request->get('order', 'desc');
-        
+
         if (in_array($sortBy, ['name', 'price', 'created_at'])) {
             $query->orderBy($sortBy, $sortOrder);
         }
-        
+
         $products = $query->paginate(12);
         $categories = Category::has('products')->get();
-        
-        return view('user.products.index', compact('products', 'categories'));
+        $villages = Village::active()->has('products')->get();
+
+        return view('user.products.index', compact('products', 'categories', 'villages'));
     }
     
     public function show(Product $product)
@@ -57,7 +61,6 @@ class ProductController extends Controller
             ->where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
             ->active()
-            ->inStock()
             ->take(4)
             ->get();
             
@@ -69,7 +72,6 @@ class ProductController extends Controller
         $products = Product::with('category')
             ->where('category_id', $category->id)
             ->active()
-            ->inStock()
             ->paginate(12);
             
         return view('user.products.category', compact('products', 'category'));
@@ -77,14 +79,12 @@ class ProductController extends Controller
 
     public function byType($type, Request $request)
     {
-        // Validate type parameter
         if (!in_array($type, ['barang', 'jasa'])) {
             abort(404);
         }
 
-        $query = Product::with('category')->active()->inStock()->where('type', $type);
+        $query = Product::with('category')->active()->where('type', $type);
         
-        // Search functionality
         if ($request->has('search') && $request->search) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -93,12 +93,10 @@ class ProductController extends Controller
             });
         }
         
-        // Category filter
         if ($request->has('category_id') && $request->category_id) {
             $query->where('category_id', $request->category_id);
         }
         
-        // Price filter
         if ($request->has('min_price') && $request->min_price) {
             $query->where('price', '>=', $request->min_price);
         }
@@ -107,7 +105,6 @@ class ProductController extends Controller
             $query->where('price', '<=', $request->max_price);
         }
         
-        // Sorting
         $sortBy = $request->get('sort', 'created_at');
         $sortOrder = $request->get('order', 'desc');
         
@@ -121,5 +118,35 @@ class ProductController extends Controller
         $typeLabel = $type === 'barang' ? 'Produk Barang' : 'Produk Jasa';
         
         return view('user.products.type', compact('products', 'categories', 'type', 'typeLabel'));
+    }
+    
+    /**
+     * Generate WhatsApp URL for product inquiry
+     */
+    public function whatsappInquiry(Product $product, Request $request)
+    {
+        $customMessage = $request->input('message');
+        $includeDetails = $request->boolean('include_details', true);
+        
+        if ($customMessage) {
+            $message = WhatsappHelper::generateCustomMessage($product, $customMessage, $includeDetails);
+        } else {
+            $message = WhatsappHelper::generateDefaultMessage($product);
+        }
+        
+        $whatsappUrl = WhatsappHelper::generateProductInquiryUrl($product, $message);
+        
+        if (!$whatsappUrl) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Nomor WhatsApp tidak tersedia untuk produk ini.'
+            ], 400);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'whatsapp_url' => $whatsappUrl,
+            'message' => $message
+        ]);
     }
 }

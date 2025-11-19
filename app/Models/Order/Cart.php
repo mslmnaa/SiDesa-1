@@ -15,6 +15,11 @@ class Cart extends Model
         'user_id',
         'product_id',
         'quantity',
+        'is_selected',
+    ];
+
+    protected $casts = [
+        'is_selected' => 'boolean',
     ];
 
     public function user()

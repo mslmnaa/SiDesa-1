@@ -21,6 +21,11 @@
         @if($aboutContent)
             <div class="max-w-4xl mx-auto">
                 <div class="bg-white rounded-lg shadow-lg p-8">
+                    @if($aboutContent->image)
+                        <div class="mb-8 text-center">
+                            <img src="{{ Storage::url($aboutContent->image) }}" alt="{{ $aboutContent->title }}" class="w-full max-w-2xl mx-auto rounded-lg shadow-md">
+                        </div>
+                    @endif
                     <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">{{ $aboutContent->title }}</h2>
                     <div class="prose prose-lg max-w-none text-gray-700 leading-relaxed">
                         {!! nl2br(e($aboutContent->content)) !!}

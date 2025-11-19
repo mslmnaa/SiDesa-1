@@ -4,8 +4,8 @@ namespace App\Models\Product;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Order\OrderItem;
 use App\Models\Order\Cart;
+use App\Models\Village;
 
 class Product extends Model
 {
@@ -19,6 +19,7 @@ class Product extends Model
         'stock',
         'images',
         'category_id',
+        'village_id',
         'type',
         'whatsapp_number',
         'status',
@@ -34,14 +35,25 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function orderItems()
-    {
-        return $this->hasMany(OrderItem::class);
-    }
 
     public function carts()
     {
         return $this->hasMany(Cart::class);
+    }
+
+    public function village()
+    {
+        return $this->belongsTo(Village::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(ProductReview::class);
+    }
+
+    public function approvedReviews()
+    {
+        return $this->hasMany(ProductReview::class)->where('status', 'approved');
     }
 
     public function scopeActive($query)
@@ -52,6 +64,47 @@ class Product extends Model
     public function scopeInStock($query)
     {
         return $query->where('stock', '>', 0);
+    }
+
+    /**
+     * Get average rating for this product
+     */
+    public function getAverageRatingAttribute()
+    {
+        $average = $this->approvedReviews()->avg('rating');
+        return $average ? round($average, 1) : 0;
+    }
+
+    /**
+     * Get total reviews count
+     */
+    public function getReviewsCountAttribute()
+    {
+        return $this->approvedReviews()->count();
+    }
+
+    /**
+     * Get rating breakdown (count per star)
+     */
+    public function getRatingBreakdown()
+    {
+        return [
+            5 => $this->approvedReviews()->where('rating', 5)->count(),
+            4 => $this->approvedReviews()->where('rating', 4)->count(),
+            3 => $this->approvedReviews()->where('rating', 3)->count(),
+            2 => $this->approvedReviews()->where('rating', 2)->count(),
+            1 => $this->approvedReviews()->where('rating', 1)->count(),
+        ];
+    }
+
+    public function favorites()
+    {
+        return $this->hasMany(\App\Models\Favorite::class);
+    }
+
+    public function favoritedByUsers()
+    {
+        return $this->belongsToMany(\App\Models\User::class, 'favorites')->withTimestamps();
     }
     
     /**
@@ -160,8 +213,15 @@ class Product extends Model
             return null;
         }
         
-        // Return the base64 data URI directly (images are stored as base64)
-        return $this->images[$index];
+        $image = $this->images[$index];
+        
+        // Check if it's a base64 data URI (starts with 'data:')
+        if (str_starts_with($image, 'data:')) {
+            return $image;
+        }
+        
+        // If it's a file path, use asset() to generate URL
+        return asset($image);
     }
     
     /**
@@ -173,7 +233,14 @@ class Product extends Model
             return [];
         }
         
-        // Return all base64 data URIs directly
-        return $this->images;
+        return collect($this->images)->map(function ($image, $index) {
+            // Check if it's a base64 data URI (starts with 'data:')
+            if (str_starts_with($image, 'data:')) {
+                return $image;
+            }
+            
+            // If it's a file path, use asset() to generate URL
+            return asset($image);
+        })->toArray();
     }
 }
