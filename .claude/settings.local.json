@@ -2,7 +2,23 @@
   "permissions": {
     "allow": [
       "Bash(php artisan make:model:*)",
-      "Bash(php artisan:*)"
+      "Bash(php artisan:*)",
+      "Bash(rm:*)",
+      "Bash(test:*)",
+      "Bash(sed:*)",
+      "Bash(php -r:*)",
+      "Bash(composer show:*)",
+      "Bash(php -l:*)",
+      "Bash(curl:*)",
+      "WebSearch",
+      "WebFetch(domain:biteship.com)",
+      "Bash(npm run build:*)",
+      "Bash(php:*)",
+      "Bash(resources/views/user/favorites/index.blade.php)",
+      "Bash(dir:*)",
+      "Bash(nul)",
+      "Bash(dir /b \"public\\images\" 2)",
+      "Bash(del:*)"
     ],
     "deny": [],
     "ask": []

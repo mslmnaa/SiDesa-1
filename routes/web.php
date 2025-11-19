@@ -6,16 +6,21 @@ use App\Http\Controllers\User\HomeController;
 use App\Http\Controllers\User\Product\ProductController;
 use App\Http\Controllers\User\Cart\CartController;
 use App\Http\Controllers\User\Order\OrderController;
-use App\Http\Controllers\User\Infaq\InfaqController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\Product\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\Product\CategoryController as AdminCategoryController;
-use App\Http\Controllers\Admin\Order\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\AdminManagementController;
 use App\Http\Controllers\SuperAdmin\User\UserController as AdminUserController;
-use App\Http\Controllers\Admin\Content\LandingContentController;
-use App\Http\Controllers\Admin\Infaq\InfaqController as AdminInfaqController;
+use App\Http\Controllers\Admin\Village\VillageController;
+use App\Http\Controllers\Admin\Village\ShippingSettingsController;
+use App\Http\Controllers\User\Village\VillageController as UserVillageController;
 use App\Http\Controllers\User\Contact\ContactController;
-use App\Http\Controllers\SuperAdmin\System\SettingController;
+use App\Http\Controllers\User\Order\OrderController as UserOrderController;
+use App\Http\Controllers\User\PaymentController;
+use App\Http\Controllers\Api\RajaOngkirController;
+use App\Http\Controllers\Api\BiteshipController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\ShippingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,18 +28,57 @@ use App\Http\Controllers\SuperAdmin\System\SettingController;
 |--------------------------------------------------------------------------
 */
 
+// Test Collaborator Komerce API
+Route::get('/test-rajaongkir', function() {
+    $service = new \App\Services\RajaOngkirService();
+
+    // Test 1: Get Provinces
+    $provinces = $service->getProvinces();
+
+    // Test 2: Search Destination
+    $searchResult = $service->searchDestination('jakarta');
+
+    return response()->json([
+        'status' => 'success',
+        'test_1_provinces' => [
+            'count' => count($provinces),
+            'sample' => array_slice($provinces, 0, 3)
+        ],
+        'test_2_search' => [
+            'keyword' => 'jakarta',
+            'count' => count($searchResult),
+            'sample' => array_slice($searchResult, 0, 3)
+        ]
+    ]);
+});
+
+// API Routes for RajaOngkir (AJAX)
+Route::prefix('api')->name('api.')->group(function () {
+    Route::get('/rajaongkir/provinces', [RajaOngkirController::class, 'getProvinces'])->name('rajaongkir.provinces');
+    Route::get('/rajaongkir/cities', [RajaOngkirController::class, 'getCities'])->name('rajaongkir.cities');
+    Route::post('/rajaongkir/calculate-cost', [RajaOngkirController::class, 'calculateCost'])->name('rajaongkir.calculate-cost');
+
+    // Biteship API Routes
+    Route::post('/biteship/rates', [BiteshipController::class, 'getRates'])->name('biteship.rates');
+    Route::get('/biteship/postal-code/search', [BiteshipController::class, 'searchPostalCode'])->name('biteship.postal-code.search');
+    Route::get('/biteship/tracking/{trackingId}', [BiteshipController::class, 'getTracking'])->name('biteship.tracking');
+});
+
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Villages Routes
+Route::get('/villages', [UserVillageController::class, 'index'])->name('villages.index');
+Route::get('/villages/{slug}', [UserVillageController::class, 'show'])->name('villages.show');
+
+// Products Routes
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/type/{type}', [ProductController::class, 'byType'])->name('products.type');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/products/category/{category}', [ProductController::class, 'category'])->name('products.category');
-Route::get('/infaq', [InfaqController::class, 'index'])->name('infaq');
-Route::get('/infaq/create', [InfaqController::class, 'create'])->name('infaq.create');
-Route::post('/infaq', [InfaqController::class, 'store'])->name('infaq.store');
-Route::get('/infaq/{infaq}', [InfaqController::class, 'show'])->name('infaq.show');
+Route::post('/products/{product}/whatsapp-inquiry', [ProductController::class, 'whatsappInquiry'])->name('products.whatsapp-inquiry');
+
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
-Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 
 // Authentication Routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -53,13 +97,29 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/cart/add', [CartController::class, 'add'])->name('user.cart.add');
     Route::put('/cart/{cart}', [CartController::class, 'update'])->name('user.cart.update');
     Route::delete('/cart/{cart}', [CartController::class, 'remove'])->name('user.cart.remove');
-    
+    Route::post('/cart/{cart}/toggle-selection', [CartController::class, 'toggleSelection'])->name('user.cart.toggle-selection');
+    Route::post('/cart/select-all', [CartController::class, 'selectAll'])->name('user.cart.select-all');
+
     // Order Routes
-    Route::get('/orders', [OrderController::class, 'index'])->name('user.orders.index');
-    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('user.orders.show');
-    Route::get('/checkout', [OrderController::class, 'checkout'])->name('user.checkout');
-    Route::post('/checkout', [OrderController::class, 'placeOrder'])->name('user.orders.place');
+    Route::get('/orders', [UserOrderController::class, 'index'])->name('user.orders.index');
+    Route::get('/orders/{order}', [UserOrderController::class, 'show'])->name('user.orders.show');
+    Route::get('/orders/{order}/tracking', [ShippingController::class, 'show'])->name('user.orders.tracking');
+    Route::get('/checkout', [UserOrderController::class, 'checkout'])->name('user.orders.checkout');
+    Route::post('/checkout', [UserOrderController::class, 'store'])->name('user.orders.store');
+
+    // Favorite Routes
+    Route::get('/favorites', [\App\Http\Controllers\User\FavoriteController::class, 'index'])->name('user.favorites.index');
+    Route::post('/favorites/{product}/toggle', [\App\Http\Controllers\User\FavoriteController::class, 'toggle'])->name('user.favorites.toggle');
+    Route::delete('/favorites/{favorite}', [\App\Http\Controllers\User\FavoriteController::class, 'destroy'])->name('user.favorites.destroy');
+
+    // Payment Routes (Midtrans)
+    Route::get('/payment/{order}', [PaymentController::class, 'show'])->name('user.payment.show');
+    Route::get('/payment/finish', [PaymentController::class, 'finish'])->name('user.payment.finish');
+    Route::get('/payment/{order}/status', [PaymentController::class, 'checkStatus'])->name('user.payment.status');
 });
+
+// Midtrans Webhook (No Auth Required)
+Route::post('/payment/notification', [PaymentController::class, 'notification'])->name('user.payment.notification');
 
 // Admin Routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -71,29 +131,32 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     
     // Category Management
     Route::resource('categories', AdminCategoryController::class);
-    
+
     // Order Management
-    Route::resource('orders', AdminOrderController::class)->only(['index', 'show', 'edit', 'update']);
+    Route::get('orders', [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::get('orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
     Route::put('orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
-    
-    // User Management (Super Admin Only)
+    Route::put('orders/{order}/payment-status', [AdminOrderController::class, 'updatePaymentStatus'])->name('orders.update-payment-status');
+    Route::put('orders/{order}/shipping', [AdminOrderController::class, 'updateShipping'])->name('orders.update-shipping');
+
+    // Shipping Management (Input Resi)
+    Route::get('orders/{order}/shipping/create', [ShippingController::class, 'create'])->name('shipping.create');
+    Route::post('orders/{order}/shipping', [ShippingController::class, 'store'])->name('shipping.store');
+    Route::post('orders/{order}/shipping/create-shipment', [ShippingController::class, 'createShipment'])->name('shipping.create-shipment');
+    Route::post('orders/{order}/shipping/update-tracking', [ShippingController::class, 'updateTracking'])->name('shipping.update-tracking');
+
+    // Admin Management (SuperAdmin Only)
+    Route::resource('admins', AdminManagementController::class);
+
+    // User Management (Super Admin Only) - Hanya untuk user biasa, bukan admin
     Route::resource('users', AdminUserController::class);
-    Route::post('users/{user}/toggle-role', [AdminUserController::class, 'toggleRole'])->name('users.toggle-role');
-    
-    // Settings Management (Super Admin Only)
-    Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
-    Route::post('settings', [SettingController::class, 'update'])->name('settings.update');
-    Route::get('settings/test-email', [SettingController::class, 'testEmail'])->name('settings.test-email');
-    
-    // Landing Content Management
-    Route::resource('content', LandingContentController::class);
-    Route::post('content/{landingContent}/toggle-status', [LandingContentController::class, 'toggleStatus'])->name('content.toggle-status');
-    
-    // Infaq Management
-    Route::get('infaq', [AdminInfaqController::class, 'index'])->name('infaq.index');
-    Route::get('infaq/{infaq}', [AdminInfaqController::class, 'show'])->name('infaq.show');
-    Route::put('infaq/{infaq}/status', [AdminInfaqController::class, 'updateStatus'])->name('infaq.update-status');
-    Route::post('infaq/{infaq}/verify', [AdminInfaqController::class, 'verifyPayment'])->name('infaq.verify');
-    Route::post('infaq/{infaq}/complete', [AdminInfaqController::class, 'completeDistribution'])->name('infaq.complete');
-    Route::post('infaq/{infaq}/reject', [AdminInfaqController::class, 'reject'])->name('infaq.reject');
+
+    // Village Management (SuperAdmin Only)
+    Route::resource('villages', VillageController::class);
+    Route::post('villages/{village}/toggle-status', [VillageController::class, 'toggleStatus'])->name('villages.toggle-status');
+
+    // Shipping Settings (Village Admin Only)
+    Route::get('shipping-settings', [ShippingSettingsController::class, 'index'])->name('shipping-settings.index');
+    Route::put('shipping-settings', [ShippingSettingsController::class, 'update'])->name('shipping-settings.update');
+    Route::post('shipping-settings/clear-cache', [ShippingSettingsController::class, 'clearCache'])->name('shipping-settings.clear-cache');
 });

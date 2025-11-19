@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
@@ -91,6 +92,7 @@ class AuthController extends Controller
             'phone' => 'nullable|string|max:15',
             'address' => 'nullable|string|max:500',
             'password' => ['nullable', 'confirmed', Password::min(8)],
+            'profile_photo' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
         ]);
 
         $updateData = [
@@ -102,6 +104,18 @@ class AuthController extends Controller
 
         if (!empty($validated['password'])) {
             $updateData['password'] = Hash::make($validated['password']);
+        }
+
+        // Handle profile photo upload
+        if ($request->hasFile('profile_photo')) {
+            // Delete old profile photo if exists
+            if ($user->profile_photo && \Storage::disk('public')->exists($user->profile_photo)) {
+                \Storage::disk('public')->delete($user->profile_photo);
+            }
+            
+            // Store new profile photo
+            $path = $request->file('profile_photo')->store('profile_photos', 'public');
+            $updateData['profile_photo'] = $path;
         }
 
         $user->update($updateData);
