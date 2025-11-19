@@ -25,7 +25,7 @@ class CartController extends Controller
 
         // Check if any selected item's village hasn't configured shipping
         $hasUnConfiguredShipping = $cartItems->where('is_selected', true)->contains(function ($item) {
-            return !$item->product->village->origin_city_id;
+            return !$item->product->village || !$item->product->village->origin_city_id;
         });
 
         return view('user.cart.index', compact('cartItems', 'groupedByVillage', 'total', 'selectedCount', 'hasUnConfiguredShipping'));

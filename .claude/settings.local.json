@@ -11,7 +11,14 @@
       "Bash(php -l:*)",
       "Bash(curl:*)",
       "WebSearch",
-      "WebFetch(domain:biteship.com)"
+      "WebFetch(domain:biteship.com)",
+      "Bash(npm run build:*)",
+      "Bash(php:*)",
+      "Bash(resources/views/user/favorites/index.blade.php)",
+      "Bash(dir:*)",
+      "Bash(nul)",
+      "Bash(dir /b \"public\\images\" 2)",
+      "Bash(del:*)"
     ],
     "deny": [],
     "ask": []

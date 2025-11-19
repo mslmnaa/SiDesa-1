@@ -80,4 +80,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(ShippingAddress::class);
     }
+
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
+    public function favoriteProducts()
+    {
+        return $this->belongsToMany(Product\Product::class, 'favorites')->withTimestamps();
+    }
 }
