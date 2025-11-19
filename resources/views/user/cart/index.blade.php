@@ -64,6 +64,7 @@
                                                     </a>
                                                 </h3>
                                                 <p class="text-xs sm:text-sm text-gray-500 mb-1">{{ $item->product->category->name }}</p>
+                                                @if($item->product->village)
                                                 <p class="text-xs text-gray-500 mb-1">
                                                     <span class="font-medium">Dari:</span> {{ $item->product->village->name }}
                                                 </p>
@@ -74,6 +75,16 @@
                                                             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
                                                         </svg>
                                                         Lokasi pengiriman belum diatur
+                                                    </span>
+                                                </div>
+                                                @endif
+                                                @else
+                                                <div class="mb-2">
+                                                    <span class="inline-flex items-center gap-1 text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">
+                                                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                                        </svg>
+                                                        Desa tidak ditemukan
                                                     </span>
                                                 </div>
                                                 @endif

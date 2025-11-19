@@ -24,88 +24,83 @@ class ProductSeeder extends Seeder
             return;
         }
 
-        // Get random categories for variation
-        $barangCategories = $categories->where('type', 'barang');
-        $jasaCategories = $categories->where('type', 'jasa');
+        // Get categories by name for specific assignment
+        $makananMinuman = $categories->where('name', 'Makanan & Minuman')->first();
+        $pertanian = $categories->where('name', 'Pertanian')->first();
+        $olehOleh = $categories->where('name', 'Oleh-oleh')->first();
+        $kerajinan = $categories->where('name', 'Kerajinan Tangan')->first();
+        $jasaKesehatan = $categories->where('name', 'Jasa Kesehatan')->first();
 
         $products = [
-            // BUMDes Maju Jaya (Village 1) - Lembang Agricultural Products
-            ['name' => 'Sayur Organik Paket A', 'description' => 'Paket sayur organik segar: kangkung, bayam, sawi. Langsung dari kebun Lembang.', 'price' => 35000, 'stock' => 150, 'village_id' => 1, 'type' => 'barang'],
-            ['name' => 'Strawberry Segar 500gr', 'description' => 'Strawberry manis pilihan dari kebun Lembang. Segar dan berkualitas premium.', 'price' => 45000, 'stock' => 80, 'village_id' => 1, 'type' => 'barang'],
-            ['name' => 'Kerajinan Bambu Lampu Gantung', 'description' => 'Lampu gantung dari bambu pilihan. Desain unik dan ramah lingkungan.', 'price' => 250000, 'stock' => 30, 'village_id' => 1, 'type' => 'barang'],
-            ['name' => 'Selai Strawberry Homemade', 'description' => 'Selai strawberry buatan rumahan tanpa pengawet. Manis alami dan lezat.', 'price' => 35000, 'stock' => 100, 'village_id' => 1, 'type' => 'barang'],
-            ['name' => 'Brokoli Organik Fresh', 'description' => 'Brokoli segar organik tanpa pestisida. Kaya nutrisi dan vitamin.', 'price' => 28000, 'stock' => 120, 'village_id' => 1, 'type' => 'barang'],
+            // HALAMAN 1 - Produk Bunga Telang - UMKM Nani Eka Arisusanda
+            ['name' => 'Keripik Telang Kemasan Souvenir 130 Gram', 'description' => 'Keripik telang dari UMKM Nani Eka Arisusanda', 'price' => 20000, 'stock' => 100, 'village_id' => 1, 'category_id' => $olehOleh->id, 'images' => ['images/products/keripik-telang-souvenir-130g.jpg']],
+            ['name' => 'Telang Tubruk Kemasan Retail 30 Gram', 'description' => 'Teh bunga telang tubruk dari UMKM Nani Eka Arisusanda', 'price' => 25000, 'stock' => 100, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'images' => ['images/products/telang-tubruk-retail-30g.jpg']],
+            ['name' => 'Telang Tubruk Kemasan Souvenir 30 Gram', 'description' => 'Teh bunga telang tubruk kemasan souvenir dari UMKM Nani Eka Arisusanda', 'price' => 30000, 'stock' => 80, 'village_id' => 1, 'category_id' => $olehOleh->id, 'images' => ['images/products/telang-tubruk-souvenir-30g.jpg']],
 
-            // BUMDes Sejahtera Ungaran (Village 2) - Traditional Food
-            ['name' => 'Lunpia Semarang Frozen', 'description' => 'Lunpia rebung khas Semarang dalam kemasan frozen. Tinggal goreng!', 'price' => 40000, 'stock' => 200, 'village_id' => 2, 'type' => 'barang'],
-            ['name' => 'Wingko Babat Original', 'description' => 'Wingko babat asli Semarang dengan rasa kelapa yang khas.', 'price' => 25000, 'stock' => 180, 'village_id' => 2, 'type' => 'barang'],
-            ['name' => 'Bandeng Presto Juwana', 'description' => 'Bandeng presto tanpa duri, bumbu khas Juwana. Siap santap!', 'price' => 55000, 'stock' => 90, 'village_id' => 2, 'type' => 'barang'],
-            ['name' => 'Tahu Bakso Ungaran', 'description' => 'Tahu bakso khas Ungaran dengan isian bakso sapi pilihan.', 'price' => 30000, 'stock' => 150, 'village_id' => 2, 'type' => 'barang'],
-            ['name' => 'Jenang Kudus Tradisional', 'description' => 'Jenang khas Kudus berbagai rasa: kacang, ketan hitam, gula merah.', 'price' => 35000, 'stock' => 120, 'village_id' => 2, 'type' => 'barang'],
+            // Produk Garut - UMKM Bu Basinah
+            ['name' => 'UMKM Emping Garut Bu Basinah', 'description' => 'Emping garut dari UMKM Bu Basinah', 'price' => 35000, 'stock' => 60, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'images' => ['images/products/emping-garut-1kg.jpg']],
+            ['name' => 'Tepung Garut', 'description' => 'Tepung garut berkualitas dari UMKM Bu Basinah', 'price' => 50000, 'stock' => 80, 'village_id' => 1, 'category_id' => $pertanian->id, 'images' => []],
 
-            // Desa Kreatif Sidoarjo (Village 3) - Creative Fashion
-            ['name' => 'Tas Kulit Sintetis Premium', 'description' => 'Tas kulit sintetis berkualitas tinggi buatan pengrajin Sidoarjo.', 'price' => 185000, 'stock' => 60, 'village_id' => 3, 'type' => 'barang'],
-            ['name' => 'Sepatu Sneakers Lokal', 'description' => 'Sepatu sneakers kualitas ekspor dari Tanggulangin. Nyaman dan stylish.', 'price' => 275000, 'stock' => 45, 'village_id' => 3, 'type' => 'barang'],
-            ['name' => 'Dompet Pria Kulit Asli', 'description' => 'Dompet kulit asli untuk pria. Desain minimalis dan elegan.', 'price' => 125000, 'stock' => 80, 'village_id' => 3, 'type' => 'barang'],
-            ['name' => 'Hijab Segi Empat Premium', 'description' => 'Hijab premium bahan voal dengan jahitan rapi. Berbagai warna tersedia.', 'price' => 45000, 'stock' => 200, 'village_id' => 3, 'type' => 'barang'],
-            ['name' => 'Ikat Pinggang Kulit', 'description' => 'Ikat pinggang kulit asli dengan gesper elegant. Awet dan berkualitas.', 'price' => 95000, 'stock' => 70, 'village_id' => 3, 'type' => 'barang'],
+            // Produk Mocaf & Olahan - UMKM Yuliana
+            ['name' => 'Tepung Mocaf 400 gram', 'description' => 'Cocok untuk digunakan sebagai bahan untuk aneka olahan', 'price' => 20000, 'stock' => 150, 'village_id' => 1, 'category_id' => $pertanian->id, 'images' => ['images/products/tepung-mocaf-400g.jpg']],
+            ['name' => 'Keripik Pisang 200 gram', 'description' => 'Nikmat rasanya bikin ketagihan', 'price' => 27000, 'stock' => 100, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'images' => ['images/products/keripik-pisang-200g.jpg']],
+            ['name' => 'Ceriping Pisang 150 Gram', 'description' => 'Ceriping pisang dari UMKM Yuliana', 'price' => 15000, 'stock' => 120, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'images' => ['images/products/ceriping-pisang-150g.jpg']],
+            ['name' => 'Stik Mocaf', 'description' => 'Enak, alami, sehat dan Renyah', 'price' => 15000, 'stock' => 90, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'images' => ['images/products/stik-mocaf.jpg']],
+            ['name' => 'Pati Garut 500 Gram', 'description' => 'Pati garut dari UMKM Yuliana', 'price' => 26000, 'stock' => 70, 'village_id' => 1, 'category_id' => $pertanian->id, 'images' => ['images/products/pati-garut-500g.jpg']],
+            ['name' => 'Mie Maio-Ku (Mie Rebus)', 'description' => 'Mie rebus Maio-Ku dari UMKM Yuliana', 'price' => 10000, 'stock' => 200, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'images' => ['images/products/mie-maio-ku-rebus.jpg']],
+            ['name' => 'Mie Maio-Ku (Mie Goreng)', 'description' => 'Mie goreng Maio-Ku dari UMKM Yuliana', 'price' => 10000, 'stock' => 200, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'images' => ['images/products/mie-maio-ku-goreng.jpg']],
+            ['name' => 'Tepung Ubi Jalar Ungu 500 Gram', 'description' => 'Tepung ubi jalar ungu dari UMKM Yuliana', 'price' => 20000, 'stock' => 85, 'village_id' => 1, 'category_id' => $pertanian->id, 'images' => ['images/products/tepung-ubi-jalar-ungu-500g.jpg']],
 
-            // BUMDes Mandiri Ubud (Village 4) - Organic & Eco-Friendly
-            ['name' => 'Kopi Arabika Bali 200gr', 'description' => 'Kopi arabika premium dari kebun Kintamani. Aroma khas dan rasa nikmat.', 'price' => 75000, 'stock' => 100, 'village_id' => 4, 'type' => 'barang'],
-            ['name' => 'Beras Merah Organik 5kg', 'description' => 'Beras merah organik dari Bali. Kaya serat dan nutrisi.', 'price' => 85000, 'stock' => 120, 'village_id' => 4, 'type' => 'barang'],
-            ['name' => 'Minyak Kelapa VCO 500ml', 'description' => 'Virgin Coconut Oil murni 100%. Baik untuk kesehatan dan kecantikan.', 'price' => 65000, 'stock' => 150, 'village_id' => 4, 'type' => 'barang'],
-            ['name' => 'Teh Hijau Organik Bali', 'description' => 'Teh hijau organik dari perkebunan Bali. Segar dan menyehatkan.', 'price' => 45000, 'stock' => 130, 'village_id' => 4, 'type' => 'barang'],
-            ['name' => 'Madu Hutan Bali 500ml', 'description' => 'Madu hutan murni dari pedalaman Bali. Kaya manfaat dan antioksidan.', 'price' => 95000, 'stock' => 80, 'village_id' => 4, 'type' => 'barang'],
+            // Produk Tepung & Teh - UMKM Kemin
+            ['name' => 'Tepung Ubi Ungu', 'description' => 'Tepung ubi ungu dari UMKM Kemin', 'price' => 36000, 'stock' => 60, 'village_id' => 1, 'category_id' => $pertanian->id, 'images' => []],
+            ['name' => 'Tepung Buah Pisang Original', 'description' => 'Tepung buah pisang original dari UMKM Kemin', 'price' => 30000, 'stock' => 50, 'village_id' => 1, 'category_id' => $pertanian->id, 'images' => []],
+            ['name' => 'Teh Bunga Telang', 'description' => 'Teh bunga telang dari UMKM Kemin', 'price' => 20000, 'stock' => 100, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'images' => []],
 
-            // Desa Berkah Bantul (Village 5) - Batik & Handicraft
-            ['name' => 'Batik Tulis Motif Parang', 'description' => 'Kain batik tulis asli dengan motif parang khas Yogyakarta.', 'price' => 450000, 'stock' => 25, 'village_id' => 5, 'type' => 'barang'],
-            ['name' => 'Kemeja Batik Cap Pria', 'description' => 'Kemeja batik cap untuk pria. Nyaman dan cocok untuk berbagai acara.', 'price' => 185000, 'stock' => 60, 'village_id' => 5, 'type' => 'barang'],
-            ['name' => 'Gerabah Pot Tanaman Hias', 'description' => 'Pot gerabah khas Kasongan untuk tanaman hias. Tahan lama dan artistik.', 'price' => 45000, 'stock' => 100, 'village_id' => 5, 'type' => 'barang'],
-            ['name' => 'Tas Anyaman Mendong', 'description' => 'Tas anyaman mendong buatan tangan. Eco-friendly dan fashionable.', 'price' => 125000, 'stock' => 50, 'village_id' => 5, 'type' => 'barang'],
-            ['name' => 'Wayang Kulit Souvenir Mini', 'description' => 'Wayang kulit mini untuk souvenir atau dekorasi. Karya seniman lokal.', 'price' => 75000, 'stock' => 40, 'village_id' => 5, 'type' => 'barang'],
+            // HALAMAN 2
+            ['name' => 'Tepung Mocaf', 'description' => 'Tepung mocaf dari UMKM Kemin', 'price' => 20000, 'stock' => 100, 'village_id' => 1, 'category_id' => $pertanian->id, 'type' => 'barang', 'images' => []],
+            ['name' => 'Empek Empek Cucum', 'description' => 'Empek empek cucum dari UMKM Niken Fransiska', 'price' => 5000, 'stock' => 150, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => []],
+            ['name' => 'Krimpying', 'description' => 'Krimpying dari UMKM Dadiyem', 'price' => 22000, 'stock' => 80, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => []],
+            ['name' => 'Sabut Kelapa Berdikari', 'description' => 'Sabut kelapa berdikari dari UMKM Isgiyanto', 'price' => 4500, 'stock' => 100, 'village_id' => 1, 'category_id' => $kerajinan->id, 'type' => 'barang', 'images' => []],
+            ['name' => 'Kreyeng', 'description' => 'Kerajinan kreyeng dari UMKM Sagi', 'price' => 15000, 'stock' => 50, 'village_id' => 1, 'category_id' => $kerajinan->id, 'type' => 'barang', 'images' => []],
+            ['name' => 'Kandang Ayam', 'description' => 'Kandang ayam dari UMKM Sagi', 'price' => 70000, 'stock' => 30, 'village_id' => 1, 'category_id' => $pertanian->id, 'type' => 'barang', 'images' => []],
+            ['name' => 'Terapi Pijit Cidera', 'description' => 'Layanan terapi pijit cidera dari UMKM Suyanti', 'price' => 40000, 'stock' => 50, 'village_id' => 1, 'category_id' => $jasaKesehatan->id, 'type' => 'jasa', 'images' => ['images/products/terapi-pijit-cidera.jpg']],
+            ['name' => 'Pijat Bayi', 'description' => 'Layanan pijat bayi dari UMKM Suyanti', 'price' => 35000, 'stock' => 50, 'village_id' => 1, 'category_id' => $jasaKesehatan->id, 'type' => 'jasa', 'images' => ['images/products/pijat-bayi.jpg']],
+            ['name' => 'Jamu Racikan Tradisional', 'description' => 'Jamu racikan tradisional dari UMKM Suyanti', 'price' => 13000, 'stock' => 100, 'village_id' => 1, 'category_id' => $jasaKesehatan->id, 'type' => 'barang', 'images' => ['images/products/jamu-racikan-tradisional.jpg']],
+            ['name' => 'Nasi Box UMKM Kayati', 'description' => 'Nasi box dari UMKM Kayati', 'price' => 15000, 'stock' => 100, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => ['images/products/nasi-box-kayati.jpg']],
+            ['name' => 'Snack Box UMKM Kayati', 'description' => 'Snack box dari UMKM Kayati', 'price' => 5000, 'stock' => 150, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => ['images/products/snack-box-kayati.jpg']],
+            ['name' => 'Jajanan Pasar UMKM Kayati', 'description' => 'Jajanan pasar dari UMKM Kayati', 'price' => 1000, 'stock' => 200, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => ['images/products/jajanan-pasar-kayati.jpg']],
+            ['name' => 'Aneka Sayur Matang', 'description' => 'Aneka sayur matang dari UMKM Kuswantinah', 'price' => 5000, 'stock' => 100, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => []],
+            ['name' => 'Kacang Bawang', 'description' => 'Kacang bawang dari UMKM Sri Rokimah', 'price' => 50000, 'stock' => 60, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => ['images/products/kacang-bawang.jpg']],
+            ['name' => 'Peyek Ser', 'description' => 'Peyek ser dari UMKM Sri Rokimah', 'price' => 50000, 'stock' => 60, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => ['images/products/peyek-ser.jpg']],
+            ['name' => 'Criping Pisang Tanduk', 'description' => 'Criping pisang tanduk dari UMKM Patmini', 'price' => 10000, 'stock' => 100, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => ['images/products/criping-pisang-tanduk.jpg']],
 
-            // BUMDes Makmur Bogor (Village 6) - Fruit Products
-            ['name' => 'Selai Strawberry Puncak 300gr', 'description' => 'Selai strawberry asli dari Puncak. Manis segar tanpa pengawet.', 'price' => 45000, 'stock' => 120, 'village_id' => 6, 'type' => 'barang'],
-            ['name' => 'Manisan Carica Dieng', 'description' => 'Manisan carica khas Dieng dalam sirup. Segar dan unik.', 'price' => 35000, 'stock' => 100, 'village_id' => 6, 'type' => 'barang'],
-            ['name' => 'Keripik Apel Manis', 'description' => 'Keripik apel renyah dari Malang. Camilan sehat dan lezat.', 'price' => 28000, 'stock' => 150, 'village_id' => 6, 'type' => 'barang'],
-            ['name' => 'Teh Hijau Puncak 100gr', 'description' => 'Teh hijau dari perkebunan Puncak. Aroma harum dan menyegarkan.', 'price' => 40000, 'stock' => 130, 'village_id' => 6, 'type' => 'barang'],
-            ['name' => 'Sirup Markisa Homemade', 'description' => 'Sirup markisa buatan rumahan. Asam manis segar untuk minuman.', 'price' => 35000, 'stock' => 110, 'village_id' => 6, 'type' => 'barang'],
+            // HALAMAN 3
+            ['name' => 'Catring', 'description' => 'Catering dari RR. Murniningsih S.Psi', 'price' => 13000, 'stock' => 100, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => ['images/products/catering.jpg']],
+            ['name' => 'Kripik Telang', 'description' => 'Kripik telang dari UMKM Puji Lestari', 'price' => 17000, 'stock' => 80, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => ['images/products/kripik-telang-puji.jpg']],
+            ['name' => 'Krispi Bangged (Bunga Pisang)', 'description' => 'Krispi bunga pisang dari UMKM Febriyanti', 'price' => 25000, 'stock' => 70, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => ['images/products/krispi-bunga-pisang.jpg']],
+            ['name' => 'Wedang Uwuh', 'description' => 'Wedang uwuh dari UMKM Febriyanti', 'price' => 25000, 'stock' => 80, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => ['images/products/wedang-uwuh.jpg']],
+            ['name' => 'Nasi Kuning', 'description' => 'Nasi kuning dari UMKM Purmiyati', 'price' => 4000, 'stock' => 150, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => ['images/products/nasi-kuning.jpg']],
+            ['name' => 'Aneka Jajanan Angkringan', 'description' => 'Aneka jajanan angkringan dari UMKM Triyani', 'price' => 2000, 'stock' => 200, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => ['images/products/jajanan-angkringan.jpg']],
+            ['name' => 'Es Capur', 'description' => 'Es capur dari UMKM Triyani', 'price' => 5000, 'stock' => 100, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => ['images/products/es-capur.jpg']],
+            ['name' => 'Aneka Kue Lebaran', 'description' => 'Aneka kue lebaran dari UMKM Seniyem', 'price' => 25000, 'stock' => 60, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => ['images/products/kue-lebaran.jpg']],
+            ['name' => 'Buket Hempers', 'description' => 'Buket hampers dari UMKM Seniyem', 'price' => 20000, 'stock' => 50, 'village_id' => 1, 'category_id' => $olehOleh->id, 'type' => 'barang', 'images' => ['images/products/buket-hampers.jpg']],
+            ['name' => 'Biofarmaka Botol', 'description' => 'Biofarmaka botol dari UMKM Sutinem', 'price' => 7000, 'stock' => 120, 'village_id' => 1, 'category_id' => $jasaKesehatan->id, 'type' => 'barang', 'images' => ['images/products/biofarmaka-botol.jpg']],
+            ['name' => 'Biofarmaka Instan', 'description' => 'Biofarmaka instan dari UMKM Sutinem', 'price' => 12000, 'stock' => 100, 'village_id' => 1, 'category_id' => $jasaKesehatan->id, 'type' => 'barang', 'images' => ['images/products/biofarmaka-instan.jpg']],
+            ['name' => 'Kripik Pisang Kepok', 'description' => 'Kripik pisang kepok dari UMKM Martini', 'price' => 15000, 'stock' => 90, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => []],
+            ['name' => 'Geblek Tempe', 'description' => 'Geblek tempe dari UMKM Sarinem', 'price' => 10000, 'stock' => 100, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => ['images/products/geblek-tempe.jpg']],
+            ['name' => 'Bakso Daging Ayam dan Sapi', 'description' => 'Bakso daging ayam dan sapi dari UMKM Purwaningsih', 'price' => 50000, 'stock' => 70, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => ['images/products/bakso-daging.jpg']],
+            ['name' => 'Kreni Daging Ayam', 'description' => 'Kreni daging ayam dari UMKM Purwaningsih', 'price' => 100000, 'stock' => 50, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => ['images/products/kreni-daging-ayam.jpg']],
+            ['name' => 'Tahu Bakso', 'description' => 'Tahu bakso dari UMKM Purwaningsih', 'price' => 1500, 'stock' => 150, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => ['images/products/tahu-bakso.jpg']],
 
-            // Desa Mekar Magelang (Village 7) - Coffee & Tea
-            ['name' => 'Kopi Robusta Merapi 250gr', 'description' => 'Kopi robusta dari lereng Merapi. Body kuat dan aroma khas.', 'price' => 55000, 'stock' => 140, 'village_id' => 7, 'type' => 'barang'],
-            ['name' => 'Kopi Arabika Merapi 250gr', 'description' => 'Kopi arabika premium dengan keasaman seimbang. Cocok untuk pour over.', 'price' => 75000, 'stock' => 100, 'village_id' => 7, 'type' => 'barang'],
-            ['name' => 'Madu Hutan Lereng Merapi', 'description' => 'Madu hutan murni dari pegunungan Merapi. Kaya nutrisi alami.', 'price' => 85000, 'stock' => 70, 'village_id' => 7, 'type' => 'barang'],
-            ['name' => 'Teh Rosella Kering', 'description' => 'Teh rosella kering untuk minuman sehat. Kaya antioksidan.', 'price' => 30000, 'stock' => 120, 'village_id' => 7, 'type' => 'barang'],
-            ['name' => 'Jahe Merah Bubuk Instan', 'description' => 'Jahe merah bubuk instant untuk minuman hangat. Praktis dan menyehatkan.', 'price' => 25000, 'stock' => 150, 'village_id' => 7, 'type' => 'barang'],
-
-            // BUMDes Harapan Lombok (Village 8) - Woven Products
-            ['name' => 'Kain Tenun Ikat Lombok', 'description' => 'Kain tenun ikat khas Lombok dengan motif tradisional. Cantik dan eksklusif.', 'price' => 350000, 'stock' => 30, 'village_id' => 8, 'type' => 'barang'],
-            ['name' => 'Tas Anyaman Rotan Lombok', 'description' => 'Tas anyaman rotan untuk santai atau jalan-jalan. Kuat dan stylish.', 'price' => 145000, 'stock' => 60, 'village_id' => 8, 'type' => 'barang'],
-            ['name' => 'Sandal Jepit Anyaman', 'description' => 'Sandal jepit anyaman khas Lombok. Nyaman untuk aktivitas sehari-hari.', 'price' => 45000, 'stock' => 100, 'village_id' => 8, 'type' => 'barang'],
-            ['name' => 'Topi Anyaman Pantai', 'description' => 'Topi anyaman untuk ke pantai atau berkebun. Melindungi dari sinar matahari.', 'price' => 55000, 'stock' => 80, 'village_id' => 8, 'type' => 'barang'],
-            ['name' => 'Tempat Tisu Anyaman Rotan', 'description' => 'Tempat tisu dari anyaman rotan. Dekorasi unik dan fungsional.', 'price' => 35000, 'stock' => 90, 'village_id' => 8, 'type' => 'barang'],
-
-            // Desa Subur Malang (Village 9) - Hydroponic & Fruits
-            ['name' => 'Sayur Hidroponik Paket Sehat', 'description' => 'Paket sayuran hidroponik: selada, pakchoy, kailan. Segar tanpa pestisida.', 'price' => 40000, 'stock' => 120, 'village_id' => 9, 'type' => 'barang'],
-            ['name' => 'Apel Malang Premium 1kg', 'description' => 'Apel Malang manis dan renyah. Kualitas premium langsung dari kebun.', 'price' => 55000, 'stock' => 150, 'village_id' => 9, 'type' => 'barang'],
-            ['name' => 'Brokoli Hidroponik Segar', 'description' => 'Brokoli hasil hidroponik. Bersih, segar, dan kaya nutrisi.', 'price' => 32000, 'stock' => 100, 'village_id' => 9, 'type' => 'barang'],
-            ['name' => 'Selada Keriting Hidroponik', 'description' => 'Selada keriting hidroponik untuk salad. Renyah dan segar.', 'price' => 18000, 'stock' => 130, 'village_id' => 9, 'type' => 'barang'],
-            ['name' => 'Sari Apel Murni 1 Liter', 'description' => 'Sari apel murni tanpa gula tambahan. Sehat dan menyegarkan.', 'price' => 45000, 'stock' => 90, 'village_id' => 9, 'type' => 'barang'],
-
-            // BUMDes Sentosa Solo (Village 10) - Batik
-            ['name' => 'Kain Batik Cap Motif Kawung', 'description' => 'Kain batik cap dengan motif kawung khas Solo. Elegan dan berkelas.', 'price' => 250000, 'stock' => 40, 'village_id' => 10, 'type' => 'barang'],
-            ['name' => 'Kemeja Batik Lengan Panjang', 'description' => 'Kemeja batik lengan panjang untuk acara formal. Nyaman dan berkelas.', 'price' => 225000, 'stock' => 50, 'village_id' => 10, 'type' => 'barang'],
-            ['name' => 'Dress Batik Wanita Modern', 'description' => 'Dress batik modern untuk wanita. Kombinasi tradisional dan kontemporer.', 'price' => 285000, 'stock' => 35, 'village_id' => 10, 'type' => 'barang'],
-            ['name' => 'Scarf Batik Sutra', 'description' => 'Scarf batik dari sutra halus. Aksesoris mewah untuk penampilan elegan.', 'price' => 150000, 'stock' => 60, 'village_id' => 10, 'type' => 'barang'],
-            ['name' => 'Sarung Batik Pria Premium', 'description' => 'Sarung batik untuk pria. Motif khas Solo dengan kualitas terbaik.', 'price' => 175000, 'stock' => 70, 'village_id' => 10, 'type' => 'barang'],
+            // HALAMAN 4
+            ['name' => 'Telur Bebek Asin', 'description' => 'Telur bebek asin dari UMKM Sugiyanti', 'price' => 3000, 'stock' => 100, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => ['images/products/telur-bebek-asin.jpg']],
+            ['name' => 'Toko Kelontong', 'description' => 'Produk toko kelontong dari UMKM Suparilah', 'price' => 2000, 'stock' => 200, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => []],
+            ['name' => 'Nasi Box Roro Rumpoko Wati', 'description' => 'Nasi box dari Roro Rumpoko Wati', 'price' => 12000, 'stock' => 100, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => ['images/products/nasi-box-roro.jpg']],
+            ['name' => 'Snack Box Roro Rumpoko Wati', 'description' => 'Snack box dari Roro Rumpoko Wati', 'price' => 5000, 'stock' => 150, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => ['images/products/snack-box-roro.jpg']],
+            ['name' => 'Jajanan Pasar Roro Rumpoko Wati', 'description' => 'Jajanan pasar dari Roro Rumpoko Wati', 'price' => 1000, 'stock' => 200, 'village_id' => 1, 'category_id' => $makananMinuman->id, 'type' => 'barang', 'images' => ['images/products/jajanan-pasar-roro.jpg']],
         ];
 
         foreach ($products as $product) {
-            // Randomly assign category based on type
-            $categoryId = $product['type'] === 'barang'
-                ? $barangCategories->random()->id
-                : $jasaCategories->random()->id;
-
             Product::create([
                 'name' => $product['name'],
                 'slug' => \Illuminate\Support\Str::slug($product['name']),
@@ -113,14 +108,15 @@ class ProductSeeder extends Seeder
                 'price' => $product['price'],
                 'stock' => $product['stock'],
                 'village_id' => $product['village_id'],
-                'category_id' => $categoryId,
-                'type' => $product['type'],
-                'images' => [],
+                'category_id' => $product['category_id'],
+                'type' => $product['type'] ?? 'barang',
+                'images' => $product['images'] ?? [],
                 'whatsapp_number' => null,
                 'status' => 'active',
             ]);
         }
 
-        $this->command->info('✅ ' . count($products) . ' produk berhasil dibuat untuk 10 desa!');
+        $this->command->info('✅ ' . count($products) . ' produk berhasil dibuat untuk Desa Sendangsari!');
+        $this->command->info('📦 Produk UMKM: Keripik Telang, Tepung Garut, Tepung Mocaf, Keripik Pisang, dan produk lokal lainnya');
     }
 }

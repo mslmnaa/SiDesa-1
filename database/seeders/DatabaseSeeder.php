@@ -34,20 +34,18 @@ class DatabaseSeeder extends Seeder
             'village_id' => null // SuperAdmin tidak terikat desa
         ]);
 
-        // Create Admin for each village (first 5 villages)
-        $villages = \App\Models\Village::take(5)->get();
+        // Create Admin for Desa Sendangsari
+        $village = \App\Models\Village::first();
 
-        foreach ($villages as $index => $village) {
-            User::create([
-                'name' => 'Admin ' . $village->name,
-                'email' => 'admin' . ($index + 1) . '@bumdes.com',
-                'password' => Hash::make('123'),
-                'role' => 'admin',
-                'phone' => '0812345678' . (91 + $index),
-                'address' => $village->address,
-                'village_id' => $village->id // Admin terikat ke desa tertentu
-            ]);
-        }
+        User::create([
+            'name' => 'Admin Desa Sendangsari',
+            'email' => 'admin@sendangsari.desa.id',
+            'password' => Hash::make('123'),
+            'role' => 'admin',
+            'phone' => '082136547891',
+            'address' => $village->address,
+            'village_id' => $village->id
+        ]);
 
         // Create regular users
         User::create([
@@ -70,111 +68,7 @@ class DatabaseSeeder extends Seeder
             'village_id' => null
         ]);
 
-        // Create Categories
-        $categories = [
-            ['name' => 'Makanan & Minuman', 'type' => 'barang', 'description' => 'Produk makanan dan minuman lokal', 'image' => 'images/categories/makanan-minuman.png'],
-            ['name' => 'Kerajinan Tangan', 'type' => 'barang', 'description' => 'Hasil kerajinan tangan masyarakat desa', 'image' => 'images/categories/kerajinan-tangan.png'],
-            ['name' => 'Pertanian', 'type' => 'barang', 'description' => 'Produk hasil pertanian segar', 'image' => 'images/categories/pertanian.png'],
-            ['name' => 'Peternakan', 'type' => 'barang', 'description' => 'Produk hasil peternakan', 'image' => 'images/categories/peternakan.png'],
-            ['name' => 'Fashion', 'type' => 'barang', 'description' => 'Pakaian dan aksesoris buatan lokal', 'image' => 'images/categories/fashion.png'],
-            ['name' => 'Oleh-oleh', 'type' => 'barang', 'description' => 'Souvenir dan oleh-oleh khas desa', 'image' => 'images/categories/oleh-oleh.png'],
-            ['name' => 'Konsultasi', 'type' => 'jasa', 'description' => 'Layanan konsultasi dan bimbingan', 'image' => 'images/categories/konsultasi.png'],
-            ['name' => 'Perawatan', 'type' => 'jasa', 'description' => 'Layanan perawatan dan maintenance', 'image' => 'images/categories/perawatan.png']
-        ];
-
-        foreach ($categories as $category) {
-            Category::create($category);
-        }
-
-        // Create Products
-        $products = [
-            [
-                'name' => 'Keripik Singkong Original',
-                'slug' => 'keripik-singkong-original',
-                'description' => 'Keripik singkong renyah dengan rasa original yang gurih. Dibuat dari singkong pilihan langsung dari kebun petani.',
-                'price' => 15000,
-                'stock' => 50,
-                'category_id' => 1,
-                'type' => 'barang',
-                'whatsapp_number' => '081234567890',
-                'images' => [
-                    'images/products/keripik-singkong-1.jpg',
-                    'images/products/keripik-singkong-2.jpg'
-                ]
-            ],
-            [
-                'name' => 'Tas Anyaman Pandan',
-                'slug' => 'tas-anyaman-pandan',
-                'description' => 'Tas cantik hasil anyaman pandan berkualitas tinggi. Ramah lingkungan dan tahan lama.',
-                'price' => 75000,
-                'stock' => 20,
-                'category_id' => 2,
-                'type' => 'barang',
-                'whatsapp_number' => '081234567891',
-                'images' => [
-                    'images/products/tas-anyaman-pandan-1.jpg',
-                    'images/products/tas-anyaman-pandan-2.jpg'
-                ]
-            ],
-            [
-                'name' => 'Beras Organik 5kg',
-                'slug' => 'beras-organik-5kg',
-                'description' => 'Beras organik berkualitas premium tanpa pestisida. Langsung dari sawah petani lokal.',
-                'price' => 85000,
-                'stock' => 100,
-                'category_id' => 3,
-                'type' => 'barang',
-                'whatsapp_number' => '081234567892',
-                'images' => [
-                    'images/products/beras-organik-1.jpg'
-                ]
-            ],
-            [
-                'name' => 'Telur Ayam Kampung',
-                'slug' => 'telur-ayam-kampung',
-                'description' => 'Telur ayam kampung segar, kaya nutrisi dan protein. Langsung dari peternakan lokal.',
-                'price' => 25000,
-                'stock' => 200,
-                'category_id' => 4,
-                'type' => 'barang',
-                'whatsapp_number' => '081234567893',
-                'images' => [
-                    'images/products/telur-ayam-kampung-1.jpg'
-                ]
-            ],
-            [
-                'name' => 'Kaos Batik Handmade',
-                'slug' => 'kaos-batik-handmade',
-                'description' => 'Kaos dengan motif batik khas daerah, dibuat dengan teknik handmade berkualitas tinggi.',
-                'price' => 120000,
-                'stock' => 30,
-                'category_id' => 5,
-                'type' => 'barang',
-                'whatsapp_number' => '081234567894',
-                'images' => [
-                    'images/products/kaos-batik-1.jpg',
-                    'images/products/kaos-batik-2.jpg'
-                ]
-            ],
-            [
-                'name' => 'Gula Aren Murni',
-                'slug' => 'gula-aren-murni',
-                'description' => 'Gula aren murni 100% tanpa campuran bahan kimia. Manis alami dari pohon aren.',
-                'price' => 35000,
-                'stock' => 80,
-                'category_id' => 6,
-                'type' => 'barang',
-                'whatsapp_number' => '081234567895',
-                'images' => [
-                    'images/products/gula-aren-1.jpg',
-                    'images/products/gula-aren-2.jpg'
-                ]
-            ]
-        ];
-
-        foreach ($products as $product) {
-            Product::create($product);
-        }
+        // Products will be created by ProductSeeder
 
         // Call Product seeder last
         $this->call([
@@ -191,11 +85,7 @@ class DatabaseSeeder extends Seeder
         $this->command->info('');
         $this->command->info('🔐 Login credentials:');
         $this->command->info('   SuperAdmin: superadmin@bumdes.com / 123');
-        $this->command->info('   Admin Desa 1: admin1@bumdes.com / 123 (BUMDes Maju Jaya)');
-        $this->command->info('   Admin Desa 2: admin2@bumdes.com / 123 (BUMDes Sejahtera Ungaran)');
-        $this->command->info('   Admin Desa 3: admin3@bumdes.com / 123 (Desa Kreatif Sidoarjo)');
-        $this->command->info('   Admin Desa 4: admin4@bumdes.com / 123 (BUMDes Mandiri Ubud)');
-        $this->command->info('   Admin Desa 5: admin5@bumdes.com / 123 (Desa Berkah Bantul)');
+        $this->command->info('   Admin Desa: admin@sendangsari.desa.id / 123 (Desa Sendangsari)');
         $this->command->info('   User: budi@example.com / 123');
         $this->command->info('   User: siti@example.com / 123');
     }
