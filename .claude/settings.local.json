@@ -18,7 +18,10 @@
       "Bash(dir:*)",
       "Bash(nul)",
       "Bash(dir /b \"public\\images\" 2)",
-      "Bash(del:*)"
+      "Bash(del:*)",
+      "Bash(ping:*)",
+      "Bash(nslookup:*)",
+      "Bash(git pull:*)"
     ],
     "deny": [],
     "ask": []
