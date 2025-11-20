@@ -25,6 +25,8 @@ class VillageSeeder extends Seeder
                 'email' => 'bumdes@sendangsari-kulonprogo.desa.id',
                 'whatsapp' => '6282136547890',
                 'status' => 'active',
+                'cover_photo' => 'images/villages/cover-desa-sendangsari.jpg',
+                'logo' => 'images/villages/logo-desa-sendangsari.png',
             ],
         ];
 
