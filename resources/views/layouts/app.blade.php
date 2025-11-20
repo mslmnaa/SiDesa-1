@@ -265,7 +265,7 @@
                     </a>
                     <a href="{{ route('contact') }}"
                         class="text-[#253D4E] hover:text-[#3BB77E] font-bold text-[15px] transition-colors relative group">
-                        Kontak
+                        Gabung Mitra
                     </a>
                 </div>
 
