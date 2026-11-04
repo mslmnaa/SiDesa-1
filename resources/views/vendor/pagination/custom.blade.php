@@ -1,5 +1,5 @@
 @if ($paginator->hasPages())
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-xl p-6 border border-gray-100">
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-xl p-4 sm:p-6 border border-gray-100">
         <!-- Results Info -->
         <div class="text-sm text-gray-600">
             Showing <span class="font-semibold text-[#3BB77E]">{{ $paginator->firstItem() }}</span>
@@ -9,18 +9,18 @@
 
         <!-- Pagination Links -->
         <nav role="navigation" aria-label="Pagination Navigation">
-            <ul class="flex items-center gap-2">
+            <ul class="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-3 sm:gap-2">
                 {{-- Previous Page Link --}}
                 @if ($paginator->onFirstPage())
                     <li>
-                        <span class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
+                        <span class="inline-block px-3 sm:px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
                             « Previous
                         </span>
                     </li>
                 @else
                     <li>
                         <a href="{{ $paginator->previousPageUrl() }}"
-                           class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-[#3BB77E] hover:text-white hover:border-[#3BB77E] transition-all duration-200">
+                           class="inline-block px-3 sm:px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-[#3BB77E] hover:text-white hover:border-[#3BB77E] transition-all duration-200">
                             « Previous
                         </a>
                     </li>
@@ -31,7 +31,7 @@
                     {{-- "Three Dots" Separator --}}
                     @if (is_string($element))
                         <li>
-                            <span class="px-4 py-2 text-sm font-medium text-gray-500">{{ $element }}</span>
+                            <span class="inline-block px-3 sm:px-4 py-2 text-sm font-medium text-gray-500">{{ $element }}</span>
                         </li>
                     @endif
 
@@ -40,14 +40,14 @@
                         @foreach ($element as $page => $url)
                             @if ($page == $paginator->currentPage())
                                 <li>
-                                    <span class="px-4 py-2 text-sm font-bold text-white bg-[#3BB77E] rounded-lg shadow-md">
+                                    <span class="inline-block px-3 sm:px-4 py-2 text-sm font-bold text-white bg-[#3BB77E] rounded-lg shadow-md">
                                         {{ $page }}
                                     </span>
                                 </li>
                             @else
                                 <li>
                                     <a href="{{ $url }}"
-                                       class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-[#3BB77E] hover:text-white hover:border-[#3BB77E] transition-all duration-200">
+                                       class="inline-block px-3 sm:px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-[#3BB77E] hover:text-white hover:border-[#3BB77E] transition-all duration-200">
                                         {{ $page }}
                                     </a>
                                 </li>
@@ -60,13 +60,13 @@
                 @if ($paginator->hasMorePages())
                     <li>
                         <a href="{{ $paginator->nextPageUrl() }}"
-                           class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-[#3BB77E] hover:text-white hover:border-[#3BB77E] transition-all duration-200">
+                           class="inline-block px-3 sm:px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-[#3BB77E] hover:text-white hover:border-[#3BB77E] transition-all duration-200">
                             Next »
                         </a>
                     </li>
                 @else
                     <li>
-                        <span class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
+                        <span class="inline-block px-3 sm:px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
                             Next »
                         </span>
                     </li>

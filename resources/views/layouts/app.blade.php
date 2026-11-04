@@ -17,19 +17,19 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="bg-white">
+<body class="bg-white overflow-x-clip">
 
     <!-- Main Header - Nest Style -->
     <header class="bg-white border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div class="flex items-center justify-between gap-6">
+            <div class="flex items-center justify-between gap-4 lg:gap-6">
                 <!-- Logo -->
                 <div class="flex items-center flex-shrink-0">
                     <a href="{{ route('home') }}" class="flex items-center gap-2 group">
                         <img src="/images/logo.svg" alt="BUMDes" class="w-12 h-12"
                             onerror="this.style.display='none'">
                         <div>
-                            <span class="text-[32px] font-bold text-[#253D4E] leading-none"
+                            <span class="text-[26px] sm:text-[32px] font-bold text-[#253D4E] leading-none"
                                 style="font-family: 'Quicksand', sans-serif;">BUMDes</span>
                         </div>
                     </a>
@@ -193,7 +193,7 @@
     <nav class="border-t border-gray-100 bg-white sticky top-0 z-50 shadow-sm"
         style="font-family: 'Quicksand', sans-serif;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center gap-8 py-3">
+            <div class="flex items-center gap-8 lg:py-3">
                 <!-- Browse All Categories -->
                 <div class="relative hidden lg:block" x-data="{ open: false }">
                     <button @click="open = !open"
@@ -357,17 +357,17 @@
 
     <!-- Newsletter Section - Nest Style -->
     <section class="relative bg-gradient-to-r from-[#BCE3C9] to-[#7FB88D] overflow-hidden">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
             <div class="flex flex-col lg:flex-row items-center justify-between gap-8 relative z-10">
                 <div class="flex-1 text-center lg:text-left">
-                    <h2 class="text-[36px] font-bold text-[#253D4E] mb-4 leading-tight"
+                    <h2 class="text-[24px] sm:text-[36px] font-bold text-[#253D4E] mb-4 leading-tight"
                         style="font-family: 'Quicksand', sans-serif;">
                         Dukung Ekonomi Desa & Dapatkan Produk Lokal Berkualitas
                     </h2>
                     <p class="text-[#7E7E7E] text-[16px] mb-6">Berlangganan newsletter untuk info produk terbaru dari
                         BUMDes seluruh Indonesia</p>
                     <form class="flex gap-0 bg-white rounded-full overflow-hidden shadow-lg max-w-lg mx-auto lg:mx-0">
-                        <div class="flex items-center pl-6 pr-3">
+                        <div class="flex items-center pl-4 sm:pl-6 pr-2 sm:pr-3">
                             <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -376,9 +376,9 @@
                             </svg>
                         </div>
                         <input type="email" placeholder="Alamat email Anda"
-                            class="flex-1 py-4 border-0 focus:outline-none text-sm">
+                            class="flex-1 min-w-0 py-4 border-0 focus:outline-none text-sm">
                         <button type="submit"
-                            class="bg-[#3BB77E] hover:bg-[#2a9d66] text-white font-semibold px-8 py-4 transition-colors text-sm">
+                            class="bg-[#3BB77E] hover:bg-[#2a9d66] text-white font-semibold px-4 sm:px-8 py-4 transition-colors text-sm flex-shrink-0">
                             Berlangganan
                         </button>
                     </form>
@@ -506,7 +506,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
-                            <span class="text-[14px] text-gray-700"><strong>Email:</strong> sidesaaa@gmail.com</span>
+                            <span class="text-[14px] text-gray-700 break-all"><strong>Email:</strong> sidesaaa@gmail.com</span>
                         </div>
                     </div>
                 </div>

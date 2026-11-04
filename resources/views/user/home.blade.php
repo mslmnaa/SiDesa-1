@@ -8,20 +8,20 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                 <!-- Large Banner with Newsletter - Light Blue Background -->
-                <div class="lg:col-span-2 bg-[#BCE3C9] rounded-3xl p-12 relative overflow-hidden">
+                <div class="lg:col-span-2 bg-[#BCE3C9] rounded-3xl p-6 sm:p-12 relative overflow-hidden">
                     <!-- Background Image - Ukuran optimal: 1200x400px atau 1600x500px -->
                     <img src="{{ asset('images/hero-banner-main.jpg') }}" alt="Hero Banner"
-                        class="absolute inset-0 w-full h-full object-cover opacity-full" onerror="this.style.display='none'">
+                        class="absolute inset-0 w-full h-full object-cover object-left lg:object-center opacity-full" onerror="this.style.display='none'">
 
                     <div class="relative z-10 max-w-lg">
-                        <h1 class="text-[48px] font-bold text-[#253D4E] mb-4 leading-tight"
+                        <h1 class="text-[28px] sm:text-[40px] lg:text-[48px] font-bold text-[#253D4E] mb-4 leading-tight"
                             style="font-family: 'Quicksand', sans-serif;">
                             Produk Lokal Desa<br>
                             <span class="text-[#253D4E]">Berkualitas Tinggi</span>
                         </h1>
-                        <p class="text-[18px] text-gray-700 mb-6">Dukung ekonomi desa dengan belanja produk UMKM lokal</p>
+                        <p class="text-[15px] sm:text-[18px] text-gray-700 mb-6">Dukung ekonomi desa dengan belanja produk UMKM lokal</p>
                         <form class="flex gap-0 bg-white rounded-full overflow-hidden shadow-lg max-w-md">
-                            <div class="flex items-center pl-6 pr-3">
+                            <div class="flex items-center pl-4 sm:pl-6 pr-2 sm:pr-3">
                                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
@@ -29,9 +29,9 @@
                                 </svg>
                             </div>
                             <input type="email" placeholder="Alamat email Anda"
-                                class="flex-1 py-4 border-0 focus:outline-none text-sm">
+                                class="flex-1 min-w-0 py-4 border-0 focus:outline-none text-sm">
                             <button type="submit"
-                                class="bg-[#3BB77E] hover:bg-[#2a9d66] text-white font-semibold px-8 py-4 rounded-full transition-colors text-sm">
+                                class="bg-[#3BB77E] hover:bg-[#2a9d66] text-white font-semibold px-4 sm:px-8 py-4 rounded-full transition-colors text-sm flex-shrink-0">
                                 Berlangganan
                             </button>
                         </form>
@@ -43,14 +43,14 @@
                 </div>
 
                 <!-- Small Banner - Orange/Peach Background -->
-                <div class="bg-[#FFE6D2] rounded-3xl p-8 flex flex-col justify-center relative overflow-hidden">
+                <div class="bg-[#FFE6D2] rounded-3xl p-6 sm:p-8 flex flex-col justify-center relative overflow-hidden">
                     <!-- Background Image - Ukuran optimal: 600x400px atau 800x500px -->
                     <img src="{{ asset('images/hero-banner-delivery.jpg') }}" alt="Delivery Banner"
                         class="absolute inset-0 w-full h-full object-cover opacity-full"
                         onerror="this.style.display='none'">
 
                     <div class="relative z-10">
-                        <h3 class="text-[32px] font-bold text-[#253D4E] mb-2 leading-tight"
+                        <h3 class="text-[24px] sm:text-[32px] font-bold text-[#253D4E] mb-2 leading-tight"
                             style="font-family: 'Quicksand', sans-serif;">Antar Ke<br>Rumah Anda</h3>
                         <p class="text-[14px] text-gray-700 mb-4">Pengiriman cepat & aman</p>
                         <a href="{{ route('products.index') }}"
@@ -123,9 +123,9 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <!-- Section Header with Tabs -->
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
-                    <h2 class="text-[32px] font-bold text-[#253D4E]" style="font-family: 'Quicksand', sans-serif;">Kategori
+                    <h2 class="text-[24px] sm:text-[32px] font-bold text-[#253D4E] leading-tight" style="font-family: 'Quicksand', sans-serif;">Kategori
                         Produk</h2>
-                    <div class="flex items-center gap-8 text-sm">
+                    <div class="flex flex-wrap items-center gap-x-6 gap-y-2 sm:gap-8 text-sm">
                         <button @click="activeCategory = 'all'"
                             :class="activeCategory === 'all' ? 'text-[#3BB77E] font-bold border-b-2 border-[#3BB77E]' :
                                 'text-gray-600 hover:text-[#3BB77E] font-medium'"
@@ -141,7 +141,7 @@
                 </div>
 
                 <!-- Categories Grid with Products - Limited to 2 rows -->
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 mb-8">
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5 mb-8">
                     @php
                         // Prepare products for all categories
                         $categoryProductsMap = [];
@@ -177,7 +177,7 @@
                             x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
                             x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100"
                             x-transition:leave-end="opacity-0"
-                            class="bg-white rounded-2xl p-5 hover:shadow-xl hover:border-[#3BB77E] transition-all duration-300 group border border-gray-200 hover:-translate-y-1 flex flex-col">
+                            class="bg-white rounded-2xl p-3 sm:p-5 min-w-0 hover:shadow-xl hover:border-[#3BB77E] transition-all duration-300 group border border-gray-200 hover:-translate-y-1 flex flex-col">
                             <!-- Discount Badge & Wishlist -->
                             <div class="flex justify-between items-start mb-3">
                                 @if ($loop->index < 3)
@@ -297,9 +297,9 @@
 
                             <!-- Price & Vendor -->
                             <div class="flex items-center justify-between mb-3">
-                                <div class="flex items-center gap-2">
+                                <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 min-w-0">
                                     <span
-                                        class="text-[18px] font-bold text-[#3BB77E]">Rp{{ number_format($product->price, 0, ',', '.') }}</span>
+                                        class="text-[15px] sm:text-[18px] font-bold text-[#3BB77E]">Rp{{ number_format($product->price, 0, ',', '.') }}</span>
                                     <span
                                         class="text-[14px] text-gray-400 line-through">Rp{{ number_format($product->price * 1.4, 0, ',', '.') }}</span>
                                 </div>
@@ -381,7 +381,7 @@
                                 x-transition:enter="transition ease-out duration-400" x-transition:enter-start="opacity-0"
                                 x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
                                 x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-                                class="bg-white rounded-2xl p-5 hover:shadow-xl hover:border-[#3BB77E] transition-all duration-300 group border border-gray-200 hover:-translate-y-1 flex flex-col">
+                                class="bg-white rounded-2xl p-3 sm:p-5 min-w-0 hover:shadow-xl hover:border-[#3BB77E] transition-all duration-300 group border border-gray-200 hover:-translate-y-1 flex flex-col">
                                 <!-- Discount Badge & Wishlist -->
                                 <div class="flex justify-between items-start mb-3">
                                     @if ($loop->parent->index == 0 && $loop->index < 3)
@@ -505,9 +505,9 @@
 
                                 <!-- Price & Vendor -->
                                 <div class="flex items-center justify-between mb-3">
-                                    <div class="flex items-center gap-2">
+                                    <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 min-w-0">
                                         <span
-                                            class="text-[18px] font-bold text-[#3BB77E]">Rp{{ number_format($product->price, 0, ',', '.') }}</span>
+                                            class="text-[15px] sm:text-[18px] font-bold text-[#3BB77E]">Rp{{ number_format($product->price, 0, ',', '.') }}</span>
                                         <span
                                             class="text-[14px] text-gray-400 line-through">Rp{{ number_format($product->price * 1.4, 0, ',', '.') }}</span>
                                     </div>
@@ -605,7 +605,7 @@
         <section class="py-12 bg-white border-t border-gray-100">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
-                    <h2 class="text-[32px] font-bold text-[#253D4E]" style="font-family: 'Quicksand', sans-serif;">
+                    <h2 class="text-[24px] sm:text-[32px] font-bold text-[#253D4E] leading-tight" style="font-family: 'Quicksand', sans-serif;">
                         Kategori Produk</h2>
                 </div>
 
@@ -628,9 +628,9 @@
         <section class="py-12 bg-gray-50" x-data="{ activeBestSeller: 'all' }">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
-                    <h2 class="text-[32px] font-bold text-[#253D4E]" style="font-family: 'Quicksand', sans-serif;">
+                    <h2 class="text-[24px] sm:text-[32px] font-bold text-[#253D4E] leading-tight" style="font-family: 'Quicksand', sans-serif;">
                         Terlaris Hari Ini</h2>
-                    <div class="flex items-center gap-6 text-sm flex-wrap">
+                    <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
                         <button @click="activeBestSeller = 'all'"
                             :class="activeBestSeller === 'all' ? 'text-[#3BB77E] font-bold border-b-2 border-[#3BB77E]' :
                                 'text-gray-600 hover:text-[#3BB77E] font-medium'"
@@ -690,7 +690,7 @@
                             x-transition:enter="transition ease-out duration-400" x-transition:enter-start="opacity-0"
                             x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
                             x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-                            class="bg-white rounded-2xl p-5 hover:shadow-xl hover:border-[#3BB77E] transition-all duration-300 group cursor-pointer border border-gray-200 hover:-translate-y-1 flex flex-col">
+                            class="bg-white rounded-2xl p-5 min-w-0 hover:shadow-xl hover:border-[#3BB77E] transition-all duration-300 group cursor-pointer border border-gray-200 hover:-translate-y-1 flex flex-col">
                             <!-- Discount Badge & Wishlist -->
                             <div class="flex justify-between items-start mb-3">
                                 @if ($loop->index == 0)
@@ -815,9 +815,9 @@
 
                             <!-- Price & Vendor -->
                             <div class="flex items-center justify-between mb-3">
-                                <div class="flex items-center gap-2">
+                                <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 min-w-0">
                                     <span
-                                        class="text-[18px] font-bold text-[#3BB77E]">Rp{{ number_format($product->price, 0, ',', '.') }}</span>
+                                        class="text-[15px] sm:text-[18px] font-bold text-[#3BB77E]">Rp{{ number_format($product->price, 0, ',', '.') }}</span>
                                     <span
                                         class="text-[14px] text-gray-400 line-through">Rp{{ number_format($product->price * 1.3, 0, ',', '.') }}</span>
                                 </div>
@@ -878,7 +878,7 @@
         <section class="py-12 bg-gray-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
-                    <h2 class="text-[32px] font-bold text-[#253D4E]" style="font-family: 'Quicksand', sans-serif;">
+                    <h2 class="text-[24px] sm:text-[32px] font-bold text-[#253D4E] leading-tight" style="font-family: 'Quicksand', sans-serif;">
                         Terlaris Hari Ini</h2>
                 </div>
 
@@ -902,7 +902,7 @@
         <section class="py-12 bg-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
-                    <h2 class="text-[32px] font-bold text-[#253D4E]" style="font-family: 'Quicksand', sans-serif;">
+                    <h2 class="text-[24px] sm:text-[32px] font-bold text-[#253D4E] leading-tight" style="font-family: 'Quicksand', sans-serif;">
                         Penawaran Hari Ini</h2>
                     <a href="{{ route('products.index') }}"
                         class="text-[#3BB77E] font-bold flex items-center gap-2 text-[14px] hover:gap-3 transition-all whitespace-nowrap">
@@ -1044,9 +1044,9 @@
                                 </div>
 
                                 <!-- Price -->
-                                <div class="flex items-center gap-2 mb-4">
+                                <div class="flex flex-wrap items-baseline gap-x-2 mb-4">
                                     <span
-                                        class="text-[18px] font-bold text-[#3BB77E]">Rp{{ number_format($product->price, 0, ',', '.') }}</span>
+                                        class="text-[15px] sm:text-[18px] font-bold text-[#3BB77E]">Rp{{ number_format($product->price, 0, ',', '.') }}</span>
                                     <span
                                         class="text-[13px] text-gray-400 line-through">Rp{{ number_format($product->price * 1.4, 0, ',', '.') }}</span>
                                 </div>
@@ -1072,7 +1072,7 @@
         <section class="py-12 bg-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between mb-8 gap-4">
-                    <h2 class="text-[32px] font-bold text-[#253D4E]" style="font-family: 'Quicksand', sans-serif;">
+                    <h2 class="text-[24px] sm:text-[32px] font-bold text-[#253D4E] leading-tight" style="font-family: 'Quicksand', sans-serif;">
                         Penawaran Hari Ini</h2>
                 </div>
 
@@ -1096,27 +1096,27 @@
         <section class="py-12 bg-gray-50" x-data="{ activeProductTab: 'all' }">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <!-- Tabs -->
-                <div class="flex items-center justify-center gap-10 mb-10 border-b-2 border-gray-200 pb-0">
+                <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 sm:gap-10 mb-10 border-b-2 border-gray-200 pb-0">
                     <button @click="activeProductTab = 'all'"
                         :class="activeProductTab === 'all' ?
                             'text-[#3BB77E] font-bold border-b-2 border-[#3BB77E] -mb-0.5' :
                             'text-gray-600 hover:text-[#3BB77E] font-medium'"
-                        class="pb-4 whitespace-nowrap text-[16px] transition-all duration-300">Semua Produk</button>
+                        class="pb-3 sm:pb-4 whitespace-nowrap text-[14px] sm:text-[16px] transition-all duration-300">Semua Produk</button>
                     <button @click="activeProductTab = 'barang'"
                         :class="activeProductTab === 'barang' ?
                             'text-[#3BB77E] font-bold border-b-2 border-[#3BB77E] -mb-0.5' :
                             'text-gray-600 hover:text-[#3BB77E] font-medium'"
-                        class="pb-4 whitespace-nowrap text-[16px] transition-all duration-300">Produk Barang</button>
+                        class="pb-3 sm:pb-4 whitespace-nowrap text-[14px] sm:text-[16px] transition-all duration-300">Produk Barang</button>
                     <button @click="activeProductTab = 'jasa'"
                         :class="activeProductTab === 'jasa' ?
                             'text-[#3BB77E] font-bold border-b-2 border-[#3BB77E] -mb-0.5' :
                             'text-gray-600 hover:text-[#3BB77E] font-medium'"
-                        class="pb-4 whitespace-nowrap text-[16px] transition-all duration-300">Produk Jasa</button>
+                        class="pb-3 sm:pb-4 whitespace-nowrap text-[14px] sm:text-[16px] transition-all duration-300">Produk Jasa</button>
                     <button @click="activeProductTab = 'terbaru'"
                         :class="activeProductTab === 'terbaru' ?
                             'text-[#3BB77E] font-bold border-b-2 border-[#3BB77E] -mb-0.5' :
                             'text-gray-600 hover:text-[#3BB77E] font-medium'"
-                        class="pb-4 whitespace-nowrap text-[16px] transition-all duration-300">Terbaru</button>
+                        class="pb-3 sm:pb-4 whitespace-nowrap text-[14px] sm:text-[16px] transition-all duration-300">Terbaru</button>
                 </div>
 
                 <!-- Products Grid -->
@@ -1213,7 +1213,7 @@
         <section class="py-12 bg-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between mb-8 gap-4">
-                    <h2 class="text-[32px] font-bold text-[#253D4E]" style="font-family: 'Quicksand', sans-serif;">Belanja
+                    <h2 class="text-[24px] sm:text-[32px] font-bold text-[#253D4E] leading-tight" style="font-family: 'Quicksand', sans-serif;">Belanja
                         Berdasarkan Kategori</h2>
                     <a href="{{ route('products.index') }}"
                         class="text-[#3BB77E] font-bold flex items-center gap-2 text-[14px] hover:gap-3 transition-all whitespace-nowrap">
@@ -1225,16 +1225,16 @@
                     </a>
                 </div>
 
-                <div class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
+                <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 sm:gap-4">
                     @foreach ($categories->take(8) as $category)
-                        <a href="{{ route('products.category', $category) }}" class="text-center group">
+                        <a href="{{ route('products.category', $category) }}" class="text-center group min-w-0">
                             <div
-                                class="bg-[#F4F6FA] rounded-2xl p-6 mb-3 group-hover:bg-[#DEF9EC] group-hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
+                                class="bg-[#F4F6FA] rounded-2xl p-4 sm:p-6 mb-3 group-hover:bg-[#DEF9EC] group-hover:shadow-lg transition-all duration-300 group-hover:-translate-y-1">
                                 @if ($category->image)
                                     <img src="{{ asset($category->image) }}" alt="{{ $category->name }}"
-                                        class="w-16 h-16 mx-auto object-contain group-hover:scale-110 transition-transform duration-300">
+                                        class="w-12 h-12 sm:w-16 sm:h-16 mx-auto object-contain group-hover:scale-110 transition-transform duration-300">
                                 @else
-                                    <svg class="w-16 h-16 mx-auto text-[#3BB77E] group-hover:scale-110 transition-transform duration-300"
+                                    <svg class="w-12 h-12 sm:w-16 sm:h-16 mx-auto text-[#3BB77E] group-hover:scale-110 transition-transform duration-300"
                                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
@@ -1242,7 +1242,7 @@
                                 @endif
                             </div>
                             <h3
-                                class="font-bold text-[#253D4E] text-[14px] group-hover:text-[#3BB77E] transition-colors duration-300 mb-1">
+                                class="font-bold text-[#253D4E] text-[13px] sm:text-[14px] break-words group-hover:text-[#3BB77E] transition-colors duration-300 mb-1">
                                 {{ $category->name }}</h3>
                             <p class="text-[12px] text-gray-500 group-hover:text-[#3BB77E] transition-colors duration-300">
                                 {{ $category->products_count ?? $category->products->count() }} produk</p>
@@ -1256,7 +1256,7 @@
         <section class="py-12 bg-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between mb-8 gap-4">
-                    <h2 class="text-[32px] font-bold text-[#253D4E]" style="font-family: 'Quicksand', sans-serif;">Belanja
+                    <h2 class="text-[24px] sm:text-[32px] font-bold text-[#253D4E] leading-tight" style="font-family: 'Quicksand', sans-serif;">Belanja
                         Berdasarkan Kategori</h2>
                 </div>
 

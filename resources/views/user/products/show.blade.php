@@ -272,20 +272,20 @@
         <!-- Tabs -->
         <div class="bg-white rounded-lg shadow-sm mb-8" x-data="{ activeTab: 'description' }">
             <div class="border-b border-gray-200">
-                <nav class="flex -mb-px">
+                <nav class="flex -mb-px overflow-x-auto">
                     <button @click="activeTab = 'description'"
                             :class="activeTab === 'description' ? 'border-[#3BB77E] text-[#3BB77E]' : 'border-transparent text-gray-500 hover:text-gray-700'"
-                            class="px-6 py-4 border-b-2 font-medium text-sm whitespace-nowrap">
+                            class="px-3 sm:px-6 py-4 border-b-2 font-medium text-sm whitespace-nowrap flex-shrink-0">
                         Description
                     </button>
                     <button @click="activeTab = 'details'"
                             :class="activeTab === 'details' ? 'border-[#3BB77E] text-[#3BB77E]' : 'border-transparent text-gray-500 hover:text-gray-700'"
-                            class="px-6 py-4 border-b-2 font-medium text-sm whitespace-nowrap">
+                            class="px-3 sm:px-6 py-4 border-b-2 font-medium text-sm whitespace-nowrap flex-shrink-0">
                         Product Details
                     </button>
                     <button @click="activeTab = 'reviews'"
                             :class="activeTab === 'reviews' ? 'border-[#3BB77E] text-[#3BB77E]' : 'border-transparent text-gray-500 hover:text-gray-700'"
-                            class="px-6 py-4 border-b-2 font-medium text-sm whitespace-nowrap">
+                            class="px-3 sm:px-6 py-4 border-b-2 font-medium text-sm whitespace-nowrap flex-shrink-0">
                         Reviews ({{ $reviewCount }})
                     </button>
                 </nav>
