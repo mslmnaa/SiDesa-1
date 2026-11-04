@@ -84,62 +84,87 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
                 @foreach ($villages as $village)
                     <a href="{{ route('villages.show', $village->slug) }}"
-                       class="bg-white rounded-xl border-2 border-gray-200 overflow-hidden hover:shadow-xl hover:border-green-500 transition-all duration-300 group">
-                        <!-- Village Header -->
-                        <div class="relative h-32 bg-gradient-to-r from-green-600 to-green-700">
-                            @if($village->logo)
-                                <div class="absolute inset-0 bg-cover bg-center opacity-20" style="background-image: url('{{ asset('storage/' . $village->logo) }}')"></div>
+                       class="bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 group border border-gray-200 hover:border-[#3BB77E]">
+                        <!-- Cover Photo -->
+                        <div class="relative h-32 bg-gradient-to-r from-[#3BB77E] to-[#2a9d65] overflow-hidden">
+                            @if($village->cover_photo)
+                                <img src="{{ asset($village->cover_photo) }}"
+                                     alt="{{ $village->name }} Cover"
+                                     class="w-full h-full object-cover">
+                            @else
+                                <!-- Default Pattern Background -->
+                                <div class="absolute inset-0">
+                                    <img src="{{ asset('images/patterns/village-cover-pattern.jpg') }}"
+                                         alt="Pattern Background"
+                                         class="w-full h-full object-cover opacity-20"
+                                         onerror="this.style.display='none'">
+                                </div>
                             @endif
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <div class="text-center text-white">
-                                    <div class="w-20 h-20 mx-auto mb-2 bg-white rounded-full p-2 shadow-lg group-hover:scale-110 transition-transform">
+                        </div>
+
+                        <!-- Village Info -->
+                        <div class="relative px-5 pb-5 pt-12">
+                            <!-- Profile Photo - Overlapping Cover -->
+                            <div class="absolute -top-10 left-1/2 -translate-x-1/2">
+                                <div class="relative">
+                                    <div class="w-20 h-20 bg-white rounded-full shadow-lg border-4 border-white overflow-hidden group-hover:scale-110 transition-transform">
                                         @if($village->logo)
-                                            <img src="{{ asset('storage/' . $village->logo) }}" alt="{{ $village->name }}" class="w-full h-full object-contain rounded-full">
+                                            <img src="{{ asset($village->logo) }}"
+                                                 alt="{{ $village->name }}"
+                                                 class="w-full h-full object-cover">
                                         @else
-                                            <div class="w-full h-full bg-green-100 rounded-full flex items-center justify-center">
-                                                <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <div class="w-full h-full bg-gradient-to-br from-[#3BB77E] to-[#2a9d65] flex items-center justify-center">
+                                                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                                                 </svg>
                                             </div>
                                         @endif
                                     </div>
+                                    <!-- Verified Badge -->
+                                    <div class="absolute -bottom-1 -right-1 bg-[#3BB77E] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg border-2 border-white">
+                                        ✓
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Village Info -->
-                        <div class="p-5">
-                            <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-green-600 transition-colors line-clamp-1">
+                            <!-- Village Name -->
+                            <h3 class="text-center text-lg font-bold text-[#253D4E] mb-2 group-hover:text-[#3BB77E] transition-colors line-clamp-1">
                                 {{ $village->name }}
                             </h3>
 
-                            <div class="flex items-center text-sm text-gray-600 mb-3">
-                                <svg class="w-4 h-4 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <!-- Location -->
+                            <div class="flex items-center justify-center text-xs text-gray-600 mb-1">
+                                <svg class="w-3.5 h-3.5 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 </svg>
                                 <span class="truncate">{{ $village->district }}, {{ $village->city }}</span>
                             </div>
 
-                            <div class="text-xs text-gray-500 mb-3">
+                            <div class="text-center text-[11px] text-gray-500 mb-3">
                                 {{ $village->province }}
                             </div>
 
                             @if($village->description)
-                                <p class="text-sm text-gray-600 mb-4 line-clamp-2">
+                                <p class="text-xs text-gray-600 text-center mb-4 line-clamp-2 px-2">
                                     {{ $village->description }}
                                 </p>
                             @endif
 
-                            <div class="flex items-center justify-between pt-4 border-t border-gray-200">
-                                <div class="flex items-center text-green-600">
-                                    <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <!-- Stats & Action -->
+                            <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                                <div class="flex items-center text-[#3BB77E]">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                                     </svg>
-                                    <span class="font-semibold">{{ $village->products_count }} Produk</span>
+                                    <span class="text-sm font-semibold">{{ $village->products_count }}</span>
+                                    <span class="text-xs ml-1">Produk</span>
                                 </div>
-                                <span class="text-green-600 font-medium group-hover:translate-x-1 transition-transform">
-                                    Kunjungi →
+                                <span class="text-[#3BB77E] text-sm font-medium group-hover:translate-x-1 transition-transform flex items-center">
+                                    Kunjungi
+                                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
                                 </span>
                             </div>
                         </div>
