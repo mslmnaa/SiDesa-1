@@ -15,6 +15,7 @@ class Village extends Model
         'slug',
         'description',
         'logo',
+        'cover_photo',
         'address',
         'province',
         'city',

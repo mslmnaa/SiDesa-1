@@ -92,6 +92,14 @@
                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
                     <p class="text-sm text-gray-500 mt-1">Masukkan URL gambar logo desa</p>
                 </div>
+
+                <!-- Cover Photo URL -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Foto Sampul / Cover URL (opsional)</label>
+                    <input type="text" name="cover_photo" value="{{ old('cover_photo', $village->cover_photo) }}"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+                    <p class="text-sm text-gray-500 mt-1">Contoh: images/villages/cover-desa.jpg</p>
+                </div>
             </div>
 
             <!-- Lokasi Asal Pengiriman Section -->

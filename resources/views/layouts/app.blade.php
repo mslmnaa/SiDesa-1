@@ -26,7 +26,7 @@
                 <!-- Logo -->
                 <div class="flex items-center flex-shrink-0">
                     <a href="{{ route('home') }}" class="flex items-center gap-2 group">
-                        <img src="/images/logo.svg" alt="BUMDes" class="w-12 h-12"
+                        <img src="{{ asset('images/Logo.svg') }}" alt="BUMDes" class="w-12 h-12"
                             onerror="this.style.display='none'">
                         <div>
                             <span class="text-[26px] sm:text-[32px] font-bold text-[#253D4E] leading-none"
@@ -474,7 +474,7 @@
                 <!-- Brand Column -->
                 <div class="lg:col-span-2">
                     <div class="flex items-center gap-2 mb-6">
-                        <img src="/images/logo.svg" alt="BUMDes" class="w-10 h-10"
+                        <img src="{{ asset('images/Logo.svg') }}" alt="BUMDes" class="w-10 h-10"
                             onerror="this.style.display='none'">
                         <span class="text-[28px] font-bold text-[#253D4E]"
                             style="font-family: 'Quicksand', sans-serif;">BUMDes</span>
