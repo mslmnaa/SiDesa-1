@@ -24,7 +24,7 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
             
             if (auth()->user()->isAdmin()) {
@@ -35,7 +35,7 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'Kredensial yang diberikan tidak cocok dengan data kami.',
+            'email' => 'Email atau password salah. Silakan coba lagi.',
         ])->onlyInput('email');
     }
 
@@ -52,6 +52,16 @@ class AuthController extends Controller
             'password' => ['required', 'confirmed', Password::min(8)],
             'phone' => 'nullable|string|max:15',
             'address' => 'nullable|string|max:500',
+        ], [
+            'name.required' => 'Nama lengkap wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email ini sudah terdaftar. Silakan masuk.',
+            'password.required' => 'Password wajib diisi.',
+            'password.confirmed' => 'Ulangi password belum sama.',
+            'password.min' => 'Password minimal 8 karakter.',
+            'phone.max' => 'Nomor maksimal 15 digit.',
+            'address.max' => 'Alamat maksimal 500 karakter.',
         ]);
 
         $user = User::create([
