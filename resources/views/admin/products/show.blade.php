@@ -11,7 +11,7 @@
     </div>
     <div class="space-x-3">
         <a href="{{ route('admin.products.edit', $product) }}" 
-           class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+           class="bg-[#3BB77E] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#2F9960] transition-colors">
             Edit Produk
         </a>
         <a href="{{ route('admin.products.index') }}" 
@@ -28,7 +28,7 @@
         <div class="bg-white rounded-lg shadow overflow-hidden">
             @if($product->images && count($product->images) > 0)
                 <div class="aspect-w-16 aspect-h-9">
-                    <img src="{{ Storage::url($product->images[0]) }}" 
+                    <img src="{{ $product->getImageDataUri(0) }}" 
                          alt="{{ $product->name }}" 
                          class="w-full h-96 object-cover"
                          id="mainImage">
@@ -38,9 +38,9 @@
                     <div class="p-4 bg-gray-50 border-t">
                         <div class="flex space-x-3 overflow-x-auto">
                             @foreach($product->images as $index => $image)
-                                <button onclick="changeMainImage('{{ Storage::url($image) }}')"
+                                <button onclick="changeMainImage('{{ $product->getImageDataUri($index) }}')"
                                         class="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 {{ $index === 0 ? 'border-green-500' : 'border-gray-200' }} hover:border-green-500 transition-colors">
-                                    <img src="{{ Storage::url($image) }}" 
+                                    <img src="{{ $product->getImageDataUri($index) }}" 
                                          alt="Thumbnail {{ $index + 1 }}" 
                                          class="w-full h-full object-cover">
                                 </button>
@@ -142,20 +142,20 @@
             
             <div class="space-y-3">
                 <a href="{{ route('admin.products.edit', $product) }}" 
-                   class="w-full bg-green-600 text-white py-2 px-4 rounded-lg text-center font-medium hover:bg-green-700 transition-colors block">
+                   class="w-full bg-[#3BB77E] text-white py-2 px-4 rounded-lg text-center font-medium hover:bg-[#2F9960] transition-colors block">
                     Edit Produk
                 </a>
                 
                 <a href="{{ route('products.show', $product->slug) }}" 
                    target="_blank"
-                   class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg text-center font-medium hover:bg-blue-700 transition-colors block">
+                   class="w-full bg-[#3BB77E] text-white py-2 px-4 rounded-lg text-center font-medium hover:bg-[#2F9960] transition-colors block">
                     Lihat di Website
                 </a>
                 
                 @if($product->whatsapp_number)
                     <a href="https://wa.me/{{ $product->whatsapp_number }}?text=Halo, saya tertarik dengan produk {{ $product->name }}" 
                        target="_blank"
-                       class="w-full bg-green-500 text-white py-2 px-4 rounded-lg text-center font-medium hover:bg-green-600 transition-colors block">
+                       class="w-full bg-[#3BB77E] text-white py-2 px-4 rounded-lg text-center font-medium hover:bg-[#2F9960] transition-colors block">
                         Chat WhatsApp
                     </a>
                 @endif

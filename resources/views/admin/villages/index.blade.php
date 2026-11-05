@@ -3,100 +3,114 @@
 @section('title', 'Kelola Desa')
 
 @section('content')
-    <!-- Header -->
-    <div class="flex items-center justify-between mb-8">
-        <div>
-            <h1 class="text-3xl font-bold text-gray-900">Kelola Desa/Bumdes</h1>
-            <p class="text-gray-600 mt-2">Kelola semua desa dan bumdes di marketplace</p>
-        </div>
-        <a href="{{ route('admin.villages.create') }}"
-            class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
-            Tambah Desa
-        </a>
+@php
+    $card = 'bg-white rounded-2xl border border-gray-100 shadow-[0_1px_3px_rgba(37,61,78,0.06)]';
+@endphp
+
+{{-- Header --}}
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+    <div>
+        <h1 class="font-heading text-2xl lg:text-[28px] font-bold">Kelola Desa</h1>
+        <p class="text-sm text-gray-500 mt-1">{{ $villages->total() }} desa/BUMDes terdaftar</p>
     </div>
+    <a href="{{ route('admin.villages.create') }}" class="inline-flex items-center justify-center gap-2 h-11 px-5 rounded-lg bg-[#3BB77E] hover:bg-[#2F9960] text-white text-sm font-bold transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 5v14m-7-7h14"/></svg>
+        Tambah Desa
+    </a>
+</div>
 
-    <!-- Success Message -->
-    @if (session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6" role="alert">
-            <span class="block sm:inline">{{ session('success') }}</span>
-        </div>
-    @endif
-
-    <!-- Villages List -->
-    <div class="bg-white rounded-lg shadow overflow-hidden">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Desa</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lokasi</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produk</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kontak</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                @forelse ($villages as $village)
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="flex items-center">
-                                <div>
-                                    <div class="text-sm font-medium text-gray-900">{{ $village->name }}</div>
-                                    <div class="text-sm text-gray-500">{{ $village->slug }}</div>
+<section class="{{ $card }} p-5 lg:p-6">
+    @if($villages->count() > 0)
+        <div class="hidden md:block overflow-x-auto -mx-5 lg:-mx-6 px-5 lg:px-6">
+            <table class="w-full min-w-[820px] text-sm">
+                <thead>
+                    <tr class="bg-[#3BB77E] text-white text-xs">
+                        <th class="text-left font-semibold py-3 pl-4 rounded-l-lg">Desa</th>
+                        <th class="text-left font-semibold py-3 px-3">Lokasi</th>
+                        <th class="text-center font-semibold py-3 px-3">Produk</th>
+                        <th class="text-left font-semibold py-3 px-3">Kontak</th>
+                        <th class="text-center font-semibold py-3 px-3">Status</th>
+                        <th class="text-right font-semibold py-3 pr-4 rounded-r-lg">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    @foreach($villages as $village)
+                        <tr class="hover:bg-[#F4F6FA]/60">
+                            <td class="py-3 pl-2">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <span class="w-10 h-10 rounded-full bg-[#F4F6FA] flex items-center justify-center flex-shrink-0 overflow-hidden">
+                                        @if($village->logo)
+                                            <img src="{{ asset($village->logo) }}" alt="" class="w-full h-full object-cover">
+                                        @else
+                                            <svg class="w-5 h-5 text-[#3BB77E]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                        @endif
+                                    </span>
+                                    <div class="min-w-0">
+                                        <p class="font-semibold truncate max-w-[220px]">{{ $village->name }}</p>
+                                        <p class="text-xs text-gray-500 truncate max-w-[220px]">{{ $village->slug }}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">{{ $village->district }}, {{ $village->city }}</div>
-                            <div class="text-sm text-gray-500">{{ $village->province }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                {{ $village->products()->count() }} Produk
-                            </span>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm text-gray-900">{{ $village->phone }}</div>
-                            <div class="text-sm text-gray-500">{{ $village->email }}</div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <form action="{{ route('admin.villages.toggle-status', $village) }}" method="POST">
-                                @csrf
-                                <button type="submit"
-                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $village->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                    {{ $village->status === 'active' ? 'Aktif' : 'Tidak Aktif' }}
-                                </button>
-                            </form>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <a href="{{ route('admin.villages.show', $village) }}"
-                                class="text-blue-600 hover:text-blue-900 mr-3">Lihat</a>
-                            <a href="{{ route('admin.villages.edit', $village) }}"
-                                class="text-green-600 hover:text-green-900 mr-3">Edit</a>
-                            <form action="{{ route('admin.villages.destroy', $village) }}" method="POST"
-                                class="inline-block"
-                                onsubmit="return confirm('Yakin ingin menghapus desa ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-900">Hapus</button>
-                            </form>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
-                            Belum ada desa terdaftar
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Pagination -->
-    @if ($villages->hasPages())
-        <div class="mt-6">
-            {{ $villages->links() }}
+                            </td>
+                            <td class="py-3 px-3">
+                                <p>{{ collect([$village->district, $village->city])->filter()->join(', ') ?: '-' }}</p>
+                                <p class="text-xs text-gray-500">{{ $village->province }}</p>
+                            </td>
+                            <td class="py-3 px-3 text-center font-semibold">{{ $village->products_count }}</td>
+                            <td class="py-3 px-3">
+                                <p>{{ $village->phone ?? '-' }}</p>
+                                <p class="text-xs text-gray-500 truncate max-w-[220px]">{{ $village->email }}</p>
+                            </td>
+                            <td class="py-3 px-3 text-center">
+                                <form action="{{ route('admin.villages.toggle-status', $village) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" title="Klik untuk mengubah status"
+                                            class="inline-block px-2 py-0.5 rounded-md text-xs font-bold transition-colors {{ $village->status === 'active' ? 'bg-[#DEF9EC] text-[#2F9960] hover:bg-[#BCE3C9]' : 'bg-gray-100 text-gray-500 hover:bg-gray-200' }}">
+                                        {{ $village->status === 'active' ? 'Aktif' : 'Nonaktif' }}
+                                    </button>
+                                </form>
+                            </td>
+                            <td class="py-3 pr-2">
+                                @include('admin.partials.row-actions', [
+                                    'show' => route('admin.villages.show', $village),
+                                    'edit' => route('admin.villages.edit', $village),
+                                    'delete' => route('admin.villages.destroy', $village),
+                                    'confirm' => 'Yakin ingin menghapus ' . $village->name . '?',
+                                ])
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
+
+        <div class="md:hidden divide-y divide-gray-100 -mx-1">
+            @foreach($villages as $village)
+                <div class="flex items-center gap-3 px-1 py-3">
+                    <span class="w-10 h-10 rounded-full bg-[#F4F6FA] flex items-center justify-center flex-shrink-0 overflow-hidden">
+                        @if($village->logo)
+                            <img src="{{ asset($village->logo) }}" alt="" class="w-full h-full object-cover">
+                        @endif
+                    </span>
+                    <a href="{{ route('admin.villages.show', $village) }}" class="min-w-0 flex-1">
+                        <p class="text-sm font-semibold truncate">{{ $village->name }}</p>
+                        <p class="text-xs text-gray-500 truncate">{{ $village->products_count }} produk · {{ $village->status === 'active' ? 'Aktif' : 'Nonaktif' }}</p>
+                    </a>
+                    @include('admin.partials.row-actions', [
+                        'edit' => route('admin.villages.edit', $village),
+                        'delete' => route('admin.villages.destroy', $village),
+                        'confirm' => 'Yakin ingin menghapus ' . $village->name . '?',
+                    ])
+                </div>
+            @endforeach
+        </div>
+    @else
+        <p class="text-center text-sm text-gray-500 py-12">Belum ada desa terdaftar.</p>
     @endif
+</section>
+
+@if($villages->hasPages())
+    <div class="mt-6">
+        {{ $villages->links() }}
+    </div>
+@endif
 @endsection

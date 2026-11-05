@@ -14,7 +14,7 @@ class VillageController extends Controller
      */
     public function index()
     {
-        $villages = Village::latest()->paginate(10);
+        $villages = Village::withCount('products')->latest()->paginate(10);
         return view('admin.villages.index', compact('villages'));
     }
 

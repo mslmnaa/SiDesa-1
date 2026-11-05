@@ -31,7 +31,7 @@
         <!-- Form (2 columns) -->
         <div class="lg:col-span-2">
             <!-- Option Selection -->
-            <div class="bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-200 rounded-lg p-6 mb-6">
+            <div class="bg-[#DEF9EC] border-2 border-green-200 rounded-lg p-6 mb-6">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Pilih Metode Pengiriman</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <button type="button" onclick="showManualForm()" id="btn-manual"
@@ -48,9 +48,9 @@
                     </button>
 
                     <button type="button" onclick="showBiteshipForm()" id="btn-biteship"
-                            class="p-4 border-2 border-gray-300 bg-white rounded-lg hover:bg-blue-50 hover:border-blue-600 transition-all">
+                            class="p-4 border-2 border-gray-300 bg-white rounded-lg hover:bg-blue-50 hover:border-[#3BB77E] transition-all">
                         <div class="flex items-start">
-                            <svg class="w-6 h-6 text-blue-600 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-6 h-6 text-[#3BB77E] mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                             </svg>
                             <div class="text-left">
@@ -64,7 +64,7 @@
 
             <!-- Manual Form -->
             <div class="bg-white rounded-lg shadow-md overflow-hidden" id="manual-form">
-                <div class="px-6 py-4 bg-green-600 text-white">
+                <div class="px-6 py-4 bg-[#3BB77E] text-white">
                     <h3 class="text-lg font-semibold">Input Resi Manual</h3>
                 </div>
                 <div class="p-6">
@@ -80,7 +80,7 @@
                                 id="shipping_courier"
                                 name="shipping_courier"
                                 required
-                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent @error('shipping_courier') border-red-500 @enderror">
+                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3BB77E] focus:border-transparent @error('shipping_courier') border-red-500 @enderror">
                                 <option value="">-- Pilih Kurir --</option>
                                 @foreach($couriers as $code => $name)
                                     <option value="{{ $code }}" {{ old('shipping_courier') == $code ? 'selected' : '' }}>
@@ -106,7 +106,7 @@
                                 value="{{ old('shipping_resi') }}"
                                 required
                                 placeholder="Contoh: JNTXXXXXXXX atau JNE00XXXXXXX"
-                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent @error('shipping_resi') border-red-500 @enderror">
+                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3BB77E] focus:border-transparent @error('shipping_resi') border-red-500 @enderror">
                             @error('shipping_resi')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -118,7 +118,7 @@
                         <!-- Info Box -->
                         <div class="mb-6 bg-blue-50 border-l-4 border-blue-400 p-4 rounded">
                             <div class="flex">
-                                <svg class="w-5 h-5 text-blue-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <svg class="w-5 h-5 text-[#3BB77E] mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
                                 </svg>
                                 <div class="text-sm text-blue-700">
@@ -140,7 +140,7 @@
                                 Batal
                             </a>
                             <button type="submit"
-                                    class="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium">
+                                    class="px-6 py-2.5 bg-[#3BB77E] hover:bg-[#2F9960] text-white rounded-lg transition-colors font-medium">
                                 <svg class="inline w-5 h-5 mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                 </svg>
@@ -153,7 +153,7 @@
 
             <!-- Biteship Auto Form -->
             <div class="bg-white rounded-lg shadow-md overflow-hidden hidden" id="biteship-form">
-                <div class="px-6 py-4 bg-blue-600 text-white">
+                <div class="px-6 py-4 bg-[#3BB77E] text-white">
                     <h3 class="text-lg font-semibold">Buat Shipment via Biteship</h3>
                 </div>
                 <div class="p-6">
@@ -163,7 +163,7 @@
                         <!-- Info -->
                         <div class="mb-6 bg-blue-50 border-l-4 border-blue-400 p-4 rounded">
                             <div class="flex">
-                                <svg class="w-5 h-5 text-blue-600 mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <svg class="w-5 h-5 text-[#3BB77E] mr-3 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
                                 </svg>
                                 <div class="text-sm text-blue-700">
@@ -222,7 +222,7 @@
                         <!-- Confirmation Checkbox -->
                         <div class="mb-6">
                             <label class="flex items-start cursor-pointer">
-                                <input type="checkbox" id="confirm-biteship" class="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" required>
+                                <input type="checkbox" id="confirm-biteship" class="mt-1 w-4 h-4 text-[#3BB77E] border-gray-300 rounded focus:ring-[#3BB77E]" required>
                                 <span class="ml-3 text-sm text-gray-700">
                                     Saya memahami bahwa shipment akan dibuat di Biteship dan biaya akan dipotong dari saldo.
                                 </span>
@@ -236,7 +236,7 @@
                                 Batal
                             </a>
                             <button type="submit"
-                                    class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium">
+                                    class="px-6 py-2.5 bg-[#3BB77E] hover:bg-[#2F9960] text-white rounded-lg transition-colors font-medium">
                                 <svg class="inline w-5 h-5 mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                                 </svg>
@@ -288,7 +288,7 @@
             <!-- Shipping Address -->
             @if($order->shippingAddress)
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                    <div class="px-6 py-4 bg-blue-600 text-white">
+                    <div class="px-6 py-4 bg-[#3BB77E] text-white">
                         <h3 class="text-lg font-semibold">Alamat Tujuan</h3>
                     </div>
                     <div class="p-6">
@@ -334,7 +334,7 @@ function showManualForm() {
     document.getElementById('btn-manual').classList.add('border-green-600');
     document.getElementById('btn-manual').classList.remove('border-gray-300');
     document.getElementById('btn-biteship').classList.add('border-gray-300');
-    document.getElementById('btn-biteship').classList.remove('border-blue-600');
+    document.getElementById('btn-biteship').classList.remove('border-[#3BB77E]');
 }
 
 function showBiteshipForm() {
@@ -343,7 +343,7 @@ function showBiteshipForm() {
     document.getElementById('biteship-form').classList.remove('hidden');
 
     // Toggle button styles
-    document.getElementById('btn-biteship').classList.add('border-blue-600');
+    document.getElementById('btn-biteship').classList.add('border-[#3BB77E]');
     document.getElementById('btn-biteship').classList.remove('border-gray-300');
     document.getElementById('btn-manual').classList.add('border-gray-300');
     document.getElementById('btn-manual').classList.remove('border-green-600');

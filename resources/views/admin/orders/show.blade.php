@@ -32,7 +32,7 @@
         <div class="lg:col-span-2 space-y-6">
             <!-- Order Items -->
             <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                <div class="px-6 py-4 bg-green-600 text-white">
+                <div class="px-6 py-4 bg-[#3BB77E] text-white">
                     <h3 class="text-lg font-semibold">Produk yang Dipesan</h3>
                 </div>
                 <div class="p-6">
@@ -83,7 +83,7 @@
 
             <!-- Shipping Information -->
             <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                <div class="px-6 py-4 bg-blue-600 text-white">
+                <div class="px-6 py-4 bg-[#3BB77E] text-white">
                     <h3 class="text-lg font-semibold">Informasi Pengiriman</h3>
                 </div>
                 <div class="p-6">
@@ -163,7 +163,7 @@
                                 <!-- Auto-Update Info -->
                                 <div class="bg-white bg-opacity-70 rounded p-3 border border-green-300">
                                     <div class="flex items-start">
-                                        <svg class="w-4 h-4 text-blue-600 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-4 h-4 text-[#3BB77E] mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                                         </svg>
                                         <div class="text-xs text-gray-700">
@@ -171,7 +171,7 @@
                                             <p class="text-gray-600">
                                                 Status tracking diupdate otomatis setiap 2 jam dari sistem ekspedisi.
                                                 @if($order->tracking_updated_at)
-                                                    <span class="block mt-1 text-blue-600">
+                                                    <span class="block mt-1 text-[#3BB77E]">
                                                         <svg class="inline w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                         </svg>
@@ -187,7 +187,7 @@
                                 @if($order->getTrackingUrl())
                                     <div class="mt-3 flex gap-2">
                                         <a href="{{ route('user.orders.tracking', $order) }}" target="_blank"
-                                           class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition-colors">
+                                           class="inline-flex items-center px-3 py-1.5 bg-[#3BB77E] hover:bg-[#2F9960] text-white text-xs rounded-lg transition-colors">
                                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
@@ -218,7 +218,7 @@
                                         </div>
                                     </div>
                                     <a href="{{ route('admin.shipping.create', $order) }}"
-                                       class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium text-sm">
+                                       class="inline-flex items-center px-4 py-2 bg-[#3BB77E] hover:bg-[#2F9960] text-white rounded-lg transition-colors font-medium text-sm">
                                         <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                                         </svg>
@@ -310,7 +310,7 @@
                                       placeholder="Tambahkan catatan untuk perubahan status ini..."></textarea>
                         </div>
 
-                        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg font-medium transition-colors">
+                        <button type="submit" class="w-full bg-[#3BB77E] hover:bg-[#2F9960] text-white px-4 py-3 rounded-lg font-medium transition-colors">
                             <svg class="inline w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
                             </svg>
@@ -322,7 +322,7 @@
 
             <!-- Payment Status -->
             <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                <div class="px-6 py-4 bg-green-600 text-white">
+                <div class="px-6 py-4 bg-[#3BB77E] text-white">
                     <h3 class="text-lg font-semibold">Status Pembayaran</h3>
                 </div>
                 <div class="p-6">
@@ -359,14 +359,14 @@
                                 @method('PUT')
                                 <div class="mb-3">
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Ubah Status Pembayaran:</label>
-                                    <select name="payment_status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                                    <select name="payment_status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3BB77E] focus:border-transparent">
                                         <option value="unpaid" {{ $order->payment_status === 'unpaid' ? 'selected' : '' }}>Belum Bayar</option>
                                         <option value="pending" {{ $order->payment_status === 'pending' ? 'selected' : '' }}>Pending</option>
                                         <option value="paid" {{ $order->payment_status === 'paid' ? 'selected' : '' }}>Lunas</option>
                                         <option value="failed">Gagal</option>
                                     </select>
                                 </div>
-                                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm">
+                                <button type="submit" class="w-full bg-[#3BB77E] hover:bg-[#2F9960] text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm">
                                     <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                     </svg>

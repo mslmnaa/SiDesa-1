@@ -33,7 +33,7 @@
                         </label>
                         <input type="text" id="name" name="name" value="{{ old('name') }}" required
                                placeholder="Contoh: John Doe"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('name') border-red-500 @enderror">
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E] @error('name') border-red-500 @enderror">
                         @error('name')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -46,7 +46,7 @@
                         </label>
                         <input type="email" id="email" name="email" value="{{ old('email') }}" required
                                placeholder="john@example.com"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('email') border-red-500 @enderror">
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E] @error('email') border-red-500 @enderror">
                         @error('email')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -59,7 +59,7 @@
                         </label>
                         <input type="password" id="password" name="password" required
                                placeholder="Minimal 8 karakter"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('password') border-red-500 @enderror">
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E] @error('password') border-red-500 @enderror">
                         @error('password')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -80,7 +80,7 @@
                         </label>
                         <input type="text" id="phone" name="phone" value="{{ old('phone') }}"
                                placeholder="081234567890"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('phone') border-red-500 @enderror">
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E] @error('phone') border-red-500 @enderror">
                         @error('phone')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -93,7 +93,7 @@
                         </label>
                         <textarea id="address" name="address" rows="3"
                                   placeholder="Alamat lengkap..."
-                                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('address') border-red-500 @enderror">{{ old('address') }}</textarea>
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E] @error('address') border-red-500 @enderror">{{ old('address') }}</textarea>
                         @error('address')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -113,7 +113,7 @@
                         Role *
                     </label>
                     <select id="role" name="role" required
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('role') border-red-500 @enderror">
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E] @error('role') border-red-500 @enderror">
                         <option value="">Pilih Role</option>
                         <option value="user" {{ old('role') === 'user' ? 'selected' : '' }}>User - Regular Customer</option>
                         <option value="admin" {{ old('role') === 'admin' ? 'selected' : '' }}>Admin - Manage Products & Orders</option>
@@ -151,7 +151,7 @@
             <!-- Submit Button -->
             <div class="bg-white rounded-lg shadow p-6">
                 <button type="submit" 
-                        class="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                        class="w-full bg-[#3BB77E] text-white py-3 px-4 rounded-lg font-semibold hover:bg-[#2F9960] transition-colors">
                     Buat User
                 </button>
             </div>

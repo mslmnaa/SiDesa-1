@@ -46,7 +46,7 @@ class ProductController extends Controller
             $query->where('stock', '<=', 10);
         }
 
-        $products = $query->latest()->paginate(10);
+        $products = $query->latest()->paginate(12);
         $categories = Category::all();
         $villages = $user->isSuperAdmin() ? Village::all() : collect();
 

@@ -185,12 +185,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to show loading
     function showLoading() {
+        if (!loadingOverlay) return;
         loadingOverlay.classList.remove('hidden');
         loadingOverlay.classList.add('flex');
     }
 
     // Function to hide loading
     function hideLoading() {
+        if (!loadingOverlay) return;
         loadingOverlay.classList.add('hidden');
         loadingOverlay.classList.remove('flex');
     }

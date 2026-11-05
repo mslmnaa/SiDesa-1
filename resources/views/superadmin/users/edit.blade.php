@@ -11,7 +11,7 @@
     </div>
     <div class="space-x-3">
         <a href="{{ route('admin.users.show', $user) }}" 
-           class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+           class="bg-[#3BB77E] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#2F9960] transition-colors">
             Lihat Detail
         </a>
         <a href="{{ route('admin.users.index') }}" 
@@ -40,7 +40,7 @@
                         </label>
                         <input type="text" id="name" name="name" value="{{ old('name', $user->name) }}" required
                                placeholder="Contoh: John Doe"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('name') border-red-500 @enderror">
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E] @error('name') border-red-500 @enderror">
                         @error('name')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -53,7 +53,7 @@
                         </label>
                         <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}" required
                                placeholder="john@example.com"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('email') border-red-500 @enderror">
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E] @error('email') border-red-500 @enderror">
                         @error('email')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -66,7 +66,7 @@
                         </label>
                         <input type="password" id="password" name="password"
                                placeholder="Kosongkan jika tidak ingin mengubah password"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('password') border-red-500 @enderror">
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E] @error('password') border-red-500 @enderror">
                         @error('password')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -87,7 +87,7 @@
                         </label>
                         <input type="text" id="phone" name="phone" value="{{ old('phone', $user->phone) }}"
                                placeholder="081234567890"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('phone') border-red-500 @enderror">
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E] @error('phone') border-red-500 @enderror">
                         @error('phone')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -100,7 +100,7 @@
                         </label>
                         <textarea id="address" name="address" rows="3"
                                   placeholder="Alamat lengkap..."
-                                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('address') border-red-500 @enderror">{{ old('address', $user->address) }}</textarea>
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E] @error('address') border-red-500 @enderror">{{ old('address', $user->address) }}</textarea>
                         @error('address')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -116,7 +116,7 @@
                 <h2 class="text-xl font-semibold text-gray-900 mb-4">Informasi Saat Ini</h2>
                 
                 <div class="text-center mb-4">
-                    <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center mx-auto mb-3">
+                    <div class="w-16 h-16 rounded-full bg-[#3BB77E] flex items-center justify-center mx-auto mb-3">
                         <span class="text-white font-bold text-xl">
                             {{ strtoupper(substr($user->name, 0, 2)) }}
                         </span>
@@ -156,7 +156,7 @@
                         Role *
                     </label>
                     <select id="role" name="role" required
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('role') border-red-500 @enderror">
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E] @error('role') border-red-500 @enderror">
                         <option value="user" {{ old('role', $user->role) === 'user' ? 'selected' : '' }}>User - Regular Customer</option>
                         <option value="admin" {{ old('role', $user->role) === 'admin' ? 'selected' : '' }}>Admin - Manage Products & Orders</option>
                         <option value="superadmin" {{ old('role', $user->role) === 'superadmin' ? 'selected' : '' }}>Super Admin - Full Access</option>
@@ -194,7 +194,7 @@
             <div class="bg-white rounded-lg shadow p-6">
                 <div class="space-y-3">
                     <button type="submit" 
-                            class="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                            class="w-full bg-[#3BB77E] text-white py-3 px-4 rounded-lg font-semibold hover:bg-[#2F9960] transition-colors">
                         Simpan Perubahan
                     </button>
                     

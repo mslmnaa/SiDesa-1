@@ -20,7 +20,7 @@
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nama Desa/Bumdes *</label>
                     <input type="text" name="name" value="{{ old('name', $village->name) }}" required
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('name') border-red-500 @enderror">
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E] @error('name') border-red-500 @enderror">
                     @error('name')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
@@ -30,7 +30,7 @@
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
                     <textarea name="description" rows="4"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('description') border-red-500 @enderror">{{ old('description', $village->description) }}</textarea>
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E] @error('description') border-red-500 @enderror">{{ old('description', $village->description) }}</textarea>
                     @error('description')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
@@ -40,56 +40,56 @@
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Alamat Lengkap</label>
                     <textarea name="address" rows="2"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">{{ old('address', $village->address) }}</textarea>
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E]">{{ old('address', $village->address) }}</textarea>
                 </div>
 
                 <!-- Provinsi -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Provinsi</label>
                     <input type="text" name="province" value="{{ old('province', $village->province) }}"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E]">
                 </div>
 
                 <!-- Kota/Kabupaten -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Kota/Kabupaten</label>
                     <input type="text" name="city" value="{{ old('city', $village->city) }}"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E]">
                 </div>
 
                 <!-- Kecamatan -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Kecamatan</label>
                     <input type="text" name="district" value="{{ old('district', $village->district) }}"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E]">
                 </div>
 
                 <!-- Telepon -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Telepon</label>
                     <input type="text" name="phone" value="{{ old('phone', $village->phone) }}"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E]">
                 </div>
 
                 <!-- Email -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                     <input type="email" name="email" value="{{ old('email', $village->email) }}"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E]">
                 </div>
 
                 <!-- WhatsApp -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">WhatsApp</label>
                     <input type="text" name="whatsapp" value="{{ old('whatsapp', $village->whatsapp) }}" placeholder="628xxxxxxxxxx"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E]">
                 </div>
 
                 <!-- Logo URL (optional for now) -->
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Logo URL (opsional)</label>
                     <input type="text" name="logo" value="{{ old('logo', $village->logo) }}"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E]">
                     <p class="text-sm text-gray-500 mt-1">Masukkan URL gambar logo desa</p>
                 </div>
 
@@ -97,7 +97,7 @@
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Foto Sampul / Cover URL (opsional)</label>
                     <input type="text" name="cover_photo" value="{{ old('cover_photo', $village->cover_photo) }}"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E]">
                     <p class="text-sm text-gray-500 mt-1">Contoh: images/villages/cover-desa.jpg</p>
                 </div>
             </div>
@@ -112,7 +112,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Provinsi Asal *</label>
                         <select name="origin_province_id" id="origin_province_id" required
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E]">
                             <option value="">Pilih Provinsi</option>
                         </select>
                         <input type="hidden" name="origin_province_name" id="origin_province_name" value="{{ old('origin_province_name', $village->origin_province_name) }}">
@@ -125,7 +125,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Kota/Kabupaten Asal *</label>
                         <select name="origin_city_id" id="origin_city_id" required
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E]">
                             <option value="">Pilih Kota</option>
                         </select>
                         <input type="hidden" name="origin_city_name" id="origin_city_name" value="{{ old('origin_city_name', $village->origin_city_name) }}">
@@ -140,7 +140,7 @@
                         <input type="text" name="origin_postal_code" id="origin_postal_code"
                             value="{{ old('origin_postal_code', $village->origin_postal_code) }}"
                             placeholder="Contoh: 12345"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E]">
                     </div>
                 </div>
             </div>
@@ -151,7 +151,7 @@
                     <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                         <select name="status"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E]">
                             <option value="active" {{ old('status', $village->status) == 'active' ? 'selected' : '' }}>Aktif</option>
                             <option value="inactive" {{ old('status', $village->status) == 'inactive' ? 'selected' : '' }}>Tidak Aktif</option>
                         </select>
@@ -166,7 +166,7 @@
                     Batal
                 </a>
                 <button type="submit"
-                    class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700">
+                    class="bg-[#3BB77E] text-white px-6 py-2 rounded-md hover:bg-[#2F9960]">
                     Perbarui Desa
                 </button>
             </div>

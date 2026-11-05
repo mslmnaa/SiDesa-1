@@ -11,7 +11,7 @@
                 <h1 class="text-2xl font-bold text-gray-900">Detail User</h1>
                 <div class="flex space-x-3">
                     <a href="{{ route('admin.users.edit', $user) }}" 
-                       class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                       class="bg-[#3BB77E] text-white px-4 py-2 rounded-md hover:bg-[#2F9960]">
                         Edit User
                     </a>
                     <a href="{{ route('admin.users.index') }}" 

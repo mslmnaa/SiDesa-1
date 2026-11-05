@@ -114,7 +114,7 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <a href="{{ route('admin.products.show', $product) }}" 
-                               class="text-blue-600 hover:text-blue-900 mr-3">Lihat</a>
+                               class="text-[#253D4E] hover:text-[#3BB77E] mr-3">Lihat</a>
                             <a href="{{ route('admin.products.edit', $product) }}" 
                                class="text-yellow-600 hover:text-yellow-900">Edit</a>
                         </td>
@@ -132,7 +132,7 @@
             <p class="mt-1 text-sm text-gray-500">Kategori ini belum memiliki produk apapun.</p>
             <div class="mt-6">
                 <a href="{{ route('admin.products.create') }}" 
-                   class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
+                   class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#3BB77E] hover:bg-[#2F9960]">
                     Tambah Produk Baru
                 </a>
             </div>

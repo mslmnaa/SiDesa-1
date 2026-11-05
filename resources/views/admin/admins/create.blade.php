@@ -32,7 +32,7 @@
                        id="name"
                        name="name"
                        value="{{ old('name') }}"
-                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent @error('name') border-red-500 @enderror"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3BB77E] focus:border-transparent @error('name') border-red-500 @enderror"
                        placeholder="Masukkan nama lengkap"
                        required>
                 @error('name')
@@ -49,7 +49,7 @@
                        id="email"
                        name="email"
                        value="{{ old('email') }}"
-                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent @error('email') border-red-500 @enderror"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3BB77E] focus:border-transparent @error('email') border-red-500 @enderror"
                        placeholder="admin@bumdes.com"
                        required>
                 @error('email')
@@ -66,7 +66,7 @@
                        id="phone"
                        name="phone"
                        value="{{ old('phone') }}"
-                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent @error('phone') border-red-500 @enderror"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3BB77E] focus:border-transparent @error('phone') border-red-500 @enderror"
                        placeholder="081234567890">
                 @error('phone')
                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -80,7 +80,7 @@
                 </label>
                 <select id="role"
                         name="role"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent @error('role') border-red-500 @enderror"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3BB77E] focus:border-transparent @error('role') border-red-500 @enderror"
                         required
                         onchange="toggleVillageField(this.value)">
                     <option value="">Pilih Role</option>
@@ -103,7 +103,7 @@
                 </label>
                 <select id="village_id"
                         name="village_id"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent @error('village_id') border-red-500 @enderror"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3BB77E] focus:border-transparent @error('village_id') border-red-500 @enderror"
                         {{ old('role') !== 'admin' ? 'disabled' : '' }}>
                     <option value="">Pilih Desa (pilih role terlebih dahulu)</option>
                     @foreach($villages as $village)
@@ -128,7 +128,7 @@
                 <input type="password"
                        id="password"
                        name="password"
-                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent @error('password') border-red-500 @enderror"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3BB77E] focus:border-transparent @error('password') border-red-500 @enderror"
                        placeholder="Minimal 3 karakter"
                        required>
                 @error('password')
@@ -144,7 +144,7 @@
                 <input type="password"
                        id="password_confirmation"
                        name="password_confirmation"
-                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3BB77E] focus:border-transparent"
                        placeholder="Ulangi password"
                        required>
             </div>
@@ -152,7 +152,7 @@
             <!-- Action Buttons -->
             <div class="flex items-center gap-4">
                 <button type="submit"
-                        class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-semibold shadow-md transition duration-300 flex items-center gap-2">
+                        class="bg-[#3BB77E] hover:bg-[#2F9960] text-white px-8 py-3 rounded-lg font-semibold shadow-md transition duration-300 flex items-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                     </svg>

@@ -1,204 +1,114 @@
 @extends('layouts.admin')
 
-@section('title', 'Kelola User')
+@section('title', 'Kelola Pengguna')
 
 @section('content')
-<!-- Header -->
-<div class="flex items-center justify-between mb-6">
+@php
+    $card = 'bg-white rounded-2xl border border-gray-100 shadow-[0_1px_3px_rgba(37,61,78,0.06)]';
+    $input = 'w-full h-11 px-4 text-sm border border-gray-200 rounded-lg focus:ring-[#3BB77E] focus:border-[#3BB77E]';
+@endphp
+
+{{-- Header --}}
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
     <div>
-        <h1 class="text-3xl font-bold text-gray-900">Kelola User</h1>
-        <p class="text-gray-600 mt-2">Kelola akun pengguna biasa (pembeli produk)</p>
+        <h1 class="font-heading text-2xl lg:text-[28px] font-bold">Kelola Pengguna</h1>
+        <p class="text-sm text-gray-500 mt-1">{{ number_format($totalUsers, 0, ',', '.') }} akun pembeli · Admin desa dikelola di menu <a href="{{ route('admin.admins.index') }}" class="font-semibold text-[#3BB77E] hover:underline">Admin Desa</a></p>
     </div>
-    <a href="{{ route('admin.users.create') }}"
-       class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
-        Tambah User
+    <a href="{{ route('admin.users.create') }}" class="inline-flex items-center justify-center gap-2 h-11 px-5 rounded-lg bg-[#3BB77E] hover:bg-[#2F9960] text-white text-sm font-bold transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 5v14m-7-7h14"/></svg>
+        Tambah Pengguna
     </a>
 </div>
 
-<!-- Info Alert -->
-<div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
-    <div class="flex">
-        <div class="flex-shrink-0">
-            <svg class="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-            </svg>
-        </div>
-        <div class="ml-3">
-            <p class="text-sm text-blue-700">
-                <strong>Info:</strong> Halaman ini hanya untuk mengelola <strong>user biasa (role: user)</strong>.
-                Untuk mengelola <strong>Admin Desa</strong> atau <strong>SuperAdmin</strong>, gunakan menu
-                <a href="{{ route('admin.admins.index') }}" class="underline hover:text-blue-800 font-semibold">"Kelola Admin"</a>.
-            </p>
-        </div>
+{{-- Pencarian --}}
+<form method="GET" action="{{ route('admin.users.index') }}" class="{{ $card }} p-4 sm:p-5 mb-6 flex flex-col sm:flex-row gap-3">
+    <div class="relative flex-1">
+        <svg class="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-5.2-5.2M17 10.5a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z"/></svg>
+        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama, email, atau nomor telepon..." class="{{ $input }} pl-10">
     </div>
-</div>
-
-<!-- Statistics Cards -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-    <div class="bg-white rounded-lg shadow p-4">
-        <div class="flex items-center">
-            <div class="p-2 rounded-full bg-blue-100 text-blue-600">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                </svg>
-            </div>
-            <div class="ml-3">
-                <p class="text-2xl font-semibold text-gray-900">{{ $totalUsers }}</p>
-                <p class="text-sm text-gray-600">Total User Biasa</p>
-            </div>
-        </div>
+    <div class="flex gap-2">
+        <button type="submit" class="flex-1 sm:flex-none h-11 px-6 rounded-lg bg-[#3BB77E] hover:bg-[#2F9960] text-white text-sm font-bold transition-colors">Cari</button>
+        @if(request('search'))
+            <a href="{{ route('admin.users.index') }}" class="h-11 px-4 rounded-lg border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 flex items-center">Reset</a>
+        @endif
     </div>
-</div>
+</form>
 
-<!-- Search and Filters -->
-<div class="bg-white rounded-lg shadow p-6 mb-6">
-    <form method="GET" action="{{ route('admin.users.index') }}" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Search -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Cari User</label>
-            <input type="text" name="search" value="{{ request('search') }}"
-                   placeholder="Nama, email, telepon..."
-                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
-        </div>
-
-        <!-- Search Button -->
-        <div class="flex items-end">
-            <button type="submit" class="w-full bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition-colors">
-                Cari
-            </button>
-        </div>
-    </form>
-</div>
-
-<!-- Removed Role Filter (tidak perlu lagi karena hanya user biasa) -->
-<!-- <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
-            <select name="role" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
-                <option value="">Semua Role</option>
-                <option value="user" {{ request('role') == 'user' ? 'selected' : '' }}>User</option>
-                <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                <option value="superadmin" {{ request('role') == 'superadmin' ? 'selected' : '' }}>Super Admin</option>
-            </select>
-        </div>
-        
-        <!-- Actions -->
-        <div class="flex items-end space-x-2">
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
-                Filter
-            </button>
-            <a href="{{ route('admin.users.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors">
-                Reset
-            </a>
-        </div>
-    </form>
-</div>
-
-@if($users->count() > 0)
-    <!-- Users Table -->
-    <div class="bg-white rounded-lg shadow overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kontak</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pesanan</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bergabung</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+<section class="{{ $card }} p-5 lg:p-6">
+    @if($users->count() > 0)
+        <div class="hidden md:block overflow-x-auto -mx-5 lg:-mx-6 px-5 lg:px-6">
+            <table class="w-full min-w-[760px] text-sm">
+                <thead>
+                    <tr class="bg-[#3BB77E] text-white text-xs">
+                        <th class="text-left font-semibold py-3 pl-4 rounded-l-lg">Pengguna</th>
+                        <th class="text-left font-semibold py-3 px-3">Kontak</th>
+                        <th class="text-center font-semibold py-3 px-3">Keranjang</th>
+                        <th class="text-left font-semibold py-3 px-3">Bergabung</th>
+                        <th class="text-right font-semibold py-3 pr-4 rounded-r-lg">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
+                <tbody class="divide-y divide-gray-100">
                     @foreach($users as $user)
-                        <tr class="hover:bg-gray-50 {{ $user->id === auth()->id() ? 'bg-blue-50' : '' }}">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <div class="flex-shrink-0">
-                                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
-                                            <span class="text-white font-semibold text-sm">
-                                                {{ strtoupper(substr($user->name, 0, 2)) }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="ml-4">
-                                        <div class="text-sm font-medium text-gray-900">
-                                            {{ $user->name }}
-                                            @if($user->id === auth()->id())
-                                                <span class="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Anda</span>
-                                            @endif
-                                        </div>
-                                        <div class="text-sm text-gray-500">{{ $user->email }}</div>
+                        <tr class="hover:bg-[#F4F6FA]/60">
+                            <td class="py-3 pl-2">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <span class="w-10 h-10 rounded-full bg-[#DEF9EC] text-[#3BB77E] text-sm font-bold flex items-center justify-center flex-shrink-0">{{ strtoupper(mb_substr($user->name, 0, 2)) }}</span>
+                                    <div class="min-w-0">
+                                        <p class="font-semibold truncate max-w-[220px]">{{ $user->name }}</p>
+                                        <p class="text-xs text-gray-500 truncate max-w-[220px]">{{ $user->email }}</p>
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ $user->phone ?? '-' }}</div>
-                                @if($user->address)
-                                    <div class="text-sm text-gray-500">{{ Str::limit($user->address, 30) }}</div>
-                                @endif
+                            <td class="py-3 px-3">
+                                <p>{{ $user->phone ?? '-' }}</p>
+                                @if($user->address)<p class="text-xs text-gray-500 truncate max-w-[220px]">{{ $user->address }}</p>@endif
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
-                                    User Biasa
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900">{{ $user->carts->count() }} keranjang</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $user->created_at->format('d M Y') }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                                <a href="{{ route('admin.users.show', $user) }}" 
-                                   class="text-blue-600 hover:text-blue-800">Lihat</a>
-                                @if($user->id !== auth()->id())
-                                    <a href="{{ route('admin.users.edit', $user) }}"
-                                       class="text-green-600 hover:text-green-800">Edit</a>
-                                    <form method="POST" action="{{ route('admin.users.destroy', $user) }}"
-                                          class="inline-block"
-                                          onsubmit="return confirm('Yakin ingin menghapus user {{ $user->name }}?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-800">Hapus</button>
-                                    </form>
-                                @else
-                                    <a href="{{ route('profile') }}" class="text-purple-600 hover:text-purple-800">Profile</a>
-                                @endif
+                            <td class="py-3 px-3 text-center font-semibold">{{ $user->carts->count() }}</td>
+                            <td class="py-3 px-3 whitespace-nowrap text-gray-600">{{ $user->created_at->locale('id')->translatedFormat('j M Y') }}</td>
+                            <td class="py-3 pr-2">
+                                @include('admin.partials.row-actions', [
+                                    'show' => route('admin.users.show', $user),
+                                    'edit' => route('admin.users.edit', $user),
+                                    'delete' => route('admin.users.destroy', $user),
+                                    'confirm' => 'Yakin ingin menghapus pengguna ' . $user->name . '?',
+                                ])
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
-        
-        <!-- Pagination -->
-        <div class="px-6 py-3 bg-gray-50 border-t border-gray-200">
-            {{ $users->appends(request()->query())->links() }}
+
+        <div class="md:hidden divide-y divide-gray-100 -mx-1">
+            @foreach($users as $user)
+                <div class="flex items-center gap-3 px-1 py-3">
+                    <span class="w-10 h-10 rounded-full bg-[#DEF9EC] text-[#3BB77E] text-sm font-bold flex items-center justify-center flex-shrink-0">{{ strtoupper(mb_substr($user->name, 0, 2)) }}</span>
+                    <a href="{{ route('admin.users.show', $user) }}" class="min-w-0 flex-1">
+                        <p class="text-sm font-semibold truncate">{{ $user->name }}</p>
+                        <p class="text-xs text-gray-500 truncate">{{ $user->email }}</p>
+                    </a>
+                    @include('admin.partials.row-actions', [
+                        'edit' => route('admin.users.edit', $user),
+                        'delete' => route('admin.users.destroy', $user),
+                        'confirm' => 'Yakin ingin menghapus pengguna ' . $user->name . '?',
+                    ])
+                </div>
+            @endforeach
         </div>
-    </div>
-@else
-    <!-- Empty State -->
-    <div class="bg-white rounded-lg shadow p-12 text-center">
-        <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a4 4 0 11-8 0 4 4 0 018 0z"></path>
-        </svg>
-        <h3 class="text-xl font-semibold text-gray-900 mb-2">
-            {{ request()->hasAny(['search', 'role']) ? 'User Tidak Ditemukan' : 'Belum Ada User' }}
-        </h3>
-        <p class="text-gray-600 mb-6">
-            {{ request()->hasAny(['search', 'role']) ? 'Tidak ada user yang cocok dengan filter yang dipilih.' : 'Belum ada user yang terdaftar di sistem.' }}
-        </p>
-        @if(request()->hasAny(['search', 'role']))
-            <a href="{{ route('admin.users.index') }}" 
-               class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
-                Lihat Semua User
-            </a>
-        @else
-            <a href="{{ route('admin.users.create') }}" 
-               class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
-                Tambah User Pertama
-            </a>
-        @endif
+    @else
+        <div class="flex flex-col items-center justify-center text-center py-12">
+            <div class="w-12 h-12 rounded-xl bg-[#DEF9EC] text-[#3BB77E] flex items-center justify-center mb-3">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            </div>
+            <p class="text-sm font-semibold">{{ request('search') ? 'Pengguna tidak ditemukan' : 'Belum ada pengguna' }}</p>
+            <p class="text-xs text-gray-500">{{ request('search') ? 'Coba kata kunci lain.' : 'Akun pembeli yang mendaftar akan muncul di sini.' }}</p>
+        </div>
+    @endif
+</section>
+
+@if($users->hasPages())
+    <div class="mt-6">
+        {{ $users->appends(request()->query())->links() }}
     </div>
 @endif
 @endsection

@@ -1,27 +1,26 @@
 @if ($paginator->hasPages())
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-xl p-4 sm:p-6 border border-gray-100">
+    <div class="w-full flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-xl p-4 sm:p-6 border border-gray-100">
         <!-- Results Info -->
         <div class="text-sm text-gray-600">
-            Showing <span class="font-semibold text-[#3BB77E]">{{ $paginator->firstItem() }}</span>
-            to <span class="font-semibold text-[#3BB77E]">{{ $paginator->lastItem() }}</span>
-            of <span class="font-semibold">{{ $paginator->total() }}</span> results
+            Menampilkan <span class="font-semibold text-[#3BB77E]">{{ $paginator->firstItem() }}–{{ $paginator->lastItem() }}</span>
+            dari <span class="font-semibold">{{ $paginator->total() }}</span> data
         </div>
 
         <!-- Pagination Links -->
-        <nav role="navigation" aria-label="Pagination Navigation">
+        <nav role="navigation" aria-label="Navigasi halaman">
             <ul class="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-3 sm:gap-2">
                 {{-- Previous Page Link --}}
                 @if ($paginator->onFirstPage())
                     <li>
                         <span class="inline-block px-3 sm:px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
-                            « Previous
+                            ‹ Sebelumnya
                         </span>
                     </li>
                 @else
                     <li>
                         <a href="{{ $paginator->previousPageUrl() }}"
                            class="inline-block px-3 sm:px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-[#3BB77E] hover:text-white hover:border-[#3BB77E] transition-all duration-200">
-                            « Previous
+                            ‹ Sebelumnya
                         </a>
                     </li>
                 @endif
@@ -61,13 +60,13 @@
                     <li>
                         <a href="{{ $paginator->nextPageUrl() }}"
                            class="inline-block px-3 sm:px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-[#3BB77E] hover:text-white hover:border-[#3BB77E] transition-all duration-200">
-                            Next »
+                            Berikutnya ›
                         </a>
                     </li>
                 @else
                     <li>
                         <span class="inline-block px-3 sm:px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
-                            Next »
+                            Berikutnya ›
                         </span>
                     </li>
                 @endif

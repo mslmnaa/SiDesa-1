@@ -1,14 +1,15 @@
 @extends('layouts.admin')
 
 @section('title', 'Lokasi Pengiriman Desa')
+@section('page_title', 'Lokasi Pengiriman Desa')
 
 @section('content')
 <div class="max-w-4xl mx-auto">
     <div class="bg-white shadow-md rounded-lg overflow-hidden">
         <!-- Header -->
-        <div class="px-6 py-4 border-b bg-gradient-to-r from-green-600 to-green-700">
+        <div class="px-6 py-4 border-b bg-[#3BB77E]">
             <h2 class="text-xl font-bold text-white">Pengaturan Lokasi Pengiriman</h2>
-            <p class="text-green-100 text-sm mt-1">Atur lokasi asal pengiriman untuk semua produk dari desa Anda</p>
+            <p class="text-white/80 text-sm mt-1">Atur lokasi asal pengiriman untuk semua produk dari desa Anda</p>
         </div>
 
         <!-- Info Alert -->
@@ -20,7 +21,7 @@
                 <div class="ml-3 flex-1">
                     <div class="flex items-center justify-between">
                         <h3 class="text-sm font-medium text-blue-800">Mengapa harus mengatur lokasi pengiriman?</h3>
-                        <button type="button" id="clearCacheBtn" class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded transition-colors">
+                        <button type="button" id="clearCacheBtn" class="text-xs bg-[#3BB77E] hover:bg-[#2F9960] text-white px-3 py-1 rounded transition-colors">
                             Refresh Data
                         </button>
                     </div>
@@ -55,7 +56,7 @@
                         Provinsi <span class="text-red-500">*</span>
                     </label>
                     <select name="origin_province_id" id="province_id" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3BB77E] focus:border-transparent">
                         <option value="">Pilih Provinsi</option>
                     </select>
                     <input type="hidden" name="origin_province_name" id="province_name" value="{{ $village->origin_province_name }}">
@@ -70,7 +71,7 @@
                         Kota/Kabupaten <span class="text-red-500">*</span>
                     </label>
                     <select name="origin_city_id" id="city_id" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3BB77E] focus:border-transparent">
                         <option value="">Pilih Kota/Kabupaten</option>
                     </select>
                     <input type="hidden" name="origin_city_name" id="city_name" value="{{ $village->origin_city_name }}">
@@ -87,7 +88,7 @@
                     <input type="text" name="origin_postal_code" id="postal_code"
                            value="{{ old('origin_postal_code', $village->origin_postal_code) }}"
                            placeholder="Akan terisi otomatis"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3BB77E] focus:border-transparent">
                     <p class="mt-1 text-xs text-gray-500">Kode pos akan terisi otomatis saat Anda memilih kota</p>
                     @error('origin_postal_code')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -123,7 +124,7 @@
                                placeholder="-6.175110"
                                required
                                step="any"
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3BB77E] focus:border-transparent">
                         <p class="mt-1 text-xs text-gray-500">Contoh: -6.175110</p>
                         @error('latitude')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -140,7 +141,7 @@
                                placeholder="106.865036"
                                required
                                step="any"
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3BB77E] focus:border-transparent">
                         <p class="mt-1 text-xs text-gray-500">Contoh: 106.865036</p>
                         @error('longitude')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -175,7 +176,7 @@
             <!-- Action Buttons -->
             <div class="flex gap-3 mt-8 pt-6 border-t">
                 <button type="submit"
-                        class="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center justify-center gap-2">
+                        class="flex-1 bg-[#3BB77E] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#2F9960] transition-colors flex items-center justify-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                     </svg>
@@ -328,11 +329,11 @@ document.getElementById('autoFillCoords').addEventListener('click', async functi
 
             btn.textContent = '✓ Berhasil!';
             btn.classList.remove('bg-yellow-600', 'hover:bg-yellow-700');
-            btn.classList.add('bg-green-600');
+            btn.classList.add('bg-[#3BB77E]');
 
             setTimeout(() => {
                 btn.textContent = 'Auto-isi dari Lokasi Kota';
-                btn.classList.remove('bg-green-600');
+                btn.classList.remove('bg-[#3BB77E]');
                 btn.classList.add('bg-yellow-600', 'hover:bg-yellow-700');
             }, 2000);
         } else {

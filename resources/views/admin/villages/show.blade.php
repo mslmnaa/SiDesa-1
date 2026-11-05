@@ -19,7 +19,7 @@
             </div>
         </div>
         <a href="{{ route('admin.villages.edit', $village) }}"
-           class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold shadow-md transition duration-300 flex items-center gap-2">
+           class="bg-[#3BB77E] hover:bg-[#2F9960] text-white px-6 py-3 rounded-lg font-semibold shadow-md transition duration-300 flex items-center gap-2">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
             </svg>
@@ -29,10 +29,10 @@
 
     <!-- Statistics Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
+        <div class="bg-[#3BB77E] rounded-xl shadow-lg p-6 text-white">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-blue-100 text-sm font-medium">Total Produk</p>
+                    <p class="text-white/80 text-sm font-medium">Total Produk</p>
                     <p class="text-3xl font-bold mt-2">{{ $totalProducts }}</p>
                 </div>
                 <div class="bg-white bg-opacity-20 rounded-full p-4">
@@ -43,10 +43,10 @@
             </div>
         </div>
 
-        <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
+        <div class="bg-[#3BB77E] rounded-xl shadow-lg p-6 text-white">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-green-100 text-sm font-medium">Produk Aktif</p>
+                    <p class="text-white/80 text-sm font-medium">Produk Aktif</p>
                     <p class="text-3xl font-bold mt-2">{{ $activeProducts }}</p>
                 </div>
                 <div class="bg-white bg-opacity-20 rounded-full p-4">
@@ -57,10 +57,10 @@
             </div>
         </div>
 
-        <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white">
+        <div class="bg-[#3BB77E] rounded-xl shadow-lg p-6 text-white">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-purple-100 text-sm font-medium">Admin Desa</p>
+                    <p class="text-white/80 text-sm font-medium">Admin Desa</p>
                     <p class="text-3xl font-bold mt-2">{{ $totalAdmins }}</p>
                 </div>
                 <div class="bg-white bg-opacity-20 rounded-full p-4">
@@ -119,7 +119,7 @@
                 @foreach($village->admins as $admin)
                     <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                         <div class="flex items-center gap-3">
-                            <div class="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold">
+                            <div class="h-10 w-10 rounded-full bg-[#3BB77E] flex items-center justify-center text-white font-bold">
                                 {{ strtoupper(substr($admin->name, 0, 1)) }}
                             </div>
                             <div>
@@ -127,7 +127,7 @@
                                 <p class="text-sm text-gray-600">{{ $admin->email }}</p>
                             </div>
                         </div>
-                        <a href="{{ route('admin.admins.edit', $admin) }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                        <a href="{{ route('admin.admins.edit', $admin) }}" class="text-[#3BB77E] hover:text-[#2F9960] text-sm font-medium">
                             Edit
                         </a>
                     </div>
@@ -141,7 +141,7 @@
         <div class="p-6 border-b border-gray-200 flex items-center justify-between">
             <h2 class="text-2xl font-bold text-gray-800">Produk Desa</h2>
             <a href="{{ route('admin.products.create') }}"
-               class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold text-sm transition duration-300 flex items-center gap-2">
+               class="bg-[#3BB77E] hover:bg-[#2F9960] text-white px-4 py-2 rounded-lg font-semibold text-sm transition duration-300 flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
@@ -205,7 +205,7 @@
                                 <td class="px-6 py-4 text-center">
                                     <div class="flex items-center justify-center gap-2">
                                         <a href="{{ route('admin.products.show', $product) }}"
-                                           class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                           class="text-[#253D4E] hover:text-[#3BB77E] text-sm font-medium">
                                             Lihat
                                         </a>
                                         <a href="{{ route('admin.products.edit', $product) }}"

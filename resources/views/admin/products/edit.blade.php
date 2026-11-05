@@ -11,7 +11,7 @@
     </div>
     <div class="space-x-3">
         <a href="{{ route('admin.products.show', $product) }}" 
-           class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+           class="bg-[#3BB77E] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#2F9960] transition-colors">
             Lihat Produk
         </a>
         <a href="{{ route('admin.products.index') }}" 
@@ -40,7 +40,7 @@
                         </label>
                         <input type="text" id="name" name="name" value="{{ old('name', $product->name) }}" required
                                placeholder="Contoh: Beras Premium 5kg"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('name') border-red-500 @enderror">
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E] @error('name') border-red-500 @enderror">
                         @error('name')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -53,7 +53,7 @@
                         </label>
                         <textarea id="description" name="description" rows="5" required
                                   placeholder="Jelaskan detail produk, manfaat, dan spesifikasi..."
-                                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('description') border-red-500 @enderror">{{ old('description', $product->description) }}</textarea>
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E] @error('description') border-red-500 @enderror">{{ old('description', $product->description) }}</textarea>
                         @error('description')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -97,7 +97,7 @@
                         Upload Foto Tambahan (Max: 2MB per foto)
                     </label>
                     <input type="file" id="images" name="images[]" multiple accept="image/*"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('images.*') border-red-500 @enderror">
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E] @error('images.*') border-red-500 @enderror">
                     @error('images.*')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -124,7 +124,7 @@
                             <span class="absolute left-3 top-2 text-gray-500">Rp</span>
                             <input type="number" id="price" name="price" value="{{ old('price', $product->price) }}" required min="0"
                                    placeholder="50000"
-                                   class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('price') border-red-500 @enderror">
+                                   class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E] @error('price') border-red-500 @enderror">
                         </div>
                         @error('price')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -138,7 +138,7 @@
                         </label>
                         <input type="number" id="stock" name="stock" value="{{ old('stock', $product->stock) }}" required min="0"
                                placeholder="100"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('stock') border-red-500 @enderror">
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E] @error('stock') border-red-500 @enderror">
                         @error('stock')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -160,7 +160,7 @@
                             Jenis Produk *
                         </label>
                         <select id="type" name="type" required onchange="filterCategories()"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('type') border-red-500 @enderror">
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E] @error('type') border-red-500 @enderror">
                             <option value="">Pilih Jenis Produk</option>
                             <option value="barang" {{ old('type', $product->type) == 'barang' ? 'selected' : '' }}>
                                 Produk Barang
@@ -183,7 +183,7 @@
                             Kategori *
                         </label>
                         <select id="category_id" name="category_id" required
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('category_id') border-red-500 @enderror">
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E] @error('category_id') border-red-500 @enderror">
                             <option value="">Pilih Kategori</option>
                             @foreach($categories as $category)
                                 <option value="{{ $category->id }}" data-type="{{ $category->type }}"
@@ -203,7 +203,7 @@
                             Status *
                         </label>
                         <select id="status" name="status" required
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('status') border-red-500 @enderror">
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E] @error('status') border-red-500 @enderror">
                             <option value="active" {{ old('status', $product->status) === 'active' ? 'selected' : '' }}>Aktif</option>
                             <option value="inactive" {{ old('status', $product->status) === 'inactive' ? 'selected' : '' }}>Tidak Aktif</option>
                         </select>
@@ -225,7 +225,7 @@
                     <input type="text" id="whatsapp_number" name="whatsapp_number" 
                            value="{{ old('whatsapp_number', $product->whatsapp_number) }}"
                            placeholder="628123456789 (tanpa tanda +)"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 @error('whatsapp_number') border-red-500 @enderror">
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-[#3BB77E] focus:border-[#3BB77E] @error('whatsapp_number') border-red-500 @enderror">
                     @error('whatsapp_number')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -238,7 +238,7 @@
             <!-- Submit Button -->
             <div class="bg-white rounded-lg shadow p-6">
                 <button type="submit" 
-                        class="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                        class="w-full bg-[#3BB77E] text-white py-3 px-4 rounded-lg font-semibold hover:bg-[#2F9960] transition-colors">
                     Simpan Perubahan
                 </button>
             </div>
